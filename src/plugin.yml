@@ -3,7 +3,7 @@ authors: [67clement]
 main: com.aol.w67clement.mineapi.MineAPI
 description: An API to make it easy some codes.
 website: http://www.bukkit.fr/index.php/topic/17149-mineapi/
-version: 1.3.3
+version: 1.4.0
 
 commands:
   AdvancedVersion:

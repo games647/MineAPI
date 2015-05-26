@@ -62,7 +62,7 @@ public class MineAPI extends JavaPlugin {
 				+ ChatColor.RED + getServerVersion());
 		console.sendMessage(PREFIX + ChatColor.GREEN + "Server is Spigot: "
 				+ ChatColor.RED + isSpigot);
-		if (getServerVersion().equals("v1_8_R2")) {
+		if (getServerVersion().equals("v1_8_R3")) {
 			nms = new NmsManager_v1_8_R3();
 			protocolManager = new ProtocolManager_v1_8_R3(this);
 			this.getServer().getPluginManager()
