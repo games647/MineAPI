@@ -1,11 +1,11 @@
-package com.aol.w67clement.mineapi.nms.v1_8_R1.entity;
+package com.aol.w67clement.mineapi.nms.v1_8_R3.entity;
 
-import net.minecraft.server.v1_8_R1.EntityPlayer;
-import net.minecraft.server.v1_8_R1.TileEntitySign;
+import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.TileEntitySign;
 
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
-import org.bukkit.craftbukkit.v1_8_R1.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.aol.w67clement.mineapi.MineAPI;
@@ -15,22 +15,36 @@ import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
 import com.aol.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.aol.w67clement.mineapi.message.FancyMessage;
-import com.aol.w67clement.mineapi.nms.v1_8_R1.play_in.ClientCommand_v1_8_R1;
+import com.aol.w67clement.mineapi.nms.v1_8_R2.play_in.ClientCommand_v1_8_R2;
 
-public class MC_Player_v1_8_R1 implements MC_Player {
+public class MC_Player_v1_8_R3 implements MC_Player {
 
 	private EntityPlayer player;
 
-	public MC_Player_v1_8_R1(Player player) {
+	public MC_Player_v1_8_R3(Player player) {
 		this.player = ((CraftPlayer) player).getHandle();
 	}
 
 	@Override
 	public void respawn() {
 		if (getHandle().isDead())
-			new ClientCommand_v1_8_R1(
-					ClientCommand.ClientCommandType.PERFORM_RESPAWN).send(this
-					.getHandle());
+			new ClientCommand_v1_8_R2(
+					ClientCommand.ClientCommandType.PERFORM_RESPAWN)
+					.send(this.player.getBukkitEntity());
+	}
+
+	@Override
+	public void openSign(Sign sign) {
+		this.openSign(sign, true);
+	}
+
+	@Override
+	public void openSign(Sign sign, boolean isEditable) {
+		TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) sign
+				.getLocation().getWorld()).getTileEntityAt(sign.getX(),
+				sign.getY(), sign.getZ());
+		tileEntitySign.isEditable = isEditable;
+		this.player.openSign(tileEntitySign);
 	}
 
 	@Override
@@ -69,7 +83,7 @@ public class MC_Player_v1_8_R1 implements MC_Player {
 		try {
 			return ChatVisibilityWrapper
 					.makeMCChatVisibilityByEnumChatVisibility(Reflection
-							.getField(this.player.getClass(), "bP", true).get(
+							.getField(this.player.getClass(), "bR", true).get(
 									this.player));
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
@@ -81,16 +95,6 @@ public class MC_Player_v1_8_R1 implements MC_Player {
 			e.printStackTrace();
 			return MC_ChatVisibility.FULL;
 		}
-	}
-
-	@Override
-	public Player getHandle() {
-		return this.player.getBukkitEntity();
-	}
-	
-	@Override
-	public Object getMC_Handle() {
-		return this.player;
 	}
 
 	@Override
@@ -119,18 +123,13 @@ public class MC_Player_v1_8_R1 implements MC_Player {
 	}
 
 	@Override
-	public void openSign(Sign sign) {
-		this.openSign(sign, true);
+	public Player getHandle() {
+		return this.player.getBukkitEntity();
 	}
 
 	@Override
-	public void openSign(Sign sign, boolean isEditable) {
-		TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) sign
-				.getLocation().getWorld()).getTileEntityAt(sign.getX(),
-				sign.getY(), sign.getZ());
-		tileEntitySign.isEditable = isEditable;
-		this.player.openSign(tileEntitySign);
+	public Object getMC_Handle() {
+		return this.player;
 	}
-}
 
-// End class of Minecraft Player
+}

@@ -1,15 +1,15 @@
-package com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message;
+package com.aol.w67clement.mineapi.nms.v1_8_R3.play_out.message;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
-import net.minecraft.server.v1_8_R2.IChatBaseComponent;
-import net.minecraft.server.v1_8_R2.PacketPlayOutChat;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import com.google.gson.stream.JsonWriter;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.aol.w67clement.mineapi.enums.PacketType;
@@ -21,11 +21,11 @@ import com.aol.w67clement.mineapi.message.ActionBarMessage;
  * @author 67clement
  * @version 1.0 - CraftBukkit 1.8.3
  */
-public class ActionBarMessage_v1_8_R2 implements ActionBarMessage {
+public class ActionBarMessage_v1_8_R3 implements ActionBarMessage {
 
 	private String message;
 
-	public ActionBarMessage_v1_8_R2(String message) {
+	public ActionBarMessage_v1_8_R3(String message) {
 		this.message = message;
 	}
 
@@ -79,3 +79,4 @@ public class ActionBarMessage_v1_8_R2 implements ActionBarMessage {
 		return PacketType.PACKETPLAYOUT;
 	}
 }
+

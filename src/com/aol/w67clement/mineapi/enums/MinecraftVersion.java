@@ -22,7 +22,8 @@ public enum MinecraftVersion {
 	v1_8_R1("1.8", 47),
 	v1_8_1("1.8.1", 47),
 	v1_8_2("1.8.2", 47),
-	v1_8_R2("1.8.3", 47);
+	v1_8_R2("1.8.3", 47),
+	v1_8_R3("1.8.6", 47);
 	
 	private String version = "1.0.0";
 	private int protocol = 0;
@@ -50,6 +51,8 @@ public enum MinecraftVersion {
     		return v1_8_R1;
     	} else if (MineAPI.getServerVersion().equals("v1_8_R2")) {
     		return v1_8_R2;
+    	} else if (MineAPI.getServerVersion().equals("v1_8_R3")) {
+    		return v1_8_R3;
     	} else {
     		return UNKNOW;
     	}

@@ -1,15 +1,15 @@
-package com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.world;
+package com.aol.w67clement.mineapi.nms.v1_8_R3.play_out.world;
 
 import java.util.ArrayList;
 
-import net.minecraft.server.v1_8_R2.BlockPosition;
-import net.minecraft.server.v1_8_R2.PacketPlayOutExplosion;
+import net.minecraft.server.v1_8_R3.BlockPosition;
+import net.minecraft.server.v1_8_R3.PacketPlayOutExplosion;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.aol.w67clement.mineapi.enums.PacketType;
@@ -19,9 +19,9 @@ import com.aol.w67clement.mineapi.world.PacketExplosion;
  * Create some explosions with the packet PlayOutExplosion.
  * 
  * @author 67clement
- * @version 1.2 - CraftBukkit 1.8.3 SNAPSHOT
+ * @version 1.2 - CraftBukkit 1.8.4-1.8.6 SNAPSHOT
  */
-public class PacketExplosion_v1_8_R2 implements PacketExplosion {
+public class PacketExplosion_v1_8_R3 implements PacketExplosion {
 
 	private double x;
 	private double y;
@@ -30,7 +30,7 @@ public class PacketExplosion_v1_8_R2 implements PacketExplosion {
 	private boolean sound;
 	private World world;
 
-	public PacketExplosion_v1_8_R2(World world, double x, double y, double z, float radius) {
+	public PacketExplosion_v1_8_R3(World world, double x, double y, double z, float radius) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -39,7 +39,7 @@ public class PacketExplosion_v1_8_R2 implements PacketExplosion {
 		this.world = world;
 	}
 
-	public PacketExplosion_v1_8_R2(Location location, float radius) {
+	public PacketExplosion_v1_8_R3(Location location, float radius) {
 		this.x = location.getX();
 		this.y = location.getY();
 		this.z = location.getZ();
@@ -48,7 +48,7 @@ public class PacketExplosion_v1_8_R2 implements PacketExplosion {
 		this.world = location.getWorld();
 	}
 
-	public PacketExplosion_v1_8_R2(World world, double x, double y, double z, float radius,
+	public PacketExplosion_v1_8_R3(World world, double x, double y, double z, float radius,
 			boolean sound) {
 		this.x = x;
 		this.y = y;
@@ -58,7 +58,7 @@ public class PacketExplosion_v1_8_R2 implements PacketExplosion {
 		this.world = world;
 	}
 
-	public PacketExplosion_v1_8_R2(Location location, float radius, boolean sound) {
+	public PacketExplosion_v1_8_R3(Location location, float radius, boolean sound) {
 		this.x = location.getX();
 		this.y = location.getY();
 		this.z = location.getZ();

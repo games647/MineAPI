@@ -44,16 +44,16 @@ public class MC_Player_v1_8_R2 implements MC_Player {
 			return Reflection.getStringValue(this.player, "locale", true);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			return null;
+			return "en_US";
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();
-			return null;
+			return "en_US";
 		} catch (NoSuchFieldException e) {
 			e.printStackTrace();
-			return null;
+			return "en_US";
 		} catch (SecurityException e) {
 			e.printStackTrace();
-			return null;
+			return "en_US";
 		}
 	}
 

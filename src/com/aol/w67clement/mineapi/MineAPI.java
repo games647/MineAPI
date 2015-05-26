@@ -27,6 +27,8 @@ import com.aol.w67clement.mineapi.nms.v1_8_R1.NmsManager_v1_8_R1;
 import com.aol.w67clement.mineapi.nms.v1_8_R1.ProtocolManager_v1_8_R1;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.NmsManager_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.ProtocolManager_v1_8_R2;
+import com.aol.w67clement.mineapi.nms.v1_8_R3.NmsManager_v1_8_R3;
+import com.aol.w67clement.mineapi.nms.v1_8_R3.ProtocolManager_v1_8_R3;
 
 public class MineAPI extends JavaPlugin {
 
@@ -61,6 +63,11 @@ public class MineAPI extends JavaPlugin {
 		console.sendMessage(PREFIX + ChatColor.GREEN + "Server is Spigot: "
 				+ ChatColor.RED + isSpigot);
 		if (getServerVersion().equals("v1_8_R2")) {
+			nms = new NmsManager_v1_8_R3();
+			protocolManager = new ProtocolManager_v1_8_R3(this);
+			this.getServer().getPluginManager()
+					.registerEvents(protocolManager, this);
+		} else if (getServerVersion().equals("v1_8_R2")) {
 			nms = new NmsManager_v1_8_R2();
 			protocolManager = new ProtocolManager_v1_8_R2(this);
 			this.getServer().getPluginManager()
