@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.aol.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
 import com.aol.w67clement.mineapi.message.ActionBarMessage;
@@ -69,4 +70,8 @@ public interface NmsManager {
 	 * @return A new MC_Player Object
 	 */
 	public MC_Player getMCPlayer(Player player);
+	
+	/* WRAPPERS */
+	
+	public ServerPingWrapper getServerPingWrapper(Object serverPing);
 }

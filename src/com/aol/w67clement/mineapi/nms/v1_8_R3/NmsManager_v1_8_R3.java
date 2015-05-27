@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 
+import com.aol.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
@@ -19,6 +20,7 @@ import com.aol.w67clement.mineapi.nms.v1_8_R3.play_out.message.FancyMessage_v1_8
 import com.aol.w67clement.mineapi.nms.v1_8_R3.play_out.message.Title_v1_8_R3;
 import com.aol.w67clement.mineapi.nms.v1_8_R3.play_out.world.PacketExplosion_v1_8_R3;
 import com.aol.w67clement.mineapi.nms.v1_8_R3.play_out.world.PacketWorldBorder_v1_8_R3;
+import com.aol.w67clement.mineapi.nms.v1_8_R3.wrappers.ServerPingWrapper_v1_8_R3;
 import com.aol.w67clement.mineapi.tab.TabTitle;
 import com.aol.w67clement.mineapi.world.PacketExplosion;
 import com.aol.w67clement.mineapi.world.PacketWorldBorder;
@@ -72,6 +74,11 @@ public class NmsManager_v1_8_R3 implements NmsManager {
 	@Override
 	public MC_Player getMCPlayer(Player player) {
 		return new MC_Player_v1_8_R3(player);
+	}
+	
+	@Override
+	public ServerPingWrapper getServerPingWrapper(Object obj) {
+		return new ServerPingWrapper_v1_8_R3(obj);
 	}
 
 }
