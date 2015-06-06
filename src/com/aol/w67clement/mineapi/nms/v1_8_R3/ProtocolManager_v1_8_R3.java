@@ -106,7 +106,7 @@ private MineAPI mineapi;
 				@Override
 				public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
 					PacketCancellable cancel = new PacketCancellable();
-					mineapi.packetSend(new PacketWrapper((Packet) msg), cancel, p.getName());
+					mineapi.packetSend(new PacketWrapper((Packet) msg), cancel, p);
 					if (cancel.isCancelled()) {
 						return;
 					}
@@ -117,7 +117,7 @@ private MineAPI mineapi;
 				@Override
 				public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 					PacketCancellable cancel = new PacketCancellable();
-					mineapi.packetRecieve(new PacketWrapper((Packet) msg), cancel, p.getName());
+					mineapi.packetRecieve(new PacketWrapper((Packet) msg), cancel, p);
 					if (cancel.isCancelled()) {
 						return;
 					}
@@ -148,7 +148,7 @@ private MineAPI mineapi;
 					return;
 				}
 				PacketCancellable cancel = new PacketCancellable();
-				mineapi.packetSend(new PacketWrapper((Packet) msg), cancel, null);
+				mineapi.pingPacketSend(new PacketWrapper((Packet) msg), cancel);
 				if (cancel.isCancelled()) {
 					return;
 				}
@@ -163,7 +163,7 @@ private MineAPI mineapi;
 					return;
 				}
 				PacketCancellable cancel = new PacketCancellable();
-				mineapi.packetRecieve(new PacketWrapper((Packet) msg), cancel, null);
+				mineapi.pingPacketRecieve(new PacketWrapper((Packet) msg), cancel);
 				if (cancel.isCancelled()) {
 					return;
 				}

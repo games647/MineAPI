@@ -1,25 +1,38 @@
 package com.aol.w67clement.mineapi.api.event;
 
+import java.util.UUID;
+
+import org.bukkit.entity.Player;
+
 import com.aol.w67clement.mineapi.api.wrappers.PacketWrapper;
 
 public class RecievePacketEvent {
 
 	private PacketWrapper packet;
 	private PacketCancellable cancellable;
-	private String recieverName;
+	private Player player;
 	
-	public RecievePacketEvent(PacketWrapper packet, PacketCancellable cancellable, String recieverName) {
+	public RecievePacketEvent(PacketWrapper packet, PacketCancellable cancellable, Player player) {
 		this.packet = packet;
 		this.cancellable = cancellable;
-		this.recieverName = recieverName;
+		this.player = player;
 	}
 	
 	public PacketWrapper getPacket() {
 		return this.packet;
 	}
 	
+	public Player getPlayer() {
+		return this.player;
+	}
+	
+	public UUID getPlayerUUID() {
+		return this.player.getUniqueId();
+	}
+	
+	@Deprecated
 	public String getRecieverName() {
-		return this.recieverName;
+		return this.player.getName();
 	}
 
 	public boolean isCancelled() {

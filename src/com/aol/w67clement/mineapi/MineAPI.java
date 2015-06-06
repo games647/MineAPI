@@ -11,6 +11,7 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,8 @@ import com.aol.w67clement.mineapi.api.event.PacketCancellable;
 import com.aol.w67clement.mineapi.api.event.PacketListener;
 import com.aol.w67clement.mineapi.api.event.RecievePacketEvent;
 import com.aol.w67clement.mineapi.api.event.SendPacketEvent;
+import com.aol.w67clement.mineapi.api.event.ping.PacketPingRecieveEvent;
+import com.aol.w67clement.mineapi.api.event.ping.PacketPingSendEvent;
 import com.aol.w67clement.mineapi.api.wrappers.PacketWrapper;
 import com.aol.w67clement.mineapi.enums.PacketList;
 import com.aol.w67clement.mineapi.nms.NmsManager;
@@ -62,21 +65,26 @@ public class MineAPI extends JavaPlugin {
 				+ ChatColor.RED + getServerVersion());
 		console.sendMessage(PREFIX + ChatColor.GREEN + "Server is Spigot: "
 				+ ChatColor.RED + isSpigot);
+
+		//Version 1.8.R3
 		if (getServerVersion().equals("v1_8_R3")) {
 			nms = new NmsManager_v1_8_R3();
 			protocolManager = new ProtocolManager_v1_8_R3(this);
 			this.getServer().getPluginManager()
 					.registerEvents(protocolManager, this);
+		//Version 1.8.R2
 		} else if (getServerVersion().equals("v1_8_R2")) {
 			nms = new NmsManager_v1_8_R2();
 			protocolManager = new ProtocolManager_v1_8_R2(this);
 			this.getServer().getPluginManager()
 					.registerEvents(protocolManager, this);
+		//Version 1.8.R1
 		} else if (getServerVersion().equals("v1_8_R1")) {
 			nms = new NmsManager_v1_8_R1();
 			protocolManager = new ProtocolManager_v1_8_R1(this);
 			this.getServer().getPluginManager()
 					.registerEvents(protocolManager, this);
+		//No valid version detected
 		} else {
 			console.sendMessage(PREFIX
 					+ "§4[Error] §3MineAPI §cis disabled: Your server was outdated!");
@@ -99,6 +107,7 @@ public class MineAPI extends JavaPlugin {
 
 	@Override
 	public void onDisable() {
+		//Disabling protocol manager
 		if (protocolManager != null) {
 			protocolManager.disable();
 		}
@@ -124,7 +133,7 @@ public class MineAPI extends JavaPlugin {
 	}
 
 	public void packetSend(PacketWrapper packetWrapper,
-			PacketCancellable cancellable, String receiverName) {
+			PacketCancellable cancellable, Player player) {
 		try {
 			for (Entry<PacketListener, List<Method>> listener : packetListeners
 					.entrySet()) {
@@ -145,7 +154,41 @@ public class MineAPI extends JavaPlugin {
 						try {
 							method.invoke(listener.getKey(),
 									new SendPacketEvent(packetWrapper,
-											cancellable, receiverName));
+											cancellable, player));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void pingPacketSend(PacketWrapper packetWrapper,
+			PacketCancellable cancellable) {
+		try {
+			for (Entry<PacketListener, List<Method>> listener : packetListeners
+					.entrySet()) {
+				for (Method method : listener.getValue()) {
+					if (!method.getParameterTypes()[0]
+							.equals(PacketPingSendEvent.class)) {
+						continue;
+					}
+
+					PacketHandler ann = method
+							.getAnnotation(PacketHandler.class);
+
+					if (ann.listenType() == PacketList.ALL
+							|| ann.listenType().getPacketName()
+									.equals(packetWrapper.getPacketName())) {
+
+						method.setAccessible(true);
+						try {
+							method.invoke(listener.getKey(),
+									new PacketPingSendEvent(packetWrapper,
+											cancellable));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -158,7 +201,7 @@ public class MineAPI extends JavaPlugin {
 	}
 
 	public void packetRecieve(PacketWrapper packetWrapper,
-			PacketCancellable cancellable, String receiverName) {
+			PacketCancellable cancellable, Player player) {
 		for (Entry<PacketListener, List<Method>> listener : packetListeners
 				.entrySet()) {
 			for (Method method : listener.getValue()) {
@@ -177,7 +220,36 @@ public class MineAPI extends JavaPlugin {
 					try {
 						method.invoke(listener.getKey(),
 								new RecievePacketEvent(packetWrapper,
-										cancellable, receiverName));
+										cancellable, player));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+	
+	public void pingPacketRecieve(PacketWrapper packetWrapper,
+			PacketCancellable cancellable) {
+		for (Entry<PacketListener, List<Method>> listener : packetListeners
+				.entrySet()) {
+			for (Method method : listener.getValue()) {
+				if (!method.getParameterTypes()[0]
+						.equals(PacketPingRecieveEvent.class)) {
+					continue;
+				}
+
+				PacketHandler ann = method.getAnnotation(PacketHandler.class);
+
+				if (ann.listenType() == PacketList.ALL
+						|| ann.listenType().getPacketName()
+								.equals(packetWrapper.getPacketName())) {
+
+					method.setAccessible(true);
+					try {
+						method.invoke(listener.getKey(),
+								new PacketPingRecieveEvent(packetWrapper,
+										cancellable));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
