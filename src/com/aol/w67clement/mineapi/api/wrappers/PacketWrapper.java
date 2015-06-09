@@ -6,6 +6,7 @@ import org.apache.commons.lang.Validate;
 
 import com.aol.w67clement.mineapi.MineAPI;
 import com.aol.w67clement.mineapi.api.Reflection;
+import com.aol.w67clement.mineapi.api.ReflectionAPI;
 import com.aol.w67clement.mineapi.enums.ParticleType;
 
 public class PacketWrapper {
@@ -20,7 +21,7 @@ public class PacketWrapper {
 		Validate.notNull(fieldName, "Field name cannot be null!");
 		Field field = null;
 		try {
-			field = Reflection.getField(this.packet.getClass(), fieldName, declared);
+			field = ReflectionAPI.getField(this.packet.getClass(), fieldName, declared);
 			field.setAccessible(true);
 			for (ParticleType type : ParticleType.values()) {
 				if (value.equals(type)) {
@@ -51,22 +52,23 @@ public class PacketWrapper {
 			throws NoSuchFieldException, SecurityException,
 			IllegalArgumentException, IllegalAccessException {
 		Validate.notNull(fieldName, "Field name cannot be null!");
-		return Reflection.getField(packet.getClass(), fieldName, declared).get(
+		return ReflectionAPI.getField(packet.getClass(), fieldName, declared).get(
 				packet);
 	}
 
 	public Field getField(String fieldname, boolean declared)
 			throws NoSuchFieldException, SecurityException {
-		return Reflection.getField(this.packet.getClass(), fieldname, declared);
+		return ReflectionAPI.getField(this.packet.getClass(), fieldname, declared);
 	}
 
 	public String getStringValue(String fieldName, boolean declared)
 			throws IllegalArgumentException, IllegalAccessException,
 			NoSuchFieldException, SecurityException {
 		Validate.notNull(fieldName, "Field name cannot be null!");
-		return Reflection.getStringValue(packet, fieldName, declared);
+		return ReflectionAPI.getStringValue(packet, fieldName, declared);
 	}
 
+	@Deprecated
 	public ParticleType getParticleValue(String fieldName, boolean declared)
 			throws NoSuchFieldException, SecurityException,
 			IllegalArgumentException, IllegalAccessException {

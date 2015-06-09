@@ -11,7 +11,7 @@ import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import com.aol.w67clement.mineapi.api.Reflection;
+import com.aol.w67clement.mineapi.api.ReflectionAPI;
 import com.aol.w67clement.mineapi.enums.PacketType;
 import com.aol.w67clement.mineapi.world.PacketWorldBorder;
 
@@ -51,25 +51,25 @@ public class PacketWorldBorder_v1_8_R3 implements PacketWorldBorder {
 				((CraftWorld) this.world).getHandle().getWorldBorder(),
 				EnumWorldBorderAction.INITIALIZE);
 		try {
-			Reflection.setValue(worldBorder,
-					Reflection.getField(worldBorder.getClass(), "e", true),
+			ReflectionAPI.setValue(worldBorder,
+					ReflectionAPI.getField(worldBorder.getClass(), "e", true),
 					this.radius);
-			Reflection.setValue(worldBorder,
-					Reflection.getField(worldBorder.getClass(), "c", true),
+			ReflectionAPI.setValue(worldBorder,
+					ReflectionAPI.getField(worldBorder.getClass(), "c", true),
 					this.center.getX());
-			Reflection.setValue(worldBorder,
-					Reflection.getField(worldBorder.getClass(), "d", true),
+			ReflectionAPI.setValue(worldBorder,
+					ReflectionAPI.getField(worldBorder.getClass(), "d", true),
 					this.center.getZ());
 			if (this.radiusTimeChanged) {
-				Reflection.setValue(worldBorder,
-						Reflection.getField(worldBorder.getClass(), "g", true),
+				ReflectionAPI.setValue(worldBorder,
+						ReflectionAPI.getField(worldBorder.getClass(), "g", true),
 						this.radiusTime);
 			}
-			Reflection.setValue(worldBorder,
-					Reflection.getField(worldBorder.getClass(), "i", true),
+			ReflectionAPI.setValue(worldBorder,
+					ReflectionAPI.getField(worldBorder.getClass(), "i", true),
 					this.warningDistance);
-			Reflection.setValue(worldBorder,
-					Reflection.getField(worldBorder.getClass(), "h", true),
+			ReflectionAPI.setValue(worldBorder,
+					ReflectionAPI.getField(worldBorder.getClass(), "h", true),
 					this.warningTime);
 		} catch (SecurityException e) {
 			e.printStackTrace();

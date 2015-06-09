@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import com.aol.w67clement.mineapi.api.Reflection;
+import com.aol.w67clement.mineapi.api.ReflectionAPI;
 import com.aol.w67clement.mineapi.enums.PacketType;
 import com.aol.w67clement.mineapi.tab.TabTitle;
 
@@ -44,8 +44,8 @@ public class TabTitle_v1_8_R3 implements TabTitle {
 				tabHeader);
 
 		try {
-			Reflection.setValue(tabTitlePacket,
-					Reflection.getField(tabTitlePacket.getClass(), "b", true),
+			ReflectionAPI.setValue(tabTitlePacket,
+					ReflectionAPI.getField(tabTitlePacket.getClass(), "b", true),
 					tabFooter);
 		} catch (Exception ex) {
 			ex.printStackTrace();

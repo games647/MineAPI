@@ -9,7 +9,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import com.aol.w67clement.mineapi.MineAPI;
-import com.aol.w67clement.mineapi.api.Reflection;
+import com.aol.w67clement.mineapi.api.ReflectionAPI;
 import com.aol.w67clement.mineapi.api.wrappers.ChatVisibilityWrapper;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
@@ -55,7 +55,7 @@ public class MC_Player_v1_8_R3 implements MC_Player {
 	@Override
 	public String getLangUsed() {
 		try {
-			return Reflection.getStringValue(this.player, "locale", true);
+			return ReflectionAPI.getStringValue(this.player, "locale", true);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			return "en_US";
@@ -82,7 +82,7 @@ public class MC_Player_v1_8_R3 implements MC_Player {
 	public MC_ChatVisibility getChatVisibility() {
 		try {
 			return ChatVisibilityWrapper
-					.makeMCChatVisibilityByEnumChatVisibility(Reflection
+					.makeMCChatVisibilityByEnumChatVisibility(ReflectionAPI
 							.getField(this.player.getClass(), "bR", true).get(
 									this.player));
 		} catch (IllegalArgumentException e) {

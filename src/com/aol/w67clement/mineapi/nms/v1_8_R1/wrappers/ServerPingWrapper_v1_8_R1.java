@@ -13,7 +13,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.craftbukkit.v1_8_R1.CraftServer;
 
-import com.aol.w67clement.mineapi.api.Reflection;
+import com.aol.w67clement.mineapi.api.ReflectionAPI;
 import com.aol.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.aol.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.mojang.authlib.GameProfile;
@@ -26,8 +26,8 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper {
 		if (ServerPing.class.equals(serverPing.getClass())) {
 			this.ping = (ServerPing) serverPing;
 		} else {
-			MinecraftServer server = (MinecraftServer) Reflection.getValue(
-					((CraftServer) Bukkit.getServer()), Reflection.getField(
+			MinecraftServer server = (MinecraftServer) ReflectionAPI.getValue(
+					((CraftServer) Bukkit.getServer()), ReflectionAPI.getField(
 							((CraftServer) Bukkit.getServer()).getClass(),
 							"console", true));
 			this.ping = server.aE();
@@ -59,8 +59,8 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper {
 		// ServerData
 		ServerPingServerData data = this.ping.c();
 		// Change version
-		Reflection.setValue(data,
-				Reflection.getField(data.getClass(), "a", true), version);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "a", true), version);
 		// Apply change
 		this.ping.setServerInfo(data);
 	}
@@ -75,8 +75,8 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper {
 		// ServerData
 		ServerPingServerData data = this.ping.c();
 		// Change version
-		Reflection.setValue(data,
-				Reflection.getField(data.getClass(), "b", true), protocol);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "b", true), protocol);
 		// Apply change
 		this.ping.setServerInfo(data);
 	}
@@ -91,8 +91,8 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper {
 		// ServerData
 		ServerPingPlayerSample data = this.ping.b();
 		// Change onlines players
-		Reflection.setValue(data,
-				Reflection.getField(data.getClass(), "a", true), onlines);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "a", true), onlines);
 		// Apply change
 		this.ping.setPlayerSample(data);
 	}
@@ -107,8 +107,8 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper {
 		// ServerData
 		ServerPingPlayerSample data = this.ping.b();
 		// Change maximum players
-		Reflection.setValue(data,
-				Reflection.getField(data.getClass(), "b", true), max);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "b", true), max);
 		// Apply change
 		this.ping.setPlayerSample(data);
 	}
@@ -137,8 +137,8 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper {
 		GameProfile[] temp = new GameProfile[] {};
 		GameProfile[] playerListArray = playerList.toArray(temp);
 		// Change the player list
-		Reflection.setValue(data,
-				Reflection.getField(data.getClass(), "c", true),
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "c", true),
 				playerListArray);
 		// Apply change
 		this.ping.setPlayerSample(data);
