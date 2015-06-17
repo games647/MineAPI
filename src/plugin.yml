@@ -2,8 +2,8 @@ name: MineAPI
 authors: [67clement]
 main: com.aol.w67clement.mineapi.MineAPI
 description: An API to make it easy some codes.
-website: http://www.bukkit.fr/index.php/topic/17149-mineapi/
-version: 1.5.1-pre1
+website: https://67clement.github.io/plugins/MineAPI
+version: 1.5.1
 
 commands:
   AdvancedVersion:
@@ -15,6 +15,7 @@ permissions:
     description: All permissions of MineAPI.
     default: op
     children:
+      mineapi.update_notifications: true
       mineapi.cmd.*: true
   mineapi.cmd.*:
     description: All permissions of MineAPI's commands.

@@ -4,22 +4,28 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 
 import com.aol.w67clement.mineapi.MineAPI;
 
 /**
- *  An Reflection API class make by 67clement
+ * An Reflection API class make by 67clement
+ * 
  * @author 67clement
- *
+ * 
  */
 public class ReflectionAPI {
 
 	/**
-	 *  Get an Field
-	 * @param clazz Class where is the Field.
-	 * @param fieldName Name of the Field.
-	 * @param declared Field is declared?
+	 * Get an Field
+	 * 
+	 * @param clazz
+	 *            Class where is the Field.
+	 * @param fieldName
+	 *            Name of the Field.
+	 * @param declared
+	 *            Field is declared?
 	 * @return The field.
 	 */
 	public static Field getField(Class<?> clazz, String fieldName,
@@ -38,10 +44,14 @@ public class ReflectionAPI {
 	}
 
 	/**
-	 *  Change the value of the Field.
-	 * @param obj Object where is the Field.
-	 * @param field The field
-	 * @param value The new value of the Field.
+	 * Change the value of the Field.
+	 * 
+	 * @param obj
+	 *            Object where is the Field.
+	 * @param field
+	 *            The field
+	 * @param value
+	 *            The new value of the Field.
 	 */
 	public static void setValue(Object obj, Field field, Object value) {
 		field.setAccessible(true);
@@ -147,6 +157,44 @@ public class ReflectionAPI {
 				| InvocationTargetException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	/**
+	 * Gets an Class in Nms' packages.
+	 * 
+	 * @param name
+	 *            Name of the class.
+	 * @return The class!
+	 */
+	public static Class<?> getNmsClass(String name) {
+		try {
+			return Class.forName("net.minecraft.server."
+					+ MineAPI.getServerVersion() + "." + name);
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	public static class NmsClass {
+
+		public static Class<?> getChatSerializerClass() {
+			return MineAPI.getServerVersion().equals("v1_8_R1") ? getNmsClass("ChatSerializer")
+					: getNmsClass("IChatBaseComponent.ChatSerializer");
+		}
+
+		public static Class<?> getIChatBaseComponentClass() {
+			return getNmsClass("IChatBaseComponent");
+		}
+
+		public static Class<?> getMinecraftServerClass() {
+			return getNmsClass("MinecraftServer");
+		}
+
+		public static Object getMinecraftServerObject() {
+			return getValue(Bukkit.getServer(),
+					getField(Bukkit.getServer().getClass(), "console", true));
 		}
 	}
 }

@@ -1,0 +1,3 @@
+#Configuration of MineAPI
+#Allow auto-update's notifications.
+AllowUpdateNotifications: true

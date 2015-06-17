@@ -11,7 +11,12 @@ import java.util.Map.Entry;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,9 +46,11 @@ public class MineAPI extends JavaPlugin {
 	public static ConsoleCommandSender console = Bukkit.getServer()
 			.getConsoleSender();
 	private static Map<PacketListener, List<Method>> packetListeners = new HashMap<PacketListener, List<Method>>();
+	private static MineAPI_AutoUpdater autoUpdater;
 	private static boolean isSpigot;
 	private static NmsManager nms;
 	private static ProtocolManager protocolManager;
+	private static MineAPIConfig config;
 
 	@Override
 	public void onLoad() {
@@ -66,25 +73,25 @@ public class MineAPI extends JavaPlugin {
 		console.sendMessage(PREFIX + ChatColor.GREEN + "Server is Spigot: "
 				+ ChatColor.RED + isSpigot);
 
-		//Version 1.8.R3
+		// Version 1.8.R3
 		if (getServerVersion().equals("v1_8_R3")) {
 			nms = new NmsManager_v1_8_R3();
 			protocolManager = new ProtocolManager_v1_8_R3(this);
 			this.getServer().getPluginManager()
 					.registerEvents(protocolManager, this);
-		//Version 1.8.R2
+			// Version 1.8.R2
 		} else if (getServerVersion().equals("v1_8_R2")) {
 			nms = new NmsManager_v1_8_R2();
 			protocolManager = new ProtocolManager_v1_8_R2(this);
 			this.getServer().getPluginManager()
 					.registerEvents(protocolManager, this);
-		//Version 1.8.R1
+			// Version 1.8.R1
 		} else if (getServerVersion().equals("v1_8_R1")) {
 			nms = new NmsManager_v1_8_R1();
 			protocolManager = new ProtocolManager_v1_8_R1(this);
 			this.getServer().getPluginManager()
 					.registerEvents(protocolManager, this);
-		//No valid version detected
+			// No valid version detected
 		} else {
 			console.sendMessage(PREFIX
 					+ "§4[Error] §3MineAPI §cis disabled: Your server was outdated!");
@@ -103,11 +110,64 @@ public class MineAPI extends JavaPlugin {
 					+ "Failed to load the commands!");
 		}
 
+		console.sendMessage(PREFIX + ChatColor.GREEN
+				+ "Starting load configuration...");
+		config = new MineAPIConfig(this);
+		console.sendMessage(PREFIX + ChatColor.GREEN
+				+ "Load configuration has finished successfully!");
+
+		console.sendMessage(PREFIX + ChatColor.GREEN
+				+ "Starting Auto-Updater (v1.0.1)...");
+		autoUpdater = new MineAPI_AutoUpdater(true, this);
+		if (autoUpdater.haveNewUpdate()) {
+			console.sendMessage(PREFIX + ChatColor.GREEN + "Update found: "
+					+ ChatColor.RED + "MineAPI v"
+					+ autoUpdater.getLastestVersion());
+			if (config.allowUpdateNotifications())
+				this.getServer().getPluginManager()
+						.registerEvents(new Listener() {
+
+							@EventHandler
+							public void onPlayerJoin(PlayerJoinEvent e) {
+								Player player = e.getPlayer();
+								if (player.hasPermission("mineapi.update_notifications")
+										|| player.isOp()) {
+									getNmsManager()
+											.getFancyMessage(
+													PREFIX
+															+ ChatColor.DARK_AQUA
+															+ "Update found: "
+															+ ChatColor.AQUA
+															+ "MineAPI v"
+															+ MineAPI.autoUpdater
+																	.getLastestVersion())
+											.send(player);
+									getNmsManager()
+											.getFancyMessage(
+													PREFIX
+															+ ChatColor.DARK_AQUA
+															+ "Download: ")
+											.then("https://67clement...MineAPI-"
+													+ MineAPI.autoUpdater
+															.getLastestVersion()
+													+ ".jar")
+											.addHoverMessage(
+													ChatColor.GREEN
+															+ "Click to open url to download the lastest MineAPI!")
+											.addLink(
+													MineAPI.autoUpdater
+															.getLatestLink())
+											.send(player);
+								}
+							}
+
+						}, this);
+		}
 	}
 
 	@Override
 	public void onDisable() {
-		//Disabling protocol manager
+		// Disabling protocol manager
 		if (protocolManager != null) {
 			protocolManager.disable();
 		}
@@ -165,7 +225,7 @@ public class MineAPI extends JavaPlugin {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void pingPacketSend(PacketWrapper packetWrapper,
 			PacketCancellable cancellable) {
 		try {
@@ -228,7 +288,7 @@ public class MineAPI extends JavaPlugin {
 			}
 		}
 	}
-	
+
 	public void pingPacketRecieve(PacketWrapper packetWrapper,
 			PacketCancellable cancellable) {
 		for (Entry<PacketListener, List<Method>> listener : packetListeners
@@ -279,6 +339,28 @@ public class MineAPI extends JavaPlugin {
 	 */
 	public static NmsManager getNmsManager() {
 		return nms;
+	}
+
+	private static class MineAPIConfig {
+
+		private MineAPI mineapi;
+		private File file;
+
+		public MineAPIConfig(MineAPI mineapi) {
+			this.mineapi = mineapi;
+			this.file = new File(mineapi.getDataFolder(), "config.yml");
+			if (!file.exists()) {
+				this.mineapi.saveResource("config.yml", true);
+			}
+		}
+
+		public FileConfiguration getConfig() {
+			return YamlConfiguration.loadConfiguration(this.file);
+		}
+
+		public boolean allowUpdateNotifications() {
+			return getConfig().getBoolean("AllowUpdateNotifications", true);
+		}
 	}
 }
 
