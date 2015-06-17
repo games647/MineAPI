@@ -122,7 +122,7 @@ public class MineAPI extends JavaPlugin {
 		if (autoUpdater.haveNewUpdate()) {
 			console.sendMessage(PREFIX + ChatColor.GREEN + "Update found: "
 					+ ChatColor.RED + "MineAPI v"
-					+ autoUpdater.getLastestVersion());
+					+ autoUpdater.getLatestVersion());
 			if (config.allowUpdateNotifications())
 				this.getServer().getPluginManager()
 						.registerEvents(new Listener() {
@@ -140,7 +140,7 @@ public class MineAPI extends JavaPlugin {
 															+ ChatColor.AQUA
 															+ "MineAPI v"
 															+ MineAPI.autoUpdater
-																	.getLastestVersion())
+																	.getLatestVersion())
 											.send(player);
 									getNmsManager()
 											.getFancyMessage(
@@ -149,11 +149,11 @@ public class MineAPI extends JavaPlugin {
 															+ "Download: ")
 											.then("https://67clement...MineAPI-"
 													+ MineAPI.autoUpdater
-															.getLastestVersion()
+															.getLatestVersion()
 													+ ".jar")
 											.addHoverMessage(
 													ChatColor.GREEN
-															+ "Click to open url to download the lastest MineAPI!")
+															+ "Click to open url to download the latest MineAPI!")
 											.addLink(
 													MineAPI.autoUpdater
 															.getLatestLink())

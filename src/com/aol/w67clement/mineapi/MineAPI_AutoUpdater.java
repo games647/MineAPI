@@ -9,7 +9,7 @@ import com.aol.w67clement.mineapi.utils.MineAPIUtils;
 
 public class MineAPI_AutoUpdater {
 
-	private File lastestVersionFile;
+	private File latestVersionFile;
 	private MineAPI mineapi;
 
 	public MineAPI_AutoUpdater(boolean allowUpdate, MineAPI mineapi) {
@@ -19,29 +19,29 @@ public class MineAPI_AutoUpdater {
 		file.mkdirs();
 		MineAPIUtils
 				.download(
-						"https://67clement.github.io/downloads/MineAPI_LastestVersion.txt",
+						"https://67clement.github.io/downloads/MineAPI_LatestVersion.txt",
 						file);
-		this.lastestVersionFile = file;
+		this.latestVersionFile = file;
 	}
 
 	public boolean haveNewUpdate() {
 		boolean newUpdate = false;
 		FileConfiguration config = YamlConfiguration
-				.loadConfiguration(this.lastestVersionFile);
-		if (config.contains("LastestVersion")) {
+				.loadConfiguration(this.latestVersionFile);
+		if (config.contains("LatestVersion")) {
 			if (!this.mineapi.getDescription().getVersion()
-					.equals(getLastestVersion())) {
+					.equals(getLatestVersion())) {
 				newUpdate = true;
 			}
 		}
 		return newUpdate;
 	}
 
-	public String getLastestVersion() {
+	public String getLatestVersion() {
 		String version = mineapi.getDescription().getVersion();
 		FileConfiguration config = YamlConfiguration
-				.loadConfiguration(this.lastestVersionFile);
-		if (config.contains("LastestVersion")) {
+				.loadConfiguration(this.latestVersionFile);
+		if (config.contains("LatestVersion")) {
 
 			return String.valueOf(config.get("LatestVersion", version));
 		}
@@ -50,16 +50,16 @@ public class MineAPI_AutoUpdater {
 
 	public String getLatestLink() {
 		FileConfiguration config = YamlConfiguration
-				.loadConfiguration(this.lastestVersionFile);
+				.loadConfiguration(this.latestVersionFile);
 		String webSite = null;
 		if (config.contains("Download")) {
 
 			webSite = config.getString("Download",
 					"https://67clement.github.io/downloads/MineAPI/MineAPI-"
-							+ getLastestVersion() + ".jar");
+							+ getLatestVersion() + ".jar");
 		} else {
 			webSite = "https://67clement.github.io/downloads/MineAPI/MineAPI-"
-					+ getLastestVersion() + ".jar";
+					+ getLatestVersion() + ".jar";
 		}
 		return webSite;
 	}
