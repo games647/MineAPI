@@ -20,11 +20,10 @@ import org.bukkit.plugin.InvalidDescriptionException;
 import org.yaml.snakeyaml.error.YAMLException;
 
 import com.aol.w67clement.mineapi.MineAPI;
-import com.aol.w67clement.mineapi.system.modules.java.JavaModule;
 
 public class ModuleLoader {
 
-	private HashMap<String, JavaModule> modules = new HashMap<String, JavaModule>();
+	private HashMap<String, Module> modules = new HashMap<String, Module>();
 
 	private ClassLoader loader;
 
@@ -32,13 +31,13 @@ public class ModuleLoader {
 		this.loader = loader;
 	}
 
-	public JavaModule loadModule(File file) throws InvalidModuleException {
+	public Module loadModule(File file) throws InvalidModuleException {
 		if (!file.exists()) {
 			throw new InvalidModuleException(new FileNotFoundException(
 					file.getPath() + " does not exist"));
 		}
 
-		ModuleDescription description = null;
+		ModuleInformations description = null;
 		try {
 			description = getDescription(file);
 			MineAPI.console
@@ -63,9 +62,9 @@ public class ModuleLoader {
 			Class<?> moduleClass = this.loader.loadClass(description.getMain());
 			Constructor<?> moduleConstructor = moduleClass
 					.getConstructor(new Class<?>[] {});
-			JavaModule obj = (JavaModule) moduleConstructor
+			Module obj = (Module) moduleConstructor
 					.newInstance(new Object[] {});
-			obj.setDescription(description);
+			obj.setModuleInformations(description);
 			modules.put(description.getName(), obj);
 			return obj;
 		} catch (ClassNotFoundException | NoSuchMethodException
@@ -90,7 +89,7 @@ public class ModuleLoader {
 		module.setEnabled(false);
 	}
 
-	public ModuleDescription getDescription(File file)
+	public ModuleInformations getDescription(File file)
 			throws InvalidDescriptionException {
 		Validate.notNull(file, "File cannot be null");
 
@@ -109,7 +108,7 @@ public class ModuleLoader {
 
 			stream = jar.getInputStream(entry);
 
-			return new ModuleDescription(stream);
+			return new ModuleInformations(stream);
 		} catch (IOException ex) {
 			throw new InvalidDescriptionException(ex);
 		} catch (YAMLException ex) {
@@ -130,7 +129,7 @@ public class ModuleLoader {
 		}
 	}
 
-	public HashMap<String, JavaModule> getModules() {
+	public HashMap<String, Module> getModules() {
 		return modules;
 	}
 }

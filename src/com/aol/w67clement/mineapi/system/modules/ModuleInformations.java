@@ -6,7 +6,7 @@ import java.util.Map;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.yaml.snakeyaml.Yaml;
 
-public class ModuleDescription {
+public class ModuleInformations {
 
 	private String name;
 	private String main;
@@ -15,7 +15,7 @@ public class ModuleDescription {
 	private String authors;
 	private String website;
 
-	public ModuleDescription(InputStream stream)
+	public ModuleInformations(InputStream stream)
 			throws InvalidDescriptionException {
 		loadMap(asMap(new Yaml().load(stream)));
 	}

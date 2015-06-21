@@ -236,11 +236,11 @@ public class MineAPICommand implements TabExecutor {
 						+ ChatColor.RED + module.getName());
 			}
 			sender.sendMessage("Version: " + ChatColor.GREEN
-					+ module.getModuleDescription().getVersion());
+					+ module.getModuleInformations().getVersion());
 			sender.sendMessage("Description: " + ChatColor.GREEN
-					+ module.getModuleDescription().getDescription());
+					+ module.getModuleInformations().getDescription());
 			sender.sendMessage("Author(s): " + ChatColor.GREEN
-					+ module.getModuleDescription().getAuthorsInLine());
+					+ module.getModuleInformations().getAuthorsInLine());
 			if (sender instanceof Player) {
 				MineAPI.getNmsManager()
 						.getFancyMessage("Website: ")
@@ -249,11 +249,11 @@ public class MineAPICommand implements TabExecutor {
 						.addHoverMessage(
 								ChatColor.GRAY
 										+ "Please click on this text to open the link.")
-						.addLink(module.getModuleDescription().getWebSite())
+						.addLink(module.getModuleInformations().getWebSite())
 						.send((Player) sender);
 			} else {
 				sender.sendMessage("Website: " + ChatColor.GREEN
-						+ module.getModuleDescription().getWebSite());
+						+ module.getModuleInformations().getWebSite());
 			}
 		} else {
 			sender.sendMessage(ChatColor.DARK_RED + "[Error]" + ChatColor.RED
