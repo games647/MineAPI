@@ -36,6 +36,24 @@ public class ReflectionAPI {
 					.getField(fieldName);
 			field.setAccessible(true);
 		} catch (NoSuchFieldException e) {
+			MineAPI.console
+					.sendMessage(MineAPI.PREFIX
+							+ ChatColor.DARK_RED
+							+ "[ERROR]"
+							+ ChatColor.RED
+							+ " Error in com.aol.w67clement.mineapi.api.ReflectionAPI:getField(Class<?>, String, boolean)");
+			MineAPI.console
+			.sendMessage(MineAPI.PREFIX
+					+ ChatColor.DARK_RED
+					+ "[ERROR]"
+					+ ChatColor.RED
+					+ " Value: clazz: " + clazz.getSimpleName() + " fieldName: " + fieldName + " declared: " + declared);
+			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+					+ "[ERROR]" + ChatColor.RED
+					+ " Exception: NoSuchFieldException, Message: "
+					+ ChatColor.DARK_RED + e.getMessage());
+			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 			e.printStackTrace();
 		} catch (SecurityException e) {
 			e.printStackTrace();
@@ -54,37 +72,40 @@ public class ReflectionAPI {
 	 *            The new value of the Field.
 	 */
 	public static void setValue(Object obj, Field field, Object value) {
-		field.setAccessible(true);
-		try {
-			field.set(obj, value);
-		} catch (IllegalArgumentException e) {
-			MineAPI.console
-					.sendMessage(MineAPI.PREFIX
-							+ ChatColor.DARK_RED
-							+ "[ERROR]"
-							+ ChatColor.RED
-							+ " Error in com.aol.w67clement.mineapi.api.Reflection:setValue(Object, Field, Object)");
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Exception: IllegalArgumentException, Message: "
-					+ ChatColor.DARK_RED + e.getMessage());
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			MineAPI.console
-					.sendMessage(MineAPI.PREFIX
-							+ ChatColor.DARK_RED
-							+ "[ERROR]"
-							+ ChatColor.RED
-							+ " Error in com.aol.w67clement.mineapi.api.Reflection:setValue(Object, Field, Object)");
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Exception: IllegalAccessException, Message: "
-					+ ChatColor.DARK_RED + e.getMessage());
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
-			e.printStackTrace();
+		if (field != null) {
+			if (!field.isAccessible())
+				field.setAccessible(true);
+			try {
+				field.set(obj, value);
+			} catch (IllegalArgumentException e) {
+				MineAPI.console
+						.sendMessage(MineAPI.PREFIX
+								+ ChatColor.DARK_RED
+								+ "[ERROR]"
+								+ ChatColor.RED
+								+ " Error in com.aol.w67clement.mineapi.api.Reflection:setValue(Object, Field, Object)");
+				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+						+ "[ERROR]" + ChatColor.RED
+						+ " Exception: IllegalArgumentException, Message: "
+						+ ChatColor.DARK_RED + e.getMessage());
+				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+						+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				MineAPI.console
+						.sendMessage(MineAPI.PREFIX
+								+ ChatColor.DARK_RED
+								+ "[ERROR]"
+								+ ChatColor.RED
+								+ " Error in com.aol.w67clement.mineapi.api.Reflection:setValue(Object, Field, Object)");
+				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+						+ "[ERROR]" + ChatColor.RED
+						+ " Exception: IllegalAccessException, Message: "
+						+ ChatColor.DARK_RED + e.getMessage());
+				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+						+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
+				e.printStackTrace();
+			}
 		}
 	}
 

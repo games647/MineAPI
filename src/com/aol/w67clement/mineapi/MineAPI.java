@@ -37,6 +37,8 @@ import com.aol.w67clement.mineapi.nms.v1_8_R2.NmsManager_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.ProtocolManager_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R3.NmsManager_v1_8_R3;
 import com.aol.w67clement.mineapi.nms.v1_8_R3.ProtocolManager_v1_8_R3;
+import com.aol.w67clement.mineapi.system.ModuleManager;
+import com.aol.w67clement.mineapi.system.modules.ModuleLoader;
 
 public class MineAPI extends JavaPlugin {
 
@@ -46,6 +48,7 @@ public class MineAPI extends JavaPlugin {
 	public static ConsoleCommandSender console = Bukkit.getServer()
 			.getConsoleSender();
 	private static Map<PacketListener, List<Method>> packetListeners = new HashMap<PacketListener, List<Method>>();
+	private static ModuleManager moduleManager;
 	private static MineAPI_AutoUpdater autoUpdater;
 	private static boolean isSpigot;
 	private static NmsManager nms;
@@ -98,6 +101,9 @@ public class MineAPI extends JavaPlugin {
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
+
+		console.sendMessage(PREFIX);
+		console.sendMessage(PREFIX);
 		console.sendMessage(PREFIX + ChatColor.GREEN
 				+ "Starting load commands...");
 		try {
@@ -105,11 +111,39 @@ public class MineAPI extends JavaPlugin {
 					new VersionCommand(this));
 			console.sendMessage(PREFIX + ChatColor.GREEN
 					+ "The commands was load successful!");
+			MineAPICommand mineAPICmd = new MineAPICommand(this);
+			this.getCommand("MineAPI").setExecutor(mineAPICmd);
+			this.getCommand("MineAPI").setTabCompleter(mineAPICmd);
 		} catch (Throwable ex) {
 			console.sendMessage(PREFIX + ChatColor.RED
 					+ "Failed to load the commands!");
 		}
 
+		console.sendMessage(PREFIX);
+		console.sendMessage(PREFIX);
+
+		// Module system
+		console.sendMessage(PREFIX + ChatColor.GREEN
+				+ "Starting load modules...");
+		moduleManager = new ModuleManager(new ModuleLoader(
+				this.getClassLoader()));
+
+		File folder = new File(this.getDataFolder(), "modules/");
+		if (folder.exists()) {
+			for (File file : folder.listFiles()) {
+				if (file.getName().endsWith(".jar") && file.isFile()) {
+					moduleManager.loadModule(file);
+				}
+			}
+
+			moduleManager.enableModules();
+		} else {
+			folder.mkdirs();
+		}
+
+		console.sendMessage(PREFIX);
+		console.sendMessage(PREFIX);
+		
 		console.sendMessage(PREFIX + ChatColor.GREEN
 				+ "Starting load configuration...");
 		config = new MineAPIConfig(this);
@@ -174,6 +208,11 @@ public class MineAPI extends JavaPlugin {
 		console.sendMessage(PREFIX + ChatColor.GREEN + "Disabling "
 				+ ChatColor.DARK_AQUA + "MineAPI" + ChatColor.GREEN + " v"
 				+ this.getDescription().getVersion());
+
+		// Disabling modules
+		if (!moduleManager.getModules().isEmpty()) {
+			moduleManager.disableModules();
+		}
 	}
 
 	public static void registerPacketListener(PacketListener listener, Plugin pl) {
@@ -339,6 +378,15 @@ public class MineAPI extends JavaPlugin {
 	 */
 	public static NmsManager getNmsManager() {
 		return nms;
+	}
+
+	/**
+	 * Gets the module Manager of MineAPI
+	 * 
+	 * @return A ModuleManager object.
+	 */
+	public static ModuleManager getModuleManager() {
+		return moduleManager;
 	}
 
 	private static class MineAPIConfig {
