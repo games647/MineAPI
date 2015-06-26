@@ -2,9 +2,12 @@ package com.aol.w67clement.mineapi.nms.v1_8_R2;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 
 import com.aol.w67clement.mineapi.api.wrappers.ServerPingWrapper;
+import com.aol.w67clement.mineapi.block.PacketBlockBreakAnimation;
+import com.aol.w67clement.mineapi.entity.animals.MC_Pig;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
@@ -12,9 +15,11 @@ import com.aol.w67clement.mineapi.message.ActionBarMessage;
 import com.aol.w67clement.mineapi.message.FancyMessage;
 import com.aol.w67clement.mineapi.message.Title;
 import com.aol.w67clement.mineapi.nms.NmsManager;
+import com.aol.w67clement.mineapi.nms.v1_8_R2.entity.MC_Pig_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.entity.MC_Player_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_in.ClientCommand_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.TabTitle_v1_8_R2;
+import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.block.PacketBlockBreakAnimation_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message.ActionBarMessage_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message.FancyMessage_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message.Title_v1_8_R2;
@@ -63,7 +68,29 @@ public class NmsManager_v1_8_R2 implements NmsManager {
 	public PacketWorldBorder getPacketWorldBorder(World world) {
 		return new PacketWorldBorder_v1_8_R2(world);
 	}
+	
+	/* Packet play out - Block */
 
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(MC_Player player, Location loc,
+			byte destroyStage) {
+		return new PacketBlockBreakAnimation_v1_8_R2(player, loc, destroyStage);
+	}
+
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(MC_Player player, int x, int y,
+			int z, byte destroyStage) {
+		return new PacketBlockBreakAnimation_v1_8_R2(player, x, y, z, destroyStage);
+	}
+
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player, Location loc,
+			byte destroyStage) {
+		return new PacketBlockBreakAnimation_v1_8_R2(player, loc, destroyStage);
+	}
+
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player, int x, int y,
+			int z, byte destroyStage) {
+		return new PacketBlockBreakAnimation_v1_8_R2(player, x, y, z, destroyStage);
+	}
+	
 	@Override
 	public ClientCommand getPacketPlayInClientCommand(
 			ClientCommandType commandType) {
@@ -73,6 +100,11 @@ public class NmsManager_v1_8_R2 implements NmsManager {
 	@Override
 	public MC_Player getMCPlayer(Player player) {
 		return new MC_Player_v1_8_R2(player);
+	}
+	
+	@Override
+	public MC_Pig getMCPig(Pig pig) {
+		return new MC_Pig_v1_8_R2(pig);
 	}
 
 	@Override

@@ -1,12 +1,26 @@
 package com.aol.w67clement.mineapi.nms.v1_8_R3.entity;
 
+import net.minecraft.server.v1_8_R3.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.TileEntityBeacon;
+import net.minecraft.server.v1_8_R3.TileEntityBrewingStand;
+import net.minecraft.server.v1_8_R3.TileEntityDispenser;
+import net.minecraft.server.v1_8_R3.TileEntityFurnace;
+import net.minecraft.server.v1_8_R3.TileEntityHopper;
 import net.minecraft.server.v1_8_R3.TileEntitySign;
 
+import org.bukkit.Chunk;
+import org.bukkit.block.Beacon;
+import org.bukkit.block.BrewingStand;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.aol.w67clement.mineapi.MineAPI;
 import com.aol.w67clement.mineapi.api.ReflectionAPI;
@@ -15,7 +29,7 @@ import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
 import com.aol.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.aol.w67clement.mineapi.message.FancyMessage;
-import com.aol.w67clement.mineapi.nms.v1_8_R2.play_in.ClientCommand_v1_8_R2;
+import com.aol.w67clement.mineapi.nms.v1_8_R3.play_in.ClientCommand_v1_8_R3;
 
 public class MC_Player_v1_8_R3 implements MC_Player {
 
@@ -26,11 +40,67 @@ public class MC_Player_v1_8_R3 implements MC_Player {
 	}
 
 	@Override
+	public void reset() {
+		this.player.reset();
+	}
+
+	@Override
+	public void sendChunkChange(Chunk chunk) {
+		this.player.chunkCoordIntPairQueue.add(new ChunkCoordIntPair(chunk
+				.getX(), chunk.getZ()));
+	}
+
+	@Override
 	public void respawn() {
 		if (getHandle().isDead())
-			new ClientCommand_v1_8_R2(
+			new ClientCommand_v1_8_R3(
 					ClientCommand.ClientCommandType.PERFORM_RESPAWN)
 					.send(this.player.getBukkitEntity());
+	}
+
+	@Override
+	public void openBook(ItemStack item) {
+		this.player.openBook(CraftItemStack.asNMSCopy(item));
+	}
+
+	@Override
+	public void openFurnace(Furnace furnace) {
+		TileEntityFurnace tileEntity = (TileEntityFurnace) ((CraftWorld) furnace
+				.getWorld()).getTileEntityAt(furnace.getX(), furnace.getY(),
+				furnace.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openBrewingStand(BrewingStand bStand) {
+		TileEntityBrewingStand tileEntity = (TileEntityBrewingStand) ((CraftWorld) bStand
+				.getWorld()).getTileEntityAt(bStand.getX(), bStand.getY(),
+				bStand.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openBeacon(Beacon beacon) {
+		TileEntityBeacon tileEntity = (TileEntityBeacon) ((CraftWorld) beacon
+				.getWorld()).getTileEntityAt(beacon.getX(), beacon.getY(),
+				beacon.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openDispenser(Dispenser dispenser) {
+		TileEntityDispenser tileEntity = (TileEntityDispenser) ((CraftWorld) dispenser
+				.getWorld()).getTileEntityAt(dispenser.getX(),
+				dispenser.getY(), dispenser.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openHopper(Hopper hopper) {
+		TileEntityHopper tileEntity = (TileEntityHopper) ((CraftWorld) hopper
+				.getWorld()).getTileEntityAt(hopper.getX(), hopper.getY(),
+				hopper.getZ());
+		this.player.openTileEntity(tileEntity);
 	}
 
 	@Override
@@ -50,6 +120,11 @@ public class MC_Player_v1_8_R3 implements MC_Player {
 	@Override
 	public int getPing() {
 		return this.player.ping;
+	}
+
+	@Override
+	public int getEntityId() {
+		return this.player.getId();
 	}
 
 	@Override
@@ -80,21 +155,9 @@ public class MC_Player_v1_8_R3 implements MC_Player {
 
 	@Override
 	public MC_ChatVisibility getChatVisibility() {
-		try {
-			return ChatVisibilityWrapper
-					.makeMCChatVisibilityByEnumChatVisibility(ReflectionAPI
-							.getField(this.player.getClass(), "bR", true).get(
-									this.player));
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return MC_ChatVisibility.FULL;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return MC_ChatVisibility.FULL;
-		} catch (SecurityException e) {
-			e.printStackTrace();
-			return MC_ChatVisibility.FULL;
-		}
+		return ChatVisibilityWrapper
+				.makeMCChatVisibilityByEnumChatVisibility(this.player
+						.getChatFlags());
 	}
 
 	@Override
@@ -132,4 +195,10 @@ public class MC_Player_v1_8_R3 implements MC_Player {
 		return this.player;
 	}
 
+	public void setAIDisabled(boolean ai) {
+	}
+
+	public boolean isAIDisabled() {
+		return false;
+	}
 }

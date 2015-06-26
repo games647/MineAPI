@@ -58,12 +58,7 @@ public class MineAPI extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		console.sendMessage(PREFIX + "§aLoading §3MineAPI");
-		File spigotConfig = new File("spigot.yml");
-		if (spigotConfig.exists()) {
-			isSpigot = true;
-		} else {
-			isSpigot = false;
-		}
+		isSpigot = this.getServer().getVersion().contains("Spigot");
 	}
 
 	@Override

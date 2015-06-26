@@ -1,12 +1,26 @@
 package com.aol.w67clement.mineapi.nms.v1_8_R2.entity;
 
+import net.minecraft.server.v1_8_R2.TileEntityBeacon;
+import net.minecraft.server.v1_8_R2.TileEntityBrewingStand;
+import net.minecraft.server.v1_8_R2.TileEntityDispenser;
+import net.minecraft.server.v1_8_R2.TileEntityFurnace;
+import net.minecraft.server.v1_8_R2.TileEntityHopper;
 import net.minecraft.server.v1_8_R2.EntityPlayer;
 import net.minecraft.server.v1_8_R2.TileEntitySign;
+import net.minecraft.server.v1_8_R2.ChunkCoordIntPair;
 
+import org.bukkit.Chunk;
+import org.bukkit.block.Beacon;
+import org.bukkit.block.BrewingStand;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
 import org.bukkit.block.Sign;
 import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import com.aol.w67clement.mineapi.MineAPI;
 import com.aol.w67clement.mineapi.api.ReflectionAPI;
@@ -26,16 +40,77 @@ public class MC_Player_v1_8_R2 implements MC_Player {
 	}
 
 	@Override
+	public void reset() {
+		this.player.reset();
+	}
+
+	@Override
 	public void respawn() {
 		if (getHandle().isDead())
 			new ClientCommand_v1_8_R2(
 					ClientCommand.ClientCommandType.PERFORM_RESPAWN)
 					.send(this.player.getBukkitEntity());
 	}
+	
+	@Override
+	public void sendChunkChange(Chunk chunk) {
+		this.player.chunkCoordIntPairQueue.add(new ChunkCoordIntPair(chunk
+				.getX(), chunk.getZ()));
+	}
+
+	@Override
+	public void openBook(ItemStack item) {
+		this.player.openBook(CraftItemStack.asNMSCopy(item));
+	}
+
+	@Override
+	public void openFurnace(Furnace furnace) {
+		TileEntityFurnace tileEntity = (TileEntityFurnace) ((CraftWorld) furnace
+				.getWorld()).getTileEntityAt(furnace.getX(), furnace.getY(),
+				furnace.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openBrewingStand(BrewingStand bStand) {
+		TileEntityBrewingStand tileEntity = (TileEntityBrewingStand) ((CraftWorld) bStand
+				.getWorld()).getTileEntityAt(bStand.getX(), bStand.getY(),
+				bStand.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openBeacon(Beacon beacon) {
+		TileEntityBeacon tileEntity = (TileEntityBeacon) ((CraftWorld) beacon
+				.getWorld()).getTileEntityAt(beacon.getX(), beacon.getY(),
+				beacon.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openDispenser(Dispenser dispenser) {
+		TileEntityDispenser tileEntity = (TileEntityDispenser) ((CraftWorld) dispenser
+				.getWorld()).getTileEntityAt(dispenser.getX(),
+				dispenser.getY(), dispenser.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
+
+	@Override
+	public void openHopper(Hopper hopper) {
+		TileEntityHopper tileEntity = (TileEntityHopper) ((CraftWorld) hopper
+				.getWorld()).getTileEntityAt(hopper.getX(), hopper.getY(),
+				hopper.getZ());
+		this.player.openTileEntity(tileEntity);
+	}
 
 	@Override
 	public int getPing() {
 		return this.player.ping;
+	}
+
+	@Override
+	public int getEntityId() {
+		return this.player.getId();
 	}
 
 	@Override
@@ -66,28 +141,16 @@ public class MC_Player_v1_8_R2 implements MC_Player {
 
 	@Override
 	public MC_ChatVisibility getChatVisibility() {
-		try {
-			return ChatVisibilityWrapper
-					.makeMCChatVisibilityByEnumChatVisibility(ReflectionAPI
-							.getField(this.player.getClass(), "bR", true).get(
-									this.player));
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-			return MC_ChatVisibility.FULL;
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-			return MC_ChatVisibility.FULL;
-		} catch (SecurityException e) {
-			e.printStackTrace();
-			return MC_ChatVisibility.FULL;
-		}
+		return ChatVisibilityWrapper
+				.makeMCChatVisibilityByEnumChatVisibility(this.player
+						.getChatFlags());
 	}
 
 	@Override
 	public Player getHandle() {
 		return this.player.getBukkitEntity();
 	}
-	
+
 	@Override
 	public Object getMC_Handle() {
 		return this.player;
@@ -130,6 +193,13 @@ public class MC_Player_v1_8_R2 implements MC_Player {
 				sign.getY(), sign.getZ());
 		tileEntitySign.isEditable = isEditable;
 		this.player.openSign(tileEntitySign);
+	}
+
+	public void setAIDisabled(boolean ai) {
+	}
+
+	public boolean isAIDisabled() {
+		return false;
 	}
 }
 

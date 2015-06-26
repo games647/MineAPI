@@ -1,12 +1,9 @@
 package com.aol.w67clement.mineapi.api.wrappers;
 
-import java.lang.reflect.Field;
-
 import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.aol.w67clement.mineapi.MineAPI;
-import com.aol.w67clement.mineapi.api.ReflectionAPI;
 
 /**
  * 
@@ -15,75 +12,98 @@ import com.aol.w67clement.mineapi.api.ReflectionAPI;
  */
 public class BlockPositionWrapper {
 
-	private Object blockPosition;
-	private Field x;
-	private Field y;
-	private Field z;
+	private int x;
+	private int y;
+	private int z;
 
 	public BlockPositionWrapper(Object blockPosition) {
 		if (blockPosition != null) {
 			if (blockPosition instanceof net.minecraft.server.v1_8_R1.BlockPosition) {
-				this.blockPosition = blockPosition;
+				net.minecraft.server.v1_8_R1.BlockPosition position = (net.minecraft.server.v1_8_R1.BlockPosition) blockPosition;
+				this.x = position.getX();
+				this.y = position.getY();
+				this.z = position.getZ();
 			} else if (blockPosition instanceof net.minecraft.server.v1_8_R2.BlockPosition) {
-				this.blockPosition = blockPosition;
+				net.minecraft.server.v1_8_R2.BlockPosition position = (net.minecraft.server.v1_8_R2.BlockPosition) blockPosition;
+				this.x = position.getX();
+				this.y = position.getY();
+				this.z = position.getZ();
 			} else if (blockPosition instanceof net.minecraft.server.v1_8_R3.BlockPosition) {
-				this.blockPosition = blockPosition;
+				net.minecraft.server.v1_8_R3.BlockPosition position = (net.minecraft.server.v1_8_R3.BlockPosition) blockPosition;
+				this.x = position.getX();
+				this.y = position.getY();
+				this.z = position.getZ();
 			} else {
-				this.defineDefaultBlockPosition();
+				this.x = 0;
+				this.y = 0;
+				this.z = 0;
 			}
 		} else {
-			this.defineDefaultBlockPosition();
-		}
-		this.x = ReflectionAPI.getField(blockPosition.getClass(), "a", true);
-		if (MineAPI.getServerVersion().equals("v1_8_R1")) {
-			this.y = ReflectionAPI.getField(blockPosition.getClass(), "b", true);
-			this.z = ReflectionAPI.getField(blockPosition.getClass(), "c", true);
-		} else if (MineAPI.getServerVersion().equals("v1_8_R2")
-				|| MineAPI.getServerVersion().equals("v1_8_R3")) {
-			this.y = ReflectionAPI.getField(blockPosition.getClass(), "c", true);
-			this.z = ReflectionAPI.getField(blockPosition.getClass(), "d", true);
+			this.x = 0;
+			this.y = 0;
+			this.z = 0;
 		}
 	}
 
-	private void defineDefaultBlockPosition() {
+	public static Object defineDefaultBlockPosition() {
 		if (MineAPI.getServerVersion().equals("v1_8_R1")) {
-			blockPosition = net.minecraft.server.v1_8_R1.BlockPosition.ZERO;
+			return net.minecraft.server.v1_8_R1.BlockPosition.ZERO;
 		} else if (MineAPI.getServerVersion().equals("v1_8_R2")) {
-			blockPosition = net.minecraft.server.v1_8_R3.BlockPosition.ZERO;
+			return net.minecraft.server.v1_8_R3.BlockPosition.ZERO;
 		} else if (MineAPI.getServerVersion().equals("v1_8_R3")) {
-			blockPosition = net.minecraft.server.v1_8_R3.BlockPosition.ZERO;
+			return net.minecraft.server.v1_8_R3.BlockPosition.ZERO;
 		}
+		return null;
 	}
 
 	public int getX() {
-		return (int) ReflectionAPI.getValue(blockPosition, this.x);
+		return this.x;
 	}
 
 	public void setX(int xValue) {
-		ReflectionAPI.setValue(this.blockPosition, this.x, xValue);
+		this.x = xValue;
 	}
 
 	public int getY() {
-		return (int) ReflectionAPI.getValue(blockPosition, this.y);
+		return this.y;
 	}
 
 	public void setY(int yValue) {
-		ReflectionAPI.setValue(this.blockPosition, this.y, yValue);
+		this.y = yValue;
 	}
 
 	public int getZ() {
-		return (int) ReflectionAPI.getValue(blockPosition, this.z);
+		return this.z;
 	}
 
 	public void setZ(int zValue) {
-		ReflectionAPI.setValue(this.blockPosition, this.z, zValue);
+		this.z = zValue;
+	}
+
+	public static BlockPositionWrapper fromLocation(Location loc) {
+		BlockPositionWrapper wrapper = new BlockPositionWrapper(
+				defineDefaultBlockPosition());
+		wrapper.setX(loc.getBlockX());
+		wrapper.setY(loc.getBlockY());
+		wrapper.setZ(loc.getBlockZ());
+		return wrapper;
 	}
 
 	public Location toLocation(World world) {
 		return new Location(world, getX(), getY(), getZ());
 	}
-	
+
 	public Object toBlockPosition() {
-		return this.blockPosition;
+		if (MineAPI.getServerVersion().equals("v1_8_R1")) {
+			return new net.minecraft.server.v1_8_R1.BlockPosition(this.x,
+					this.y, this.z);
+		} else if (MineAPI.getServerVersion().equals("v1_8_R2")) {
+			return new net.minecraft.server.v1_8_R2.BlockPosition(this.x,
+					this.y, this.z);
+		} else if (MineAPI.getServerVersion().equals("v1_8_R3")) {
+			return new net.minecraft.server.v1_8_R3.BlockPosition(this.x,
+					this.y, this.z);
+		}
+		return null;
 	}
 }
