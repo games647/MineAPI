@@ -201,6 +201,31 @@ public class MC_Player_v1_8_R2 implements MC_Player {
 	public boolean isAIDisabled() {
 		return false;
 	}
+
+	@Override
+	public void setCustomName(String customeName) {
+		// Lock
+	}
+
+	@Override
+	public String getCustomName() {
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return false;
+	}
+
+	@Override
+	public void setCustomNameVisible(boolean visible) {
+		// Lock
+	}
+
+	@Override
+	public boolean getCustomNameVisible() {
+		return false;
+	}
 }
 
 // End class of Minecraft Player

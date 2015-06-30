@@ -32,20 +32,20 @@ import com.aol.w67clement.mineapi.api.wrappers.PacketWrapper;
 import com.aol.w67clement.mineapi.nms.ProtocolManager;
 
 public class ProtocolManager_v1_8_R2 implements ProtocolManager {
-	
+
 	private MineAPI mineapi;
-	
+
 	private Field getConsole;
 	private Field q;
 	private Field h;
 
 	private HashMap<String, Channel> channels = new HashMap<String, Channel>();
 	private List<Channel> injectedChannels = new ArrayList<Channel>();
-	
+
 	@SuppressWarnings("deprecation")
 	public ProtocolManager_v1_8_R2(MineAPI mineapi) {
 		this.mineapi = mineapi;
-		
+
 		try {
 			getConsole = CraftServer.class.getDeclaredField("console");
 			getConsole.setAccessible(true);
@@ -56,12 +56,12 @@ public class ProtocolManager_v1_8_R2 implements ProtocolManager {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+
 		for (Player player : Bukkit.getOnlinePlayers()) {
 			this.injectPlayer(player);
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void disable() {
@@ -72,16 +72,18 @@ public class ProtocolManager_v1_8_R2 implements ProtocolManager {
 			}
 		}
 	}
-	
+
 	@EventHandler
 	public void onJoin(PlayerJoinEvent e) {
 		this.injectPlayer(e.getPlayer());
 	}
-	
-	@EventHandler
-	public void onPing(ServerListPingEvent event) throws IllegalArgumentException, IllegalAccessException {
 
-		MinecraftServer server = (MinecraftServer) getConsole.get(this.mineapi.getServer());
+	@EventHandler
+	public void onPing(ServerListPingEvent event)
+			throws IllegalArgumentException, IllegalAccessException {
+
+		MinecraftServer server = (MinecraftServer) getConsole.get(this.mineapi
+				.getServer());
 		ServerConnection connection = (ServerConnection) this.q.get(server);
 		@SuppressWarnings("unchecked")
 		List<NetworkManager> list = (List<NetworkManager>) h.get(connection);
@@ -97,75 +99,90 @@ public class ProtocolManager_v1_8_R2 implements ProtocolManager {
 			Channel channel = ep.playerConnection.networkManager.k;
 			channels.put(p.getName(), channel);
 
-			channel.pipeline().addBefore("packet_handler", "MineAPI", new ChannelDuplexHandler() {
+			channel.pipeline().addBefore("packet_handler", "MineAPI",
+					new ChannelDuplexHandler() {
 
-				@SuppressWarnings("rawtypes")
-				@Override
-				public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-					PacketCancellable cancel = new PacketCancellable();
-					mineapi.packetSend(new PacketWrapper((Packet) msg), cancel, p);
-					if (cancel.isCancelled()) {
-						return;
-					}
-					super.write(ctx, msg, promise);
-				}
+						@SuppressWarnings("rawtypes")
+						@Override
+						public void write(ChannelHandlerContext ctx,
+								Object msg, ChannelPromise promise)
+								throws Exception {
+							PacketCancellable cancel = new PacketCancellable();
+							mineapi.packetSend(new PacketWrapper((Packet) msg),
+									cancel, p);
+							if (cancel.isCancelled()) {
+								return;
+							}
+							super.write(ctx, msg, promise);
+						}
 
-				@SuppressWarnings("rawtypes")
-				@Override
-				public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-					PacketCancellable cancel = new PacketCancellable();
-					mineapi.packetRecieve(new PacketWrapper((Packet) msg), cancel, p);
-					if (cancel.isCancelled()) {
-						return;
-					}
-					super.channelRead(ctx, msg);
-				}
-			});
+						@SuppressWarnings("rawtypes")
+						@Override
+						public void channelRead(ChannelHandlerContext ctx,
+								Object msg) throws Exception {
+							PacketCancellable cancel = new PacketCancellable();
+							mineapi.packetRecieve(new PacketWrapper(
+									(Packet) msg), cancel, p);
+							if (cancel.isCancelled()) {
+								return;
+							}
+							super.channelRead(ctx, msg);
+						}
+					});
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	
-	private void injectConnection(NetworkManager manager) throws IllegalArgumentException, IllegalAccessException {
-		Channel channel = manager.k;
+
+	private void injectConnection(NetworkManager manager)
+			throws IllegalArgumentException, IllegalAccessException {
+		final Channel channel = manager.k;
 
 		if (this.injectedChannels.contains(channel)) {
 			return;
 		}
 		this.injectedChannels.add(channel);
 
-		channel.pipeline().addBefore("packet_handler", "MineAPI Ping", new ChannelDuplexHandler() {
+		channel.pipeline().addBefore("packet_handler", "MineAPI Ping",
+				new ChannelDuplexHandler() {
 
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-				if (!msg.getClass().getSimpleName().startsWith("PacketStatus")) {
-					super.write(ctx, msg, promise);
-					return;
-				}
-				PacketCancellable cancel = new PacketCancellable();
-				mineapi.pingPacketSend(new PacketWrapper((Packet) msg), cancel);
-				if (cancel.isCancelled()) {
-					return;
-				}
-				super.write(ctx, msg, promise);
-			}
+					@SuppressWarnings("rawtypes")
+					@Override
+					public void write(ChannelHandlerContext ctx, Object msg,
+							ChannelPromise promise) throws Exception {
+						if (!msg.getClass().getSimpleName()
+								.startsWith("PacketStatus")) {
+							super.write(ctx, msg, promise);
+							return;
+						}
+						PacketCancellable cancel = new PacketCancellable();
+						mineapi.pingPacketSend(new PacketWrapper((Packet) msg),
+								cancel, channel.remoteAddress().toString());
+						if (cancel.isCancelled()) {
+							return;
+						}
+						super.write(ctx, msg, promise);
+					}
 
-			@SuppressWarnings("rawtypes")
-			@Override
-			public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-				if (!msg.getClass().getSimpleName().startsWith("PacketStatus")) {
-					super.channelRead(ctx, msg);
-					return;
-				}
-				PacketCancellable cancel = new PacketCancellable();
-				mineapi.pingPacketRecieve(new PacketWrapper((Packet) msg), cancel);
-				if (cancel.isCancelled()) {
-					return;
-				}
-				super.channelRead(ctx, msg);
-			}
-		});
+					@SuppressWarnings("rawtypes")
+					@Override
+					public void channelRead(ChannelHandlerContext ctx,
+							Object msg) throws Exception {
+						if (!msg.getClass().getSimpleName()
+								.startsWith("PacketStatus")) {
+							super.channelRead(ctx, msg);
+							return;
+						}
+						PacketCancellable cancel = new PacketCancellable();
+						mineapi.pingPacketRecieve(new PacketWrapper(
+								(Packet) msg), cancel, channel.remoteAddress()
+								.toString());
+						if (cancel.isCancelled()) {
+							return;
+						}
+						super.channelRead(ctx, msg);
+					}
+				});
 	}
 }

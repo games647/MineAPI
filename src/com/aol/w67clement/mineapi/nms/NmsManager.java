@@ -1,15 +1,21 @@
 package com.aol.w67clement.mineapi.nms;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 import com.aol.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.aol.w67clement.mineapi.block.PacketBlockBreakAnimation;
+import com.aol.w67clement.mineapi.block.PacketBlockChange;
 import com.aol.w67clement.mineapi.entity.animals.MC_Pig;
+import com.aol.w67clement.mineapi.entity.monster.MC_EntityEnderman;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
+import com.aol.w67clement.mineapi.entity.villager.MC_Villager;
 import com.aol.w67clement.mineapi.message.ActionBarMessage;
 import com.aol.w67clement.mineapi.message.FancyMessage;
 import com.aol.w67clement.mineapi.message.Title;
@@ -82,12 +88,26 @@ public interface NmsManager {
 	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(
 			Player player, int x, int y, int z, byte destroyStage);
 
+	public PacketBlockChange getPacketBlockChange(Material material,
+			Location loc);
+
+	public PacketBlockChange getPacketBlockChange(Material material, int data,
+			Location loc);
+
+	public PacketBlockChange getPacketBlockChange(Material material, int x,
+			int y, int z);
+
+	public PacketBlockChange getPacketBlockChange(Material material, int data,
+			int x, int y, int z);
+
 	/* PACKET PLAY IN */
 
 	public ClientCommand getPacketPlayInClientCommand(
 			ClientCommand.ClientCommandType commandType);
 
 	/* MC ENTITY */
+
+	public MC_EntityEnderman getMC_EntityEnderman(Enderman enderman);
 
 	/**
 	 * Get a MC_Player, MC_Player is a advanced Player interface.
@@ -97,8 +117,10 @@ public interface NmsManager {
 	 * @return A new MC_Player Object
 	 */
 	public MC_Player getMCPlayer(Player player);
-	
+
 	public MC_Pig getMCPig(Pig pig);
+
+	public MC_Villager getMCVillager(Villager villager);
 
 	/* WRAPPERS */
 

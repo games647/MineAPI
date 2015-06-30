@@ -1,66 +1,52 @@
 package com.aol.w67clement.mineapi;
 
-import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLConnection;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import com.aol.w67clement.mineapi.utils.MineAPIUtils;
-
 public class MineAPI_AutoUpdater {
 
-	private File latestVersionFile;
-	private MineAPI mineapi;
+	private String latestVersion;
+	private String version;
+	private String latestlink;
 
 	public MineAPI_AutoUpdater(boolean allowUpdate, MineAPI mineapi) {
-		this.mineapi = mineapi;
-		File file = new File(this.mineapi.getDataFolder(),
-				"temp/MineAPI_LatestVersion.txt");
-		file.mkdirs();
-		MineAPIUtils
-				.download(
-						"https://67clement.github.io/downloads/MineAPI_LatestVersion.txt",
-						file);
-		this.latestVersionFile = file;
+		this.version = mineapi.getDescription().getVersion();
 	}
 
 	public boolean haveNewUpdate() {
-		boolean newUpdate = false;
-		FileConfiguration config = YamlConfiguration
-				.loadConfiguration(this.latestVersionFile);
-		if (config.contains("LatestVersion")) {
-			if (!this.mineapi.getDescription().getVersion()
-					.equals(getLatestVersion())) {
-				newUpdate = true;
+		URLConnection connection;
+		try {
+			// Open connection
+			connection = new URL("https://67clement.github.io/downloads/MineAPI_LatestVersion.txt").openConnection();
+			connection.addRequestProperty("User-Agent", "MineAPI");
+			// Read lines
+			@SuppressWarnings("deprecation")
+			FileConfiguration config = YamlConfiguration.loadConfiguration(connection.getInputStream());
+			// Version found
+			latestVersion = config.getString("LatestVersion", this.version);
+			latestlink = config.getString("Download", "");
+			// Check update;
+			if (!latestVersion.equals(this.version)) {
+				return true;
+			} else {
+				return false;
 			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return newUpdate;
+		this.latestVersion = version;
+		return false;
 	}
 
 	public String getLatestVersion() {
-		String version = mineapi.getDescription().getVersion();
-		FileConfiguration config = YamlConfiguration
-				.loadConfiguration(this.latestVersionFile);
-		if (config.contains("LatestVersion")) {
-
-			return String.valueOf(config.get("LatestVersion", version));
-		}
-		return version;
+		return this.latestVersion;
 	}
 
 	public String getLatestLink() {
-		FileConfiguration config = YamlConfiguration
-				.loadConfiguration(this.latestVersionFile);
-		String webSite = null;
-		if (config.contains("Download")) {
-
-			webSite = config.getString("Download",
-					"https://67clement.github.io/downloads/MineAPI/MineAPI-"
-							+ getLatestVersion() + ".jar");
-		} else {
-			webSite = "https://67clement.github.io/downloads/MineAPI/MineAPI-"
-					+ getLatestVersion() + ".jar";
-		}
-		return webSite;
+		return latestlink;
 	}
 }

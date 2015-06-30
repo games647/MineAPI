@@ -51,7 +51,7 @@ public class MC_Player_v1_8_R1 implements MC_Player {
 					ClientCommand.ClientCommandType.PERFORM_RESPAWN).send(this
 					.getHandle());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public void sendChunkChange(Chunk chunk) {
@@ -200,6 +200,31 @@ public class MC_Player_v1_8_R1 implements MC_Player {
 	}
 
 	public boolean isAIDisabled() {
+		return false;
+	}
+
+	@Override
+	public void setCustomName(String customeName) {
+		// Lock
+	}
+
+	@Override
+	public String getCustomName() {
+		return null;
+	}
+
+	@Override
+	public boolean hasCustomName() {
+		return false;
+	}
+
+	@Override
+	public void setCustomNameVisible(boolean visible) {
+		// Lock
+	}
+
+	@Override
+	public boolean getCustomNameVisible() {
 		return false;
 	}
 }

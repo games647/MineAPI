@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import com.aol.w67clement.mineapi.MineAPI;
+import com.aol.w67clement.mineapi.api.ReflectionAPI;
 
 /**
  * 
@@ -18,17 +19,21 @@ public class BlockPositionWrapper {
 
 	public BlockPositionWrapper(Object blockPosition) {
 		if (blockPosition != null) {
-			if (blockPosition instanceof net.minecraft.server.v1_8_R1.BlockPosition) {
+			Class<?> clazz = blockPosition.getClass();
+			if (MineAPI.getServerVersion().equals("v1_8_R1")
+					&& clazz.equals(ReflectionAPI.getNmsClass("BlockPosition"))) {
 				net.minecraft.server.v1_8_R1.BlockPosition position = (net.minecraft.server.v1_8_R1.BlockPosition) blockPosition;
 				this.x = position.getX();
 				this.y = position.getY();
 				this.z = position.getZ();
-			} else if (blockPosition instanceof net.minecraft.server.v1_8_R2.BlockPosition) {
+			} else if (MineAPI.getServerVersion().equals("v1_8_R2")
+					&& clazz.equals(ReflectionAPI.getNmsClass("BlockPosition"))) {
 				net.minecraft.server.v1_8_R2.BlockPosition position = (net.minecraft.server.v1_8_R2.BlockPosition) blockPosition;
 				this.x = position.getX();
 				this.y = position.getY();
 				this.z = position.getZ();
-			} else if (blockPosition instanceof net.minecraft.server.v1_8_R3.BlockPosition) {
+			} else if (MineAPI.getServerVersion().equals("v1_8_R3")
+					&& clazz.equals(ReflectionAPI.getNmsClass("BlockPosition"))) {
 				net.minecraft.server.v1_8_R3.BlockPosition position = (net.minecraft.server.v1_8_R3.BlockPosition) blockPosition;
 				this.x = position.getX();
 				this.y = position.getY();
@@ -49,7 +54,7 @@ public class BlockPositionWrapper {
 		if (MineAPI.getServerVersion().equals("v1_8_R1")) {
 			return net.minecraft.server.v1_8_R1.BlockPosition.ZERO;
 		} else if (MineAPI.getServerVersion().equals("v1_8_R2")) {
-			return net.minecraft.server.v1_8_R3.BlockPosition.ZERO;
+			return net.minecraft.server.v1_8_R2.BlockPosition.ZERO;
 		} else if (MineAPI.getServerVersion().equals("v1_8_R3")) {
 			return net.minecraft.server.v1_8_R3.BlockPosition.ZERO;
 		}

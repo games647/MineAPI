@@ -1,11 +1,13 @@
 package com.aol.w67clement.mineapi.api;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 import com.aol.w67clement.mineapi.MineAPI;
 
@@ -42,12 +44,10 @@ public class ReflectionAPI {
 							+ "[ERROR]"
 							+ ChatColor.RED
 							+ " Error in com.aol.w67clement.mineapi.api.ReflectionAPI:getField(Class<?>, String, boolean)");
-			MineAPI.console
-			.sendMessage(MineAPI.PREFIX
-					+ ChatColor.DARK_RED
-					+ "[ERROR]"
-					+ ChatColor.RED
-					+ " Value: clazz: " + clazz.getSimpleName() + " fieldName: " + fieldName + " declared: " + declared);
+			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+					+ "[ERROR]" + ChatColor.RED + " Value: clazz: "
+					+ clazz.getSimpleName() + " fieldName: " + fieldName
+					+ " declared: " + declared);
 			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
 					+ "[ERROR]" + ChatColor.RED
 					+ " Exception: NoSuchFieldException, Message: "
@@ -160,6 +160,10 @@ public class ReflectionAPI {
 		return str;
 	}
 
+	/*
+	 * METHODS
+	 */
+
 	public static Method getMethod(Object obj, String name,
 			Class<?>... parameterTypes) {
 		try {
@@ -181,6 +185,63 @@ public class ReflectionAPI {
 		}
 	}
 
+	/*
+	 * CONSTRUCTOR
+	 */
+
+	public static Constructor<?> getConstructor(Class<?> clazz,
+			Class<?>... arguments) {
+		try {
+			return clazz.getConstructor(arguments);
+		} catch (NoSuchMethodException e) {
+			MineAPI.console
+					.sendMessage(MineAPI.PREFIX
+							+ ChatColor.DARK_RED
+							+ "[ERROR]"
+							+ ChatColor.RED
+							+ " Error in com.aol.w67clement.mineapi.api.ReflectionAPI:getContructor(Class<?>, Class<?> ...)");
+			String argumentsType = "";
+			for (int i = 0; i < arguments.length; i++) {
+				if (i + 1 == arguments.length) {
+					argumentsType = argumentsType
+							+ arguments[i].getSimpleName();
+				} else {
+					argumentsType = argumentsType
+							+ arguments[i].getSimpleName() + ", ";
+				}
+			}
+			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+					+ "[ERROR]" + ChatColor.RED + " Value: clazz: "
+					+ clazz.getSimpleName() + " argumentsType: "
+					+ argumentsType);
+			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+					+ "[ERROR]" + ChatColor.RED
+					+ " Exception: NoSuchMethodException, Message: "
+					+ ChatColor.DARK_RED + e.getMessage());
+			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
+					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		}
+		return clazz.getConstructors()[0];
+	}
+
+	public static Object newInstance(Constructor<?> constructor,
+			Object... arguments) {
+		try {
+			return constructor.newInstance(arguments);
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	/*
+	 * NMS CLASS
+	 */
+
 	/**
 	 * Gets an Class in Nms' packages.
 	 * 
@@ -195,6 +256,17 @@ public class ReflectionAPI {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public static String checkVersionClass(Class<?> clazz) {
+		Package clazzPackage = clazz.getPackage();
+		if (clazzPackage.getName().startsWith("org.bukkit.craftbukkit.")) {
+			return clazzPackage.getName().substring(23, 30);
+		} else if (clazzPackage.getName().startsWith("net.minecraft.server.")) {
+			return clazzPackage.getName().substring(21, 28);
+		} else {
+			return "Unknown";
 		}
 	}
 
@@ -216,6 +288,24 @@ public class ReflectionAPI {
 		public static Object getMinecraftServerObject() {
 			return getValue(Bukkit.getServer(),
 					getField(Bukkit.getServer().getClass(), "console", true));
+		}
+
+		public static Object getEntityPlayerByPlayer(Player player) {
+			return MineAPI.getNmsManager().getMCPlayer(player).getMC_Handle();
+		}
+
+		public static Object getPlayerConnectionByPlayer(Player player) {
+			Object nmsPlayer = getEntityPlayerByPlayer(player);
+			return ReflectionAPI.getValue(nmsPlayer, ReflectionAPI.getField(
+					nmsPlayer.getClass(), "playerConnection", false));
+		}
+
+		public static void sendPacket(Player player, Object obj) {
+			Object playerConnection = getPlayerConnectionByPlayer(player);
+			ReflectionAPI.invokeMethod(playerConnection, ReflectionAPI
+					.getMethod(playerConnection, "sendPacket",
+							new Class<?>[] { getNmsClass("Packet") }),
+					new Object[] { obj });
 		}
 	}
 }

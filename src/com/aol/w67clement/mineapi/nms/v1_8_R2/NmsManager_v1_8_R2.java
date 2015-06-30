@@ -1,25 +1,34 @@
 package com.aol.w67clement.mineapi.nms.v1_8_R2;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 import com.aol.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.aol.w67clement.mineapi.block.PacketBlockBreakAnimation;
+import com.aol.w67clement.mineapi.block.PacketBlockChange;
 import com.aol.w67clement.mineapi.entity.animals.MC_Pig;
+import com.aol.w67clement.mineapi.entity.monster.MC_EntityEnderman;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand;
 import com.aol.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.aol.w67clement.mineapi.entity.player.MC_Player;
+import com.aol.w67clement.mineapi.entity.villager.MC_Villager;
 import com.aol.w67clement.mineapi.message.ActionBarMessage;
 import com.aol.w67clement.mineapi.message.FancyMessage;
 import com.aol.w67clement.mineapi.message.Title;
 import com.aol.w67clement.mineapi.nms.NmsManager;
+import com.aol.w67clement.mineapi.nms.v1_8_R2.entity.MC_EntityEnderman_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.entity.MC_Pig_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.entity.MC_Player_v1_8_R2;
+import com.aol.w67clement.mineapi.nms.v1_8_R2.entity.MC_Villager_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_in.ClientCommand_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.TabTitle_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.block.PacketBlockBreakAnimation_v1_8_R2;
+import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.block.PacketBlockChange_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message.ActionBarMessage_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message.FancyMessage_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.play_out.message.Title_v1_8_R2;
@@ -91,10 +100,35 @@ public class NmsManager_v1_8_R2 implements NmsManager {
 		return new PacketBlockBreakAnimation_v1_8_R2(player, x, y, z, destroyStage);
 	}
 	
+	public PacketBlockChange getPacketBlockChange(Material material,
+			Location loc) {
+		return new PacketBlockChange_v1_8_R2(material, loc);
+	}
+
+	public PacketBlockChange getPacketBlockChange(Material material, int data,
+			Location loc) {
+		return new PacketBlockChange_v1_8_R2(material, data, loc);
+	}
+
+	public PacketBlockChange getPacketBlockChange(Material material, int x,
+			int y, int z) {
+		return new PacketBlockChange_v1_8_R2(material, x, y, z);
+	}
+
+	public PacketBlockChange getPacketBlockChange(Material material, int data,
+			int x, int y, int z) {
+		return new PacketBlockChange_v1_8_R2(material, data, x, y, z);
+	}
+	
 	@Override
 	public ClientCommand getPacketPlayInClientCommand(
 			ClientCommandType commandType) {
 		return new ClientCommand_v1_8_R2(commandType);
+	}
+	
+	@Override
+	public MC_EntityEnderman getMC_EntityEnderman(Enderman enderman) {
+		return new MC_EntityEnderman_v1_8_R2(enderman);
 	}
 
 	@Override
@@ -105,6 +139,11 @@ public class NmsManager_v1_8_R2 implements NmsManager {
 	@Override
 	public MC_Pig getMCPig(Pig pig) {
 		return new MC_Pig_v1_8_R2(pig);
+	}
+	
+	@Override
+	public MC_Villager getMCVillager(Villager villager) {
+		return new MC_Villager_v1_8_R2(villager);
 	}
 
 	@Override

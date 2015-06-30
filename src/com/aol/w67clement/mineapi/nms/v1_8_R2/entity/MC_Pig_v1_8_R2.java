@@ -7,22 +7,13 @@ import org.bukkit.entity.Pig;
 
 import com.aol.w67clement.mineapi.entity.animals.MC_Pig;
 
-public class MC_Pig_v1_8_R2 implements MC_Pig {
+public class MC_Pig_v1_8_R2 extends MC_EntityAgeable_v1_8_R2 implements MC_Pig {
 
 	private EntityPig pig;
 
 	public MC_Pig_v1_8_R2(Pig pig) {
+		super(pig);
 		this.pig = ((CraftPig) pig).getHandle();
-	}
-
-	@Override
-	public void setAIDisabled(boolean ai) {
-		this.pig.getDataWatcher().watch(15, Byte.valueOf((byte)(ai ? 1 : 0)));
-	}
-
-	@Override
-	public boolean isAIDisabled() {
-		return this.pig.ce();
 	}
 
 	@Override

@@ -146,7 +146,7 @@ public class MineAPI extends JavaPlugin {
 				+ "Load configuration has finished successfully!");
 
 		console.sendMessage(PREFIX + ChatColor.GREEN
-				+ "Starting Auto-Updater (v1.0.1)...");
+				+ "Starting Auto-Updater (v1.0.2)...");
 		autoUpdater = new MineAPI_AutoUpdater(true, this);
 		if (autoUpdater.haveNewUpdate()) {
 			console.sendMessage(PREFIX + ChatColor.GREEN + "Update found: "
@@ -261,7 +261,7 @@ public class MineAPI extends JavaPlugin {
 	}
 
 	public void pingPacketSend(PacketWrapper packetWrapper,
-			PacketCancellable cancellable) {
+			PacketCancellable cancellable, String ip) {
 		try {
 			for (Entry<PacketListener, List<Method>> listener : packetListeners
 					.entrySet()) {
@@ -282,7 +282,7 @@ public class MineAPI extends JavaPlugin {
 						try {
 							method.invoke(listener.getKey(),
 									new PacketPingSendEvent(packetWrapper,
-											cancellable));
+											cancellable, ip));
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -324,7 +324,7 @@ public class MineAPI extends JavaPlugin {
 	}
 
 	public void pingPacketRecieve(PacketWrapper packetWrapper,
-			PacketCancellable cancellable) {
+			PacketCancellable cancellable, String ip) {
 		for (Entry<PacketListener, List<Method>> listener : packetListeners
 				.entrySet()) {
 			for (Method method : listener.getValue()) {
@@ -343,7 +343,7 @@ public class MineAPI extends JavaPlugin {
 					try {
 						method.invoke(listener.getKey(),
 								new PacketPingRecieveEvent(packetWrapper,
-										cancellable));
+										cancellable, ip));
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
