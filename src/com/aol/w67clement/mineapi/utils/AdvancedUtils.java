@@ -7,8 +7,12 @@ import java.net.Socket;
 
 public class AdvancedUtils {
 
-	public static String getServerStatus(String ip, int port) {
-		String c = null;
+	/**
+	 * Method for getting a server data
+	 * @author Master
+	*/
+	public static String[] getServerData(String ip, int port) {
+		String[] data = null;
 		try {
 			Socket socket = new Socket();
 			socket.connect(new InetSocketAddress(ip, port), 5);
@@ -26,13 +30,32 @@ public class AdvancedUtils {
 				}
 			}
 
-			String[] data = sb.toString().split("§");
-
-			c = data[1] + "/" + data[2];
+			data = sb.toString().split("§");
 			socket.close();
 		} catch (Exception e) {
-			c = "down";
+			data = new String[] {"Server down.", "Down.", "Down."};
+		}
+		return data;
+	}
+	
+	public static String getServerStatus(String ip, int port) {
+		String c = null;
+		String[] data = getServerData(ip, port);
+		if (data[1].equals("Down.") && data[2].equals("Down.")) {
+			c = "Down.";
+		} else {
+			c = data[1] + "/" + data[2];
 		}
 		return c;
+	}
+	
+	/**
+	 *  Gets the motd of an minecraft server.
+	 * @param ip Ip of the server.
+	 * @param port Port of the server.
+	 * @return The motd! And if the server was down, return: "Server down."
+	 */
+	public static String getServerMotd(String ip, int port) {
+		return getServerData(ip, port)[0];
 	}
 }

@@ -32,12 +32,10 @@ import com.aol.w67clement.mineapi.enums.PacketList;
 import com.aol.w67clement.mineapi.nms.NmsManager;
 import com.aol.w67clement.mineapi.nms.ProtocolManager;
 import com.aol.w67clement.mineapi.nms.v1_8_R1.NmsManager_v1_8_R1;
-import com.aol.w67clement.mineapi.nms.v1_8_R1.ProtocolManager_v1_8_R1;
 import com.aol.w67clement.mineapi.nms.v1_8_R2.NmsManager_v1_8_R2;
-import com.aol.w67clement.mineapi.nms.v1_8_R2.ProtocolManager_v1_8_R2;
 import com.aol.w67clement.mineapi.nms.v1_8_R3.NmsManager_v1_8_R3;
-import com.aol.w67clement.mineapi.nms.v1_8_R3.ProtocolManager_v1_8_R3;
 import com.aol.w67clement.mineapi.system.ModuleManager;
+import com.aol.w67clement.mineapi.system.ProtocolInjector;
 import com.aol.w67clement.mineapi.system.modules.ModuleLoader;
 
 public class MineAPI extends JavaPlugin {
@@ -45,6 +43,7 @@ public class MineAPI extends JavaPlugin {
 	public static final String PREFIX = ChatColor.GRAY + "["
 			+ ChatColor.DARK_AQUA + "MineAPI" + ChatColor.GRAY + "]"
 			+ ChatColor.RESET + " ";
+	public static final String SIMPLE_PREFIX = "[MineAPI] ";
 	public static ConsoleCommandSender console = Bukkit.getServer()
 			.getConsoleSender();
 	private static Map<PacketListener, List<Method>> packetListeners = new HashMap<PacketListener, List<Method>>();
@@ -61,50 +60,59 @@ public class MineAPI extends JavaPlugin {
 		isSpigot = this.getServer().getVersion().contains("Spigot");
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public void onEnable() {
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Enabling "
-				+ ChatColor.DARK_AQUA + "MineAPI");
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Loading nms manager...");
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Version: "
-				+ ChatColor.RED + getServerVersion());
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Server is Spigot: "
-				+ ChatColor.RED + isSpigot);
+		System.out.println(SIMPLE_PREFIX + "Enabling MineAPI");
+		System.out.println(SIMPLE_PREFIX + "Loading nms manager...");
+		System.out.println(SIMPLE_PREFIX + "Version: " + getServerVersion());
+		System.out.println(SIMPLE_PREFIX + "Server is Spigot: " + isSpigot);
+		System.out.println(SIMPLE_PREFIX + "OS used: "
+				+ System.getProperty("os.name"));
+		System.out.println(SIMPLE_PREFIX + "OS version: "
+				+ System.getProperty("os.version"));
+		System.out.println(SIMPLE_PREFIX + "Java version: "
+				+ System.getProperty("java.version"));
 
 		// Version 1.8.R3
 		if (getServerVersion().equals("v1_8_R3")) {
 			nms = new NmsManager_v1_8_R3();
-			protocolManager = new ProtocolManager_v1_8_R3(this);
-			this.getServer().getPluginManager()
-					.registerEvents(protocolManager, this);
 			// Version 1.8.R2
 		} else if (getServerVersion().equals("v1_8_R2")) {
 			nms = new NmsManager_v1_8_R2();
-			protocolManager = new ProtocolManager_v1_8_R2(this);
-			this.getServer().getPluginManager()
-					.registerEvents(protocolManager, this);
 			// Version 1.8.R1
 		} else if (getServerVersion().equals("v1_8_R1")) {
 			nms = new NmsManager_v1_8_R1();
-			protocolManager = new ProtocolManager_v1_8_R1(this);
-			this.getServer().getPluginManager()
-					.registerEvents(protocolManager, this);
 			// No valid version detected
 		} else {
-			console.sendMessage(PREFIX
-					+ "§4[Error] §3MineAPI §cis disabled: Your server was outdated!");
+			System.out
+					.println(SIMPLE_PREFIX
+							+ "[Error] MineAPI §cis disabled: Your server was outdated!");
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
 
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX + ChatColor.GREEN
-				+ "Starting load commands...");
+		// Simple injector
+		ProtocolInjector injector = new ProtocolInjector();
+
+		System.out.println(SIMPLE_PREFIX + "Starting injector...");
+		if (injector.createInjector(this)) {
+			injector.addServerConnectionChannel();
+			for (Player players : Bukkit.getOnlinePlayers()) {
+				injector.addChannel(players);
+			}
+			protocolManager = new ProtocolManager(this, injector);
+			this.getServer().getPluginManager()
+					.registerEvents(protocolManager, this);
+		}
+
+		System.out.println(SIMPLE_PREFIX);
+		System.out.println(SIMPLE_PREFIX);
+		System.out.println(SIMPLE_PREFIX + "Starting load commands...");
 		try {
 			this.getCommand("AdvancedVersion").setExecutor(
 					new VersionCommand(this));
-			console.sendMessage(PREFIX + ChatColor.GREEN
+			System.out.println(SIMPLE_PREFIX
 					+ "The commands was load successful!");
 			MineAPICommand mineAPICmd = new MineAPICommand(this);
 			this.getCommand("MineAPI").setExecutor(mineAPICmd);
@@ -114,8 +122,8 @@ public class MineAPI extends JavaPlugin {
 					+ "Failed to load the commands!");
 		}
 
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX);
+		System.out.println(SIMPLE_PREFIX);
+		System.out.println(SIMPLE_PREFIX);
 
 		// Module system
 		console.sendMessage(PREFIX + ChatColor.GREEN
@@ -136,21 +144,18 @@ public class MineAPI extends JavaPlugin {
 			folder.mkdirs();
 		}
 
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX);
-		
-		console.sendMessage(PREFIX + ChatColor.GREEN
-				+ "Starting load configuration...");
-		config = new MineAPIConfig(this);
-		console.sendMessage(PREFIX + ChatColor.GREEN
-				+ "Load configuration has finished successfully!");
+		System.out.println(SIMPLE_PREFIX);
+		System.out.println(SIMPLE_PREFIX);
 
-		console.sendMessage(PREFIX + ChatColor.GREEN
-				+ "Starting Auto-Updater (v1.0.2)...");
+		System.out.println(SIMPLE_PREFIX + "Loading configuration...");
+		config = new MineAPIConfig(this);
+		System.out.println(SIMPLE_PREFIX
+				+ "Coniguration has loaded successfully!");
+
+		System.out.println(SIMPLE_PREFIX + "Starting Auto-Updater (v1.0.2)...");
 		autoUpdater = new MineAPI_AutoUpdater(true, this);
 		if (autoUpdater.haveNewUpdate()) {
-			console.sendMessage(PREFIX + ChatColor.GREEN + "Update found: "
-					+ ChatColor.RED + "MineAPI v"
+			System.out.println(SIMPLE_PREFIX + "Update found: MineAPI v"
 					+ autoUpdater.getLatestVersion());
 			if (config.allowUpdateNotifications())
 				this.getServer().getPluginManager()
@@ -176,16 +181,21 @@ public class MineAPI extends JavaPlugin {
 													PREFIX
 															+ ChatColor.DARK_AQUA
 															+ "Download: ")
-											.then("https://67clement...MineAPI-"
-													+ MineAPI.autoUpdater
-															.getLatestVersion()
-													+ ".jar")
+											.then("On Spigot")
+											.addHoverMessage(
+													ChatColor.GREEN
+															+ "Click to open url to download the latest MineAPI! \n"
+															+ ChatColor.RED
+															+ "Recommended!")
+											.addLink(
+													"https://www.spigotmc.org/resources/mineapi.8614/")
+											.then(" / ")
+											.then("On Bukkit")
 											.addHoverMessage(
 													ChatColor.GREEN
 															+ "Click to open url to download the latest MineAPI!")
 											.addLink(
-													MineAPI.autoUpdater
-															.getLatestLink())
+													"http://dev.bukkit.org/bukkit-plugins/mineapi/")
 											.send(player);
 								}
 							}
@@ -200,8 +210,7 @@ public class MineAPI extends JavaPlugin {
 		if (protocolManager != null) {
 			protocolManager.disable();
 		}
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Disabling "
-				+ ChatColor.DARK_AQUA + "MineAPI" + ChatColor.GREEN + " v"
+		System.out.println(SIMPLE_PREFIX + "Disabling MineAPI v"
 				+ this.getDescription().getVersion());
 
 		// Disabling modules

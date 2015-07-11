@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -37,6 +38,11 @@ public class ReflectionAPI {
 			field = declared ? clazz.getDeclaredField(fieldName) : clazz
 					.getField(fieldName);
 			field.setAccessible(true);
+			Field modifiersField = Field.class.getDeclaredField("modifiers");
+			modifiersField.setAccessible(true);
+			int modifiers = modifiersField.getInt(field);
+			modifiers &= ~Modifier.FINAL;
+			modifiersField.setInt(field, modifiers);
 		} catch (NoSuchFieldException e) {
 			MineAPI.console
 					.sendMessage(MineAPI.PREFIX
@@ -56,6 +62,10 @@ public class ReflectionAPI {
 					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 			e.printStackTrace();
 		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return field;
@@ -236,6 +246,29 @@ public class ReflectionAPI {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	/*
+	 * UTILS
+	 */
+	
+	public static Field getFirstFieldOfType(Class<?> clazz, Class<?> type) {
+		for (Field fields : clazz.getDeclaredFields()) {
+			if (fields.getType().equals(type)) {
+				return ReflectionAPI.getField(clazz, fields.getName(), true);
+			}
+		}
+		return null;
+	}
+	
+	public static Field getLastFieldOfType(Class<?> clazz, Class<?> type) {
+		Field field = null;
+		for (Field fields : clazz.getDeclaredFields()) {
+			if (fields.getType().equals(type)) {
+				field = ReflectionAPI.getField(clazz, fields.getName(), true);
+			}
+		}
+		return field;
 	}
 
 	/*
