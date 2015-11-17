@@ -1,0 +1,197 @@
+package com.w67clement.mineapi.nms.v1_8_R2.play_out.world;
+
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+
+import com.w67clement.mineapi.api.ReflectionAPI;
+import com.w67clement.mineapi.enums.PacketType;
+import com.w67clement.mineapi.world.PacketWorldBorder;
+
+import net.minecraft.server.v1_8_R2.PacketPlayOutWorldBorder;
+import net.minecraft.server.v1_8_R2.PacketPlayOutWorldBorder.EnumWorldBorderAction;
+
+public class PacketWorldBorder_v1_8_R2 implements PacketWorldBorder
+{
+
+	private World world;
+	private Location center;
+	private int warningDistance;
+	private int warningTime;
+	private double radius;
+	private long radiusTime;
+	private boolean radiusTimeChanged;
+
+	public PacketWorldBorder_v1_8_R2(World world) {
+		this.world = world;
+		WorldBorder worldBorder = this.world.getWorldBorder();
+		this.center = worldBorder.getCenter();
+		this.warningDistance = worldBorder.getWarningDistance();
+		this.warningTime = worldBorder.getWarningTime();
+		this.radius = worldBorder.getSize();
+		this.radiusTime = ((CraftWorld) this.world).getHandle().getWorldBorder().i();
+	}
+
+	@Override
+	public World getWorld()
+	{
+		return this.world;
+	}
+
+	@Override
+	public String getWorldName()
+	{
+		return this.world.getName();
+	}
+
+	@Override
+	public void send(Player player)
+	{
+		PacketPlayOutWorldBorder worldBorder = new PacketPlayOutWorldBorder(
+				((CraftWorld) this.world).getHandle().getWorldBorder(), EnumWorldBorderAction.INITIALIZE);
+		try
+		{
+			ReflectionAPI.setValue(worldBorder, ReflectionAPI.getField(worldBorder.getClass(), "e", true), this.radius);
+			ReflectionAPI.setValue(worldBorder, ReflectionAPI.getField(worldBorder.getClass(), "c", true),
+					this.center.getX());
+			ReflectionAPI.setValue(worldBorder, ReflectionAPI.getField(worldBorder.getClass(), "d", true),
+					this.center.getZ());
+			if (this.radiusTimeChanged)
+			{
+				ReflectionAPI.setValue(worldBorder, ReflectionAPI.getField(worldBorder.getClass(), "g", true),
+						this.radiusTime);
+			}
+			ReflectionAPI.setValue(worldBorder, ReflectionAPI.getField(worldBorder.getClass(), "i", true),
+					this.warningDistance);
+			ReflectionAPI.setValue(worldBorder, ReflectionAPI.getField(worldBorder.getClass(), "h", true),
+					this.warningTime);
+		}
+		catch (SecurityException e)
+		{
+			e.printStackTrace();
+		}
+		finally
+		{
+			((CraftPlayer) player).getHandle().playerConnection.sendPacket(worldBorder);
+		}
+	}
+
+	@Override
+	public void sendAll()
+	{
+		for (Player players : Bukkit.getOnlinePlayers())
+		{
+			this.send(players);
+		}
+	}
+
+	@Override
+	public PacketType getPacketType()
+	{
+		return PacketType.PACKETPLAYOUT;
+	}
+
+	@Override
+	public PacketWorldBorder setCenterX(double x)
+	{
+		this.center.setX(x);
+		return this;
+	}
+
+	@Override
+	public double getCenterX()
+	{
+		return this.center.getX();
+	}
+
+	@Override
+	public PacketWorldBorder setCenterZ(double z)
+	{
+		this.center.setZ(z);
+		return this;
+	}
+
+	@Override
+	public double getCenterZ()
+	{
+		return this.center.getZ();
+	}
+
+	@Override
+	public PacketWorldBorder setCenter(Location loc)
+	{
+		this.center = loc;
+		return this;
+	}
+
+	@Override
+	public Location getCenter()
+	{
+		return this.center;
+	}
+
+	@Override
+	public WorldBorder getWorldBorder()
+	{
+		return this.getWorld().getWorldBorder();
+	}
+
+	@Override
+	public PacketWorldBorder setWarningDistance(int blocks)
+	{
+		warningDistance = blocks;
+		return this;
+	}
+
+	@Override
+	public int getWarningDistance()
+	{
+		return this.warningDistance;
+	}
+
+	@Override
+	public PacketWorldBorder setWarningTime(int time)
+	{
+		this.warningTime = time;
+		return this;
+	}
+
+	@Override
+	public int getWarningTime()
+	{
+		return this.warningTime;
+	}
+
+	@Override
+	public PacketWorldBorder setNewRadius(double radius)
+	{
+		this.radius = radius;
+		return this;
+	}
+
+	@Override
+	public double getNewRadius()
+	{
+		return this.radius;
+	}
+
+	@Override
+	public PacketWorldBorder setNewRadius(double radius, long time)
+	{
+		this.radius = radius;
+		this.radiusTime = time;
+		this.radiusTimeChanged = true;
+		return this;
+	}
+
+	@Override
+	public long getRadiusTime()
+	{
+		return this.radiusTime;
+	}
+
+}
