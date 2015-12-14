@@ -8,8 +8,14 @@ import com.w67clement.mineapi.nms.PacketSender;
  * @author w67clement
  *
  */
-public interface ActionBarMessage extends PacketSender
+public abstract class ActionBarMessage extends PacketSender
 {
+
+	protected String message;
+
+	public ActionBarMessage(String message) {
+		this.setMessage(message);
+	}
 
 	/**
 	 * Define the message will be displayed in the action bar.
@@ -17,20 +23,22 @@ public interface ActionBarMessage extends PacketSender
 	 * @param actionBarMessage
 	 *            An sample text.
 	 */
-	public ActionBarMessage setMessage(String actionBarMessage);
+	public ActionBarMessage setMessage(String actionBarMessage)
+	{
+		if (actionBarMessage != null) this.message = actionBarMessage;
+		else
+			this.message = "";
+		return this;
+	}
 
 	/**
 	 * Gets the message will be displayed in the action bar.
 	 * 
 	 * @return The message.
 	 */
-	public String getMessage();
-
-	/**
-	 * To the JSON
-	 * 
-	 * @return JSON String.
-	 */
-	public String toJSONString();
+	public String getMessage()
+	{
+		return this.message;
+	}
 
 }

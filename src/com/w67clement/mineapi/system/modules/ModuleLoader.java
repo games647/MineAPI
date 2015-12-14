@@ -21,115 +21,143 @@ import org.yaml.snakeyaml.error.YAMLException;
 
 import com.w67clement.mineapi.MineAPI;
 
-public class ModuleLoader {
+public class ModuleLoader
+{
 
 	private HashMap<String, Module> modules = new HashMap<String, Module>();
 
 	private ClassLoader loader;
+	private MineAPI mineapi;
 
-	public ModuleLoader(ClassLoader loader) {
+	public ModuleLoader(ClassLoader loader, MineAPI mineapi) {
 		this.loader = loader;
+		this.mineapi = mineapi;
 	}
 
-	public Module loadModule(File file) throws InvalidModuleException {
-		if (!file.exists()) {
-			throw new InvalidModuleException(new FileNotFoundException(
-					file.getPath() + " does not exist"));
-		}
+	public Module loadModule(File file) throws InvalidModuleException
+	{
+		if (!file.exists()) { throw new InvalidModuleException(
+				new FileNotFoundException(
+						file.getPath() + " does not exist")); }
 
 		ModuleInformations description = null;
-		try {
+		try
+		{
 			description = getDescription(file);
-			MineAPI.console
-					.sendMessage(MineAPI.PREFIX + ChatColor.GREEN + "Loading "
+			MineAPI.sendMessageToConsole(
+					MineAPI.PREFIX + ChatColor.GREEN + "Loading "
 							+ ChatColor.DARK_GREEN + description.getName());
-		} catch (InvalidDescriptionException e) {
+		}
+		catch (InvalidDescriptionException e)
+		{
 			throw new InvalidModuleException(e);
 		}
 
-		try {
+		try
+		{
 			Method method = URLClassLoader.class.getDeclaredMethod("addURL",
 					new Class[] { URL.class });
 			method.setAccessible(true);
 			method.invoke(loader, file.toURI().toURL());
-		} catch (NoSuchMethodException | SecurityException
+		}
+		catch (NoSuchMethodException | SecurityException
 				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException | MalformedURLException e1) {
+				| InvocationTargetException | MalformedURLException e1)
+		{
 			e1.printStackTrace();
 		}
 
-		try {
+		try
+		{
 			Class<?> moduleClass = this.loader.loadClass(description.getMain());
 			Constructor<?> moduleConstructor = moduleClass
 					.getConstructor(new Class<?>[] {});
 			Module obj = (Module) moduleConstructor
 					.newInstance(new Object[] {});
 			obj.setModuleInformations(description);
+			obj.setMineAPI(mineapi);
 			modules.put(description.getName(), obj);
 			return obj;
-		} catch (ClassNotFoundException | NoSuchMethodException
+		}
+		catch (ClassNotFoundException | NoSuchMethodException
 				| SecurityException | InstantiationException
 				| IllegalAccessException | IllegalArgumentException
-				| InvocationTargetException e) {
+				| InvocationTargetException e)
+		{
 			throw new InvalidModuleException(e);
 		}
 	}
 
-	public void enableModule(Module module) {
-		MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.GREEN
+	public void enableModule(Module module)
+	{
+		MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN
 				+ "Enabling " + ChatColor.DARK_GREEN + module.getName());
 		module.onEnable();
 		module.setEnabled(true);
 	}
 
-	public void disableModule(Module module) {
-		MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.GREEN
+	public void disableModule(Module module)
+	{
+		MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN
 				+ "Disabling " + ChatColor.DARK_GREEN + module.getName());
 		module.onDisable();
 		module.setEnabled(false);
 	}
 
 	public ModuleInformations getDescription(File file)
-			throws InvalidDescriptionException {
+			throws InvalidDescriptionException
+	{
 		Validate.notNull(file, "File cannot be null");
 
 		JarFile jar = null;
 		InputStream stream = null;
 
-		try {
+		try
+		{
 			jar = new JarFile(file);
 			JarEntry entry = jar.getJarEntry("module.yml");
 
-			if (entry == null) {
-				throw new InvalidDescriptionException(
-						new FileNotFoundException(
-								"Jar does not contain module.yml"));
-			}
+			if (entry == null) { throw new InvalidDescriptionException(
+					new FileNotFoundException(
+							"Jar does not contain module.yml")); }
 
 			stream = jar.getInputStream(entry);
 
 			return new ModuleInformations(stream);
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			throw new InvalidDescriptionException(ex);
-		} catch (YAMLException ex) {
+		}
+		catch (YAMLException ex)
+		{
 			throw new InvalidDescriptionException(ex);
-		} finally {
-			if (jar != null) {
-				try {
+		}
+		finally
+		{
+			if (jar != null)
+			{
+				try
+				{
 					jar.close();
-				} catch (IOException e) {
 				}
+				catch (IOException e)
+				{}
 			}
-			if (stream != null) {
-				try {
+			if (stream != null)
+			{
+				try
+				{
 					stream.close();
-				} catch (IOException e) {
 				}
+				catch (IOException e)
+				{}
 			}
 		}
 	}
 
-	public HashMap<String, Module> getModules() {
+	public HashMap<String, Module> getModules()
+	{
 		return modules;
 	}
 }

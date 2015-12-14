@@ -6,6 +6,7 @@ import org.apache.commons.lang.Validate;
 
 import com.google.common.collect.Maps;
 import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.api.ReflectionAPI;
 
 public enum MinecraftVersion
 {
@@ -64,6 +65,22 @@ public enum MinecraftVersion
 		else if (MineAPI.getServerVersion().equals("v1_8_R3"))
 		{
 			return v1_8_R3;
+		}
+		else if (MineAPI.getServerVersion().contains("Glowstone"))
+		{
+			Class<?> glowServer = ReflectionAPI
+					.getClass("net.glowstone.GlowServer");
+			String game_version = (String) ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(glowServer, "GAME_VERSION", true));
+			return getByVersion(game_version);
+		}
+		else if (MineAPI.isRainbow())
+		{
+			Class<?> joeUtils = ReflectionAPI.getClass("joebkt._JoeUtils");
+			String game_version = (String) ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(joeUtils, "MC_VERSION_STRING",
+							true));
+			return getByVersion(game_version);
 		}
 		else
 		{

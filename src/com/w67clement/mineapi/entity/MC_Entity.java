@@ -83,6 +83,25 @@ public interface MC_Entity {
 	public boolean isInvisible();
 	
 	/**
+	 * Sets whether remove the hitbox and the collisions.
+	 * @param noClip Remove or add.
+	 */
+	public void setNoClip(boolean noClip);
+	
+	/**
+	 * Gets if entity has hitbox and collisions activated.
+	 * @return Entity has no clip.
+	 */
+	public boolean hasNoClip();
+	
+	/**
+	 * Sets the size of the bounding box.
+	 * @param width Width of the bounding box.
+	 * @param length Length of the bounding box.
+	 */
+	public void setSize(float width, float length);
+	
+	/**
 	 *  Gets the bukkit's entity.
 	 * @return The bukkit's entity.
 	 */

@@ -63,6 +63,24 @@ public class MC_Entity_v1_8_R3 implements MC_Entity
 	}
 
 	@Override
+	public void setNoClip(boolean noClip)
+	{
+		this.entity.noclip = noClip;
+	}
+
+	@Override
+	public boolean hasNoClip()
+	{
+		return this.entity.noclip;
+	}
+	
+	@Override
+	public void setSize(float width, float length)
+	{
+		this.entity.setSize(width, length);
+	}
+
+	@Override
 	public Entity getEntityHandle()
 	{
 		return this.entity.getBukkitEntity();

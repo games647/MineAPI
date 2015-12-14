@@ -12,6 +12,7 @@ public abstract class Module
 
 	private ModuleInformations informations;
 	private boolean isEnabled;
+	protected MineAPI mineapi;
 
 	public String getName()
 	{
@@ -40,6 +41,17 @@ public abstract class Module
 	public void setModuleInformations(ModuleInformations description)
 	{
 		if (this.informations == null) this.informations = description;
+	}
+
+	protected void setModuleInformations(ModuleInformations description,
+			boolean force)
+	{
+		if (this.informations == null || force) this.informations = description;
+	}
+
+	public void setMineAPI(MineAPI mineapi)
+	{
+		this.mineapi = mineapi;
 	}
 
 	public Server getServer()

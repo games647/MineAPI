@@ -4,6 +4,12 @@ import java.util.UUID;
 
 import com.mojang.authlib.GameProfile;
 
+@Deprecated
+/**
+ * Use MC_GameProfile now.
+ * @author w67clement
+ *
+ */
 public class GameProfileWrapper {
 	
 	private UUID id;

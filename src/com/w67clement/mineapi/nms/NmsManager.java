@@ -1,5 +1,7 @@
 package com.w67clement.mineapi.nms;
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -9,8 +11,11 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
 
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
+import com.w67clement.mineapi.block.BlockAction;
+import com.w67clement.mineapi.block.PacketBlockAction;
 import com.w67clement.mineapi.block.PacketBlockBreakAnimation;
 import com.w67clement.mineapi.block.PacketBlockChange;
 import com.w67clement.mineapi.entity.MC_Entity;
@@ -20,9 +25,12 @@ import com.w67clement.mineapi.entity.others.MC_ArmorStand;
 import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
+import com.w67clement.mineapi.inventory.packets.WindowItems;
 import com.w67clement.mineapi.message.ActionBarMessage;
 import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.message.Title;
+import com.w67clement.mineapi.tab.PacketPlayerInfo;
+import com.w67clement.mineapi.tab.PacketPlayerInfo.PacketPlayerInfoData;
 import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.PacketExplosion;
 import com.w67clement.mineapi.world.PacketWorldBorder;
@@ -49,7 +57,8 @@ public interface NmsManager
 	 * @param fadeOut
 	 * @return A new MineAPI's title object.
 	 */
-	public Title getTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
+	public Title getTitle(String title, String subtitle, int fadeIn, int stay,
+			int fadeOut);
 
 	/**
 	 * 
@@ -68,37 +77,65 @@ public interface NmsManager
 
 	public TabTitle getTabTitle(String header, String footer);
 
+	public PacketPlayerInfo getPacketPlayerInfo(
+			PacketPlayerInfo.MC_EnumPlayerInfoAction action,
+			List<PacketPlayerInfoData> data);
+
+	public WindowItems getWindowItemsPacket(int windowId,
+			List<ItemStack> items);
+
 	/* Packet play out - World */
 
-	public PacketExplosion getExplosionPacket(World world, double x, double y, double z, float radius, boolean sound);
+	public PacketExplosion getExplosionPacket(World world, double x, double y,
+			double z, float radius, boolean sound);
 
-	public PacketExplosion getExplosionPacket(Location loc, float radius, boolean sound);
+	public PacketExplosion getExplosionPacket(Location loc, float radius,
+			boolean sound);
 
 	public PacketWorldBorder getPacketWorldBorder(World world);
 
 	/* Packet play out - Block */
 
-	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(MC_Player player, Location loc, byte destroyStage);
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(
+			MC_Player player, Location loc, byte destroyStage);
 
-	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(MC_Player player, int x, int y, int z,
-			byte destroyStage);
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(
+			MC_Player player, int x, int y, int z, byte destroyStage);
 
-	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player, Location loc, byte destroyStage);
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player,
+			Location loc, byte destroyStage);
 
-	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player, int x, int y, int z,
-			byte destroyStage);
+	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player,
+			int x, int y, int z, byte destroyStage);
 
-	public PacketBlockChange getPacketBlockChange(Material material, Location loc);
+	public PacketBlockChange getPacketBlockChange(Material material,
+			Location loc);
 
-	public PacketBlockChange getPacketBlockChange(Material material, int data, Location loc);
+	public PacketBlockChange getPacketBlockChange(Material material, int data,
+			Location loc);
 
-	public PacketBlockChange getPacketBlockChange(Material material, int x, int y, int z);
+	public PacketBlockChange getPacketBlockChange(Material material, int x,
+			int y, int z);
 
-	public PacketBlockChange getPacketBlockChange(Material material, int data, int x, int y, int z);
+	public PacketBlockChange getPacketBlockChange(Material material, int data,
+			int x, int y, int z);
+
+	public PacketBlockAction getPacketBlockAction(Location location,
+			BlockAction action);
+
+	public PacketBlockAction getPacketBlockAction(Location location,
+			BlockAction action, int data);
+
+	public PacketBlockAction getPacketBlockAction(int x, int y, int z,
+			BlockAction action);
+
+	public PacketBlockAction getPacketBlockAction(int x, int y, int z,
+			BlockAction action, int data);
 
 	/* PACKET PLAY IN */
 
-	public ClientCommand getPacketPlayInClientCommand(ClientCommand.ClientCommandType commandType);
+	public ClientCommand getPacketPlayInClientCommand(
+			ClientCommand.ClientCommandType commandType);
 
 	/* MC ENTITY */
 

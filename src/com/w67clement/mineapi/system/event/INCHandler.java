@@ -182,7 +182,7 @@ public class INCHandler implements IHandler
 						{
 							channel = getChannel(a);
 						}
-						if (channel.pipeline().get("MineAPI_Ping") == null)
+						//if (channel.pipeline().get("MineAPI_Ping") == null)
 							channel.pipeline().addBefore("packet_handler",
 									"MineAPI_Ping", new PingChannelHandler());
 					}
@@ -271,7 +271,7 @@ public class INCHandler implements IHandler
 			}
 			PacketCancellable cancel = new PacketCancellable();
 			mineapi.pingPacketSend(new PacketWrapper(msg), cancel,
-					"Unknown IP");
+					ctx.channel().remoteAddress().toString());
 			if (cancel.isCancelled()) { return; }
 			super.write(ctx, msg, promise);
 		}
@@ -287,7 +287,7 @@ public class INCHandler implements IHandler
 			}
 			PacketCancellable cancel = new PacketCancellable();
 			mineapi.pingPacketRecieve(new PacketWrapper(msg), cancel,
-					"Unknown IP");
+					ctx.channel().remoteAddress().toString());
 			if (cancel.isCancelled()) { return; }
 			super.channelRead(ctx, msg);
 		}

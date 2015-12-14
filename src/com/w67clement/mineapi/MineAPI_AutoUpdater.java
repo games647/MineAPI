@@ -1,11 +1,15 @@
 package com.w67clement.mineapi;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import net.md_5.bungee.api.ChatColor;
 
 public class MineAPI_AutoUpdater
 {
@@ -28,10 +32,26 @@ public class MineAPI_AutoUpdater
 					"https://w67clement.github.io/downloads/MineAPI_LatestVersion.txt")
 							.openConnection();
 			connection.addRequestProperty("User-Agent", "MineAPI");
+			connection.addRequestProperty("Connection", "close");
 			// Read lines
-			@SuppressWarnings("deprecation")
-			FileConfiguration config = YamlConfiguration
-					.loadConfiguration(connection.getInputStream());
+			final BufferedReader reader = new BufferedReader(
+					new InputStreamReader(connection.getInputStream()));
+			String response = reader.readLine();
+			reader.close();
+
+			YamlConfiguration config = new YamlConfiguration();
+			try
+			{
+				config.loadFromString(response);
+			}
+			catch (InvalidConfigurationException e)
+			{
+				MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.RED
+						+ "Error: The response isn't Yaml.");
+				MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.RED
+						+ "Error: Response: " + response);
+				return false;
+			}
 			// Version found
 			latestVersion = config.getString("LatestVersion", this.version);
 			latestlink = config.getString("Download",
@@ -49,7 +69,7 @@ public class MineAPI_AutoUpdater
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			// Error, MineAPI can't retrieve latest version informations...
 		}
 		this.latestVersion = version;
 		return false;

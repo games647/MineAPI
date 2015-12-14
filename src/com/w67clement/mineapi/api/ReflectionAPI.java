@@ -359,6 +359,19 @@ public class ReflectionAPI
 		}
 	}
 
+	public static Class<?> getClass(String nameWithPackage)
+	{
+		try
+		{
+			return Class.forName(nameWithPackage);
+		}
+		catch (ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			return null;
+		}
+	}
+
 	public static String checkVersionClass(Class<?> clazz)
 	{
 		Package clazzPackage = clazz.getPackage();
@@ -529,6 +542,21 @@ public class ReflectionAPI
 					: getNmsClass("IChatBaseComponent$ChatSerializer");
 		}
 
+		public static Class<?> getEnumChatVisibilityClass()
+		{
+			return MineAPI.getServerVersion().equals("v1_8_R1")
+					? getNmsClass("EnumChatVisibility")
+					: getNmsClass("EntityHuman$EnumChatVisibility");
+		}
+
+		public static Class<?> getEnumClientCommandClass()
+		{
+			return MineAPI.getServerVersion().equals("v1_8_R1")
+					? getNmsClass("EnumClientCommand")
+					: getNmsClass(
+							"PacketPlayInClientCommand$EnumClientCommand");
+		}
+
 		public static Class<?> getIChatBaseComponentClass()
 		{
 			return getNmsClass("IChatBaseComponent");
@@ -557,6 +585,22 @@ public class ReflectionAPI
 					.getField(nmsPlayer.getClass(), "playerConnection", false));
 		}
 
+		public static Object getPlayerConnectionByEntityPlayer(Object player)
+		{
+			if (player.getClass().getSimpleName().equals("EntityPlayer"))
+			{
+				if (MineAPI.isRainbow())
+				{
+					return getValue(player, getField(player.getClass(),
+							"plrConnection", false));
+				}
+				else
+					return getValue(player, getField(player.getClass(),
+							"playerConnection", false));
+			}
+			return null;
+		}
+
 		public static void sendPacket(Player player, Object obj)
 		{
 			Object playerConnection = getPlayerConnectionByPlayer(player);
@@ -567,25 +611,25 @@ public class ReflectionAPI
 		}
 	}
 
+	public static class CraftClass
+	{
+
+		public static Class<?> getCraftItemStackClass()
+		{
+			return getCraftClass("CraftItemStack",
+					CraftPackage.ORG_BUKKIT_CRAFTBUKKIT_INVENTORY);
+		}
+
+	}
+
 	public static class ItemStackConverter
 	{
 
 		public static Object toNms(ItemStack item)
 		{
-			if (MineAPI.getServerVersion().equals("v1_8_R1"))
-			{
-				return org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack
-						.asNMSCopy(item);
-			}
-			else if (MineAPI.getServerVersion().equals("v1_8_R2"))
-			{
-				return org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack
-						.asNMSCopy(item);
-			}
-			else if (MineAPI.getServerVersion()
-					.equals("v1_8_R3")) { return org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack
-							.asNMSCopy(item); }
-			return null;
+			Method asNmsCopy = getMethod(CraftClass.getCraftItemStackClass(),
+					"asNMSCopy", item.getClass());
+			return invokeMethod(null, asNmsCopy, item);
 		}
 
 	}

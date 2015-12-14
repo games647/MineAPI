@@ -24,7 +24,7 @@ import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.w67clement.mineapi.message.FancyMessage;
-import com.w67clement.mineapi.nms.v1_8_R1.play_in.ClientCommand_v1_8_R1;
+import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
 
 import net.minecraft.server.v1_8_R1.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R1.EntityPlayer;
@@ -37,7 +37,8 @@ import net.minecraft.server.v1_8_R1.TileEntityFurnace;
 import net.minecraft.server.v1_8_R1.TileEntityHopper;
 import net.minecraft.server.v1_8_R1.TileEntitySign;
 
-public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Player
+public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1
+		implements MC_Player
 {
 
 	private EntityPlayer player;
@@ -56,15 +57,17 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 	@Override
 	public void respawn()
 	{
-		if (getHandle().isDead())
-			new ClientCommand_v1_8_R1(ClientCommand.ClientCommandType.PERFORM_RESPAWN).send(this.getHandle());
+		if (getHandle().isDead()) new CraftClientCommand(
+				ClientCommand.ClientCommandType.PERFORM_RESPAWN)
+						.send(this.getHandle());
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public void sendChunkChange(Chunk chunk)
 	{
-		this.player.chunkCoordIntPairQueue.add(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()));
+		this.player.chunkCoordIntPairQueue
+				.add(new ChunkCoordIntPair(chunk.getX(), chunk.getZ()));
 	}
 
 	@Override
@@ -74,7 +77,8 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 		{
 			this.getHandle().setGameMode(GameMode.SPECTATOR);
 		}
-		this.player.playerConnection.sendPacket(new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
+		this.player.playerConnection.sendPacket(
+				new PacketPlayOutCamera(((CraftEntity) entity).getHandle()));
 	}
 
 	@Override
@@ -92,40 +96,45 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 	@Override
 	public void openFurnace(Furnace furnace)
 	{
-		TileEntityFurnace tileEntity = (TileEntityFurnace) ((CraftWorld) furnace.getWorld())
-				.getTileEntityAt(furnace.getX(), furnace.getY(), furnace.getZ());
+		TileEntityFurnace tileEntity = (TileEntityFurnace) ((CraftWorld) furnace
+				.getWorld()).getTileEntityAt(furnace.getX(), furnace.getY(),
+						furnace.getZ());
 		this.player.openTileEntity(tileEntity);
 	}
 
 	@Override
 	public void openBrewingStand(BrewingStand bStand)
 	{
-		TileEntityBrewingStand tileEntity = (TileEntityBrewingStand) ((CraftWorld) bStand.getWorld())
-				.getTileEntityAt(bStand.getX(), bStand.getY(), bStand.getZ());
+		TileEntityBrewingStand tileEntity = (TileEntityBrewingStand) ((CraftWorld) bStand
+				.getWorld()).getTileEntityAt(bStand.getX(), bStand.getY(),
+						bStand.getZ());
 		this.player.openTileEntity(tileEntity);
 	}
 
 	@Override
 	public void openBeacon(Beacon beacon)
 	{
-		TileEntityBeacon tileEntity = (TileEntityBeacon) ((CraftWorld) beacon.getWorld()).getTileEntityAt(beacon.getX(),
-				beacon.getY(), beacon.getZ());
+		TileEntityBeacon tileEntity = (TileEntityBeacon) ((CraftWorld) beacon
+				.getWorld()).getTileEntityAt(beacon.getX(), beacon.getY(),
+						beacon.getZ());
 		this.player.openTileEntity(tileEntity);
 	}
 
 	@Override
 	public void openDispenser(Dispenser dispenser)
 	{
-		TileEntityDispenser tileEntity = (TileEntityDispenser) ((CraftWorld) dispenser.getWorld())
-				.getTileEntityAt(dispenser.getX(), dispenser.getY(), dispenser.getZ());
+		TileEntityDispenser tileEntity = (TileEntityDispenser) ((CraftWorld) dispenser
+				.getWorld()).getTileEntityAt(dispenser.getX(), dispenser.getY(),
+						dispenser.getZ());
 		this.player.openTileEntity(tileEntity);
 	}
 
 	@Override
 	public void openHopper(Hopper hopper)
 	{
-		TileEntityHopper tileEntity = (TileEntityHopper) ((CraftWorld) hopper.getWorld()).getTileEntityAt(hopper.getX(),
-				hopper.getY(), hopper.getZ());
+		TileEntityHopper tileEntity = (TileEntityHopper) ((CraftWorld) hopper
+				.getWorld()).getTileEntityAt(hopper.getX(), hopper.getY(),
+						hopper.getZ());
 		this.player.openTileEntity(tileEntity);
 	}
 
@@ -133,6 +142,12 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 	public int getPing()
 	{
 		return this.player.ping;
+	}
+
+	@Override
+	public int getActiveContainerId()
+	{
+		return this.player.activeContainer.windowId;
 	}
 
 	@Override
@@ -167,14 +182,16 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 	@Override
 	public boolean useDefaultLanguage()
 	{
-		if (this.getLangUsed() != null) return this.getLangUsed().equals("en_US");
+		if (this.getLangUsed() != null)
+			return this.getLangUsed().equals("en_US");
 		return false;
 	}
 
 	@Override
 	public MC_ChatVisibility getChatVisibility()
 	{
-		return ChatVisibilityWrapper.makeMCChatVisibilityByEnumChatVisibility(this.player.getChatFlags());
+		return ChatVisibilityWrapper.makeMCChatVisibilityByEnumChatVisibility(
+				this.player.getChatFlags());
 	}
 
 	@Override
@@ -198,19 +215,23 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 	@Override
 	public void sendActionBarMessage(String message)
 	{
-		MineAPI.getNmsManager().getActionBarMessage(message).send(this.getHandle());
+		MineAPI.getNmsManager().getActionBarMessage(message)
+				.send(this.getHandle());
 	}
 
 	@Override
-	public void sendTitle(int fadeIn, int stay, int fadeOut, String title, String subtitle)
+	public void sendTitle(int fadeIn, int stay, int fadeOut, String title,
+			String subtitle)
 	{
-		MineAPI.getNmsManager().getTitle(title, subtitle, fadeIn, stay, fadeOut).send(this.getHandle());
+		MineAPI.getNmsManager().getTitle(title, subtitle, fadeIn, stay, fadeOut)
+				.send(this.getHandle());
 	}
 
 	@Override
 	public void sendTabTitle(String header, String footer)
 	{
-		MineAPI.getNmsManager().getTabTitle(header, footer).send(this.getHandle());
+		MineAPI.getNmsManager().getTabTitle(header, footer)
+				.send(this.getHandle());
 	}
 
 	@Override
@@ -222,8 +243,9 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_Pla
 	@Override
 	public void openSign(Sign sign, boolean isEditable)
 	{
-		TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) sign.getLocation().getWorld())
-				.getTileEntityAt(sign.getX(), sign.getY(), sign.getZ());
+		TileEntitySign tileEntitySign = (TileEntitySign) ((CraftWorld) sign
+				.getLocation().getWorld()).getTileEntityAt(sign.getX(),
+						sign.getY(), sign.getZ());
 		tileEntitySign.isEditable = isEditable;
 		this.player.openSign(tileEntitySign);
 	}

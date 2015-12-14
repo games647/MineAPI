@@ -70,6 +70,12 @@ public interface MC_Player extends MC_EntityLiving
 	 * @return Ping value
 	 */
 	public int getPing();
+	
+	/**
+	 * Gets the windowId of the active container.
+	 * @return WindowId.
+	 */
+	public int getActiveContainerId();
 
 	public String getLangUsed();
 

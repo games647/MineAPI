@@ -6,7 +6,7 @@ import org.bukkit.OfflinePlayer;
 
 /**
  *  Use and change the ServerPing!
- * @author 67clement
+ * @author w67clement
  *
  */
 public interface ServerPingWrapper {
@@ -89,5 +89,8 @@ public interface ServerPingWrapper {
 	 */
 	public void setPlayerList(List<OfflinePlayer> players);
 	
+	/**
+	 * Gets the ServerPing object.
+	 */
 	public Object toServerPing();
 }

@@ -1,40 +1,119 @@
 package com.w67clement.mineapi.world;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
-public interface PacketWorldBorder extends WorldPacket
+import com.w67clement.mineapi.enums.PacketType;
+
+public abstract class PacketWorldBorder extends WorldPacket
 {
+	
+	protected World world;
+	protected Location center;
+	protected int warningDistance;
+	protected int warningTime;
+	protected double radius;
+	protected long radiusTime;
+	protected boolean radiusTimeChanged;
 
-	public PacketWorldBorder setCenterX(double x);
+	public PacketWorldBorder(World world) {
+		this.world = world;
+		WorldBorder worldBorder = this.world.getWorldBorder();
+		this.center = worldBorder.getCenter();
+		this.warningDistance = worldBorder.getWarningDistance();
+		this.warningTime = worldBorder.getWarningTime();
+		this.radius = worldBorder.getSize();
+	}
 
-	public double getCenterX();
+	public PacketType getPacketType()
+	{
+		return PacketType.PACKETPLAYOUT;
+	}
 
-	public PacketWorldBorder setCenterZ(double z);
+	public PacketWorldBorder setCenterX(double x)
+	{
+		this.center.setX(x);
+		return this;
+	}
 
-	public double getCenterZ();
+	public double getCenterX()
+	{
+		return this.center.getX();
+	}
 
-	public PacketWorldBorder setCenter(Location loc);
+	public PacketWorldBorder setCenterZ(double z)
+	{
+		this.center.setZ(z);
+		return this;
+	}
 
-	public Location getCenter();
+	public double getCenterZ()
+	{
+		return this.center.getZ();
+	}
 
-	public WorldBorder getWorldBorder();
+	public PacketWorldBorder setCenter(Location loc)
+	{
+		this.center = loc;
+		return this;
+	}
 
-	public PacketWorldBorder setWarningDistance(int blocks);
+	public Location getCenter()
+	{
+		return this.center;
+	}
 
-	public int getWarningDistance();
+	public WorldBorder getWorldBorder()
+	{
+		return this.getWorld().getWorldBorder();
+	}
 
-	public PacketWorldBorder setWarningTime(int time);
+	public PacketWorldBorder setWarningDistance(int blocks)
+	{
+		warningDistance = blocks;
+		return this;
+	}
 
-	public int getWarningTime();
+	public int getWarningDistance()
+	{
+		return this.warningDistance;
+	}
 
-	public PacketWorldBorder setNewRadius(double radius);
+	public PacketWorldBorder setWarningTime(int time)
+	{
+		this.warningTime = time;
+		return this;
+	}
+	
+	public int getWarningTime()
+	{
+		return this.warningTime;
+	}
 
-	public PacketWorldBorder setNewRadius(double radius, long time);
+	public PacketWorldBorder setNewRadius(double radius)
+	{
+		this.radius = radius;
+		return this;
+	}
 
-	public double getNewRadius();
+	public double getNewRadius()
+	{
+		return this.radius;
+	}
 
-	public long getRadiusTime();
+	public PacketWorldBorder setNewRadius(double radius, long time)
+	{
+		this.radius = radius;
+		this.radiusTime = time;
+		this.radiusTimeChanged = true;
+		return this;
+	}
+
+	public long getRadiusTime()
+	{
+		return this.radiusTime;
+	}
 
 	public enum PacketWorldBorderAction
 	{

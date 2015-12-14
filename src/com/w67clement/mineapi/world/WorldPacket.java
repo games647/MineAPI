@@ -10,12 +10,20 @@ import com.w67clement.mineapi.nms.PacketSender;
  * @author w67clement
  * @version 1.0
  */
-public interface WorldPacket extends PacketSender
+public abstract class WorldPacket extends PacketSender
 {
 
-	public World getWorld();
+	protected World world;
 
-	public String getWorldName();
+	public World getWorld()
+	{
+		return this.world;
+	}
+
+	public String getWorldName()
+	{
+		return this.world.getName();
+	}
 
 }
 

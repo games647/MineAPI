@@ -1,6 +1,7 @@
 package com.w67clement.mineapi;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -23,8 +24,10 @@ import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import com.w67clement.mineapi.api.PacketHandler;
+import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.event.PacketCancellable;
 import com.w67clement.mineapi.api.event.PacketListener;
 import com.w67clement.mineapi.api.event.RecievePacketEvent;
@@ -35,12 +38,15 @@ import com.w67clement.mineapi.api.wrappers.PacketWrapper;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.ProtocolManager;
+import com.w67clement.mineapi.nms.glowstone.GlowNmsManager;
 import com.w67clement.mineapi.nms.none.NmsManager_vNone;
 import com.w67clement.mineapi.nms.v1_8_R1.NmsManager_v1_8_R1;
 import com.w67clement.mineapi.nms.v1_8_R2.NmsManager_v1_8_R2;
 import com.w67clement.mineapi.nms.v1_8_R3.NmsManager_v1_8_R3;
+import com.w67clement.mineapi.system.ConfigManager;
 import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
+import com.w67clement.mineapi.system.ServerType;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
 import com.w67clement.mineapi.utils.MineAPIUtils;
 import com.w67clement.mineapi.utils.PluginManagerUtils;
@@ -58,32 +64,75 @@ public class MineAPI extends JavaPlugin
 	private static ModuleManager moduleManager;
 	private static MineAPI_AutoUpdater autoUpdater;
 	private static boolean isSpigot;
+	private static boolean isGlowstone;
+	private static boolean isRainbow;
+	private static String serverVersion;
+	private static ServerType serverType;
 	private static NmsManager nms;
 	private static ProtocolManager protocolManager;
+	private static ConfigManager configManager;
 	private static MineAPIConfig config;
+	private static boolean useColor = true;
 
 	@Override
 	public void onLoad()
 	{
-		console.sendMessage(PREFIX + "§aLoading §3MineAPI");
+		sendMessageToConsole(PREFIX + "§aLoading §3MineAPI");
 		isSpigot = this.getServer().getVersion().contains("Spigot");
+		try
+		{
+			Class.forName("net.glowstone.GlowServer");
+			isGlowstone = true;
+		}
+		catch (Throwable e)
+		{
+			isGlowstone = false;
+		}
+		isRainbow = this.getServer().getName().equals("Rainbow");
+		if (isSpigot) serverType = ServerType.SPIGOT;
+		else if (isGlowstone)
+		{
+			serverType = ServerType.GLOWSTONE;
+			sendMessageToConsole(PREFIX + ChatColor.GREEN
+					+ "Glowstone detected, starting integration for Glowstone...");
+			Class<?> glowServer = ReflectionAPI
+					.getClass("net.glowstone.GlowServer");
+			String game_version = (String) ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(glowServer, "GAME_VERSION", true));
+			int protocol_version = (int) ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(glowServer, "PROTOCOL_VERSION",
+							true));
+			serverVersion = "Glowstone " + game_version + " ("
+					+ protocol_version + ")";
+		}
+		else if (isRainbow)
+		{
+			serverType = ServerType.RAINBOW_PROJECT;
+			serverVersion = "Rainbow-Project "
+					+ Bukkit.getServer().getVersion();
+			useColor = false;
+		}
+		else
+		{
+			serverType = ServerType.CRAFTBUKKIT;
+		}
 	}
 
 	@Override
 	public void onEnable()
 	{
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Enabling MineAPI");
-		console.sendMessage(
+		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Enabling MineAPI");
+		sendMessageToConsole(
 				PREFIX + ChatColor.GREEN + "Loading nms manager...");
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Version: "
+		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Version: "
 				+ ChatColor.DARK_GREEN + getServerVersion());
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Server is Spigot: "
-				+ ChatColor.DARK_GREEN + isSpigot);
-		console.sendMessage(PREFIX + ChatColor.GREEN + "OS used: "
+		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Server type: "
+				+ ChatColor.DARK_GREEN + serverType.getServerName());
+		sendMessageToConsole(PREFIX + ChatColor.GREEN + "OS used: "
 				+ ChatColor.DARK_GREEN + System.getProperty("os.name"));
-		console.sendMessage(PREFIX + ChatColor.GREEN + "OS version: "
+		sendMessageToConsole(PREFIX + ChatColor.GREEN + "OS version: "
 				+ ChatColor.DARK_GREEN + System.getProperty("os.version"));
-		console.sendMessage(PREFIX + ChatColor.GREEN + "Java version: "
+		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Java version: "
 				+ ChatColor.DARK_GREEN + System.getProperty("java.version"));
 
 		// Version 1.8.R3
@@ -102,53 +151,79 @@ public class MineAPI extends JavaPlugin
 			nms = new NmsManager_v1_8_R1();
 			// No valid version detected
 		}
+		else if (isGlowstone())
+		{
+			nms = new GlowNmsManager();
+		}
+		else if (isRainbow())
+		{
+			sendMessageToConsole(
+					PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED
+							+ "You use Rainbow, isn't support by MineAPI!");
+			sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] "
+					+ ChatColor.RED
+					+ "Please install the MineAPI's module: 'RainbowMineAPI'!");
+		}
 		else
 		{
-			console.sendMessage(
-					PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED
-							+ "Your server is outdated!");
-			console.sendMessage(PREFIX + ChatColor.RED + "Attempting use the NmsManager for none version...");
-			console.sendMessage(PREFIX + ChatColor.RED + "Analysing the nms' version...");
-			if (getServerVersion().contains("v1_6")) {
-				console.sendMessage(PREFIX + ChatColor.RED + "PreNetty version detected, wasn't supported...");
+			sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] "
+					+ ChatColor.RED + "Your server is outdated!");
+			sendMessageToConsole(PREFIX + ChatColor.RED
+					+ "Attempting use the NmsManager for none version...");
+			sendMessageToConsole(
+					PREFIX + ChatColor.RED + "Analysing the nms' version...");
+			if (getServerVersion().contains("v1_6"))
+			{
+				sendMessageToConsole(PREFIX + ChatColor.RED
+						+ "PreNetty version detected, wasn't supported...");
 				Bukkit.getPluginManager().disablePlugin(this);
 				return;
-			} else if (getServerVersion().contains("v1_7")) {
-				console.sendMessage(PREFIX + ChatColor.RED + "1.7 version don't support many functions, disabling MineAPI...");
+			}
+			else if (getServerVersion().contains("v1_7"))
+			{
+				sendMessageToConsole(PREFIX + ChatColor.RED
+						+ "1.7 version don't support many functions, disabling MineAPI...");
 				Bukkit.getPluginManager().disablePlugin(this);
 				return;
-			} else {
-				console.sendMessage(PREFIX + ChatColor.RED + "Using None NmsManager...");
+			}
+			else
+			{
+				sendMessageToConsole(
+						PREFIX + ChatColor.RED + "Using None NmsManager...");
 				nms = new NmsManager_vNone();
 			}
 		}
 
 		// Simple injector
-		ProtocolInjector injector = new ProtocolInjector();
+		final ProtocolInjector injector = new ProtocolInjector();
 
-		console.sendMessage(
+		sendMessageToConsole(
 				PREFIX + ChatColor.GREEN + "Starting protocol injector...");
 		if (injector.createInjector(this))
 		{
 			injector.addServerConnectionChannel();
-			for (Player players : Bukkit.getOnlinePlayers())
-			{
-				injector.addChannel(players);
-			}
+			Bukkit.getOnlinePlayers().forEach(injector::addChannel);
 			protocolManager = new ProtocolManager(this, injector);
 			this.getServer().getPluginManager().registerEvents(protocolManager,
 					this);
 		}
 
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX);
-		console.sendMessage(
+		sendMessageToConsole(PREFIX);
+		sendMessageToConsole(PREFIX);
+		sendMessageToConsole(PREFIX + ChatColor.GREEN
+				+ "Starting load general configurations...");
+		configManager = new ConfigManager(this);
+		configManager.init();
+
+		sendMessageToConsole(PREFIX);
+		sendMessageToConsole(PREFIX);
+		sendMessageToConsole(
 				PREFIX + ChatColor.GREEN + "Starting load commands...");
 		try
 		{
 			this.getCommand("AdvancedVersion")
 					.setExecutor(new VersionCommand(this));
-			console.sendMessage(PREFIX + ChatColor.GREEN
+			sendMessageToConsole(PREFIX + ChatColor.GREEN
 					+ "The commands was load successful!");
 			MineAPICommand mineAPICmd = new MineAPICommand(this);
 			this.getCommand("MineAPI").setExecutor(mineAPICmd);
@@ -156,18 +231,18 @@ public class MineAPI extends JavaPlugin
 		}
 		catch (Throwable ex)
 		{
-			console.sendMessage(
+			sendMessageToConsole(
 					PREFIX + ChatColor.RED + "Failed to load the commands!");
 		}
 
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX);
+		sendMessageToConsole(PREFIX);
+		sendMessageToConsole(PREFIX);
 
 		// Module system
-		console.sendMessage(
+		sendMessageToConsole(
 				PREFIX + ChatColor.GREEN + "Starting load modules...");
 		moduleManager = new ModuleManager(
-				new ModuleLoader(this.getClassLoader()));
+				new ModuleLoader(this.getClassLoader(), this));
 
 		File folder = new File(this.getDataFolder(), "modules/");
 		if (folder.exists())
@@ -187,30 +262,40 @@ public class MineAPI extends JavaPlugin
 			folder.mkdirs();
 		}
 
-		console.sendMessage(PREFIX);
-		console.sendMessage(PREFIX);
+		sendMessageToConsole(PREFIX);
+		sendMessageToConsole(PREFIX);
 
-		console.sendMessage(
+		sendMessageToConsole(
 				PREFIX + ChatColor.GREEN + "Loading configuration...");
 		config = new MineAPIConfig(this);
-		console.sendMessage(PREFIX + ChatColor.GREEN
+		sendMessageToConsole(PREFIX + ChatColor.GREEN
 				+ "Configuration has loaded successfully!");
 
-		console.sendMessage(
-				PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.2)...");
+		try
+		{
+			Metrics metrics = new Metrics(this);
+			metrics.start();
+		}
+		catch (IOException e)
+		{
+			// Failed to submit the stats :-(
+		}
+
+		sendMessageToConsole(
+				PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");
 		autoUpdater = new MineAPI_AutoUpdater(true, this);
 		if (autoUpdater.haveNewUpdate())
 		{
-			console.sendMessage(
+			sendMessageToConsole(
 					PREFIX + ChatColor.GREEN + "Update found: MineAPI v"
 							+ autoUpdater.getLatestVersion());
 			if (config.allowAutoUpdate())
 			{
-				console.sendMessage(
+				sendMessageToConsole(
 						PREFIX + ChatColor.GREEN + "Starting auto-updating...");
 				if (autoUpdater.getLatestLink().equals(""))
 				{
-					console.sendMessage(PREFIX + ChatColor.RED
+					sendMessageToConsole(PREFIX + ChatColor.RED
 							+ "No latest link specified, MineAPI can't update it.");
 				}
 				else
@@ -253,23 +338,24 @@ public class MineAPI extends JavaPlugin
 							}
 							else
 							{
-								console.sendMessage(PREFIX + ChatColor.DARK_RED
+								sendMessageToConsole(PREFIX + ChatColor.DARK_RED
 										+ "[Error] " + ChatColor.RED
 										+ "Latest MineAPI can't be downloaded.");
 							}
 						}
 						else
 						{
-							console.sendMessage(PREFIX + ChatColor.DARK_RED
+							sendMessageToConsole(PREFIX + ChatColor.DARK_RED
 									+ "Error: " + ChatColor.RED
 									+ "The latest link is invalid or the website is down.");
 						}
 					}
 					catch (MalformedURLException e1)
 					{
-						console.sendMessage(PREFIX + ChatColor.DARK_RED
+						sendMessageToConsole(PREFIX + ChatColor.DARK_RED
 								+ "Error: " + ChatColor.RED
 								+ "The latest link is invalid.");
+						e1.printStackTrace();
 					}
 				}
 			}
@@ -322,11 +408,11 @@ public class MineAPI extends JavaPlugin
 		// Disabling protocol manager
 		if (protocolManager != null)
 		{
-			console.sendMessage(
+			sendMessageToConsole(
 					PREFIX + ChatColor.RED + "Disabling protocol injector...");
 			protocolManager.disable();
 		}
-		console.sendMessage(PREFIX + ChatColor.RED + "Disabling MineAPI v"
+		sendMessageToConsole(PREFIX + ChatColor.RED + "Disabling MineAPI v"
 				+ this.getDescription().getVersion());
 
 		// Disabling modules
@@ -350,7 +436,7 @@ public class MineAPI extends JavaPlugin
 			}
 		}
 		packetListeners.put(listener, methods);
-		console.sendMessage(
+		sendMessageToConsole(
 				PREFIX + ChatColor.GREEN + "The events of the plugin \""
 						+ ChatColor.DARK_GREEN + pl.getName() + ChatColor.GREEN
 						+ "\" were loaded successfully!");
@@ -517,9 +603,43 @@ public class MineAPI extends JavaPlugin
 		}
 	}
 
+	/**
+	 * Check if the server running is Spigot.
+	 */
 	public static boolean isSpigot()
 	{
 		return isSpigot;
+	}
+
+	/**
+	 * Check if the server running is Glowstone.
+	 */
+	public static boolean isGlowstone()
+	{
+		return isGlowstone;
+	}
+
+	/**
+	 * Check if the server running is Rainbow.
+	 */
+	public static boolean isRainbow()
+	{
+		return isRainbow;
+	}
+
+	/**
+	 * Send a message to the console.
+	 * 
+	 * @param msg
+	 *            Message for the console.
+	 */
+	public static void sendMessageToConsole(String msg)
+	{
+		if (!useColor)
+		{
+			msg = ChatColor.stripColor(msg);
+		}
+		console.sendMessage(msg);
 	}
 
 	/**
@@ -529,8 +649,24 @@ public class MineAPI extends JavaPlugin
 	 */
 	public static String getServerVersion()
 	{
-		return Bukkit.getServer().getClass().getPackage().getName()
-				.substring(23);
+		if (isGlowstone() || isRainbow())
+		{
+			return serverVersion;
+
+		}
+		else
+		{
+			return Bukkit.getServer().getClass().getPackage().getName()
+					.substring(23);
+		}
+	}
+
+	/**
+	 * Gets the API type of the server.
+	 */
+	public static ServerType getServerType()
+	{
+		return serverType;
 	}
 
 	/**
@@ -541,6 +677,25 @@ public class MineAPI extends JavaPlugin
 	public static NmsManager getNmsManager()
 	{
 		return nms;
+	}
+
+	/**
+	 * Sets the nms Manager of MineAPI.
+	 */
+	public void setNmsManager(NmsManager nms)
+	{
+		MineAPI.nms = nms;
+	}
+
+	/**
+	 * Gets the configurations Manager of MineAPI.<br />
+	 * With you can use a configuration for many plugins!
+	 * 
+	 * @return ConfigManager!
+	 */
+	public static ConfigManager getConfigManager()
+	{
+		return configManager;
 	}
 
 	/**

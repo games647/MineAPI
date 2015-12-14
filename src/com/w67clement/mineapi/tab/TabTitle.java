@@ -2,16 +2,47 @@ package com.w67clement.mineapi.tab;
 
 import com.w67clement.mineapi.nms.PacketSender;
 
-public interface TabTitle extends PacketSender
+public abstract class TabTitle extends PacketSender
 {
+	protected String header;
+	protected String footer;
 
-	public String getHeader();
+	public TabTitle(String header, String footer) {
+		this.setHeader(header);
+		this.setFooter(footer);
+	}
 
-	public String getFooter();
+	public String getHeader()
+	{
+		return this.header;
+	}
 
-	public TabTitle setHeader(String header);
+	public String getFooter()
+	{
+		return this.footer;
+	}
 
-	public TabTitle setFooter(String footer);
+	public TabTitle setHeader(String header)
+	{
+		if (header == null)
+		{
+			this.header = "";
+		}
+		else
+			this.header = header;
+		return this;
+	}
+
+	public TabTitle setFooter(String footer)
+	{
+		if (footer == null)
+		{
+			footer = "";
+		}
+		else
+			this.footer = footer;
+		return this;
+	}
 
 }
 
