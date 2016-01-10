@@ -1,5 +1,7 @@
 package com.w67clement.mineapi.nms.glowstone.entity;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Chunk;
@@ -21,12 +23,13 @@ import com.w67clement.mineapi.entity.MC_Entity;
 import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
+import com.w67clement.mineapi.message.ActionBarMessage;
 import com.w67clement.mineapi.message.FancyMessage;
-import com.w67clement.mineapi.nms.glowstone.play_in.GlowClientCommand;
-import com.w67clement.mineapi.nms.glowstone.play_out.message.GlowActionBarMessage;
-import com.w67clement.mineapi.nms.glowstone.play_out.message.GlowFancyMessage;
 import com.w67clement.mineapi.nms.glowstone.play_out.message.GlowTitle;
-import com.w67clement.mineapi.nms.glowstone.play_out.tab.GlowTabTitle;
+import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
+import com.w67clement.mineapi.nms.none.play_out.tab.CraftTabTitle;
+import com.w67clement.mineapi.system.MC_GameProfile;
+import com.w67clement.mineapi.system.MC_GameProfile.Property;
 
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
@@ -53,7 +56,7 @@ public class GlowMC_Player extends GlowMC_EntityLiving implements MC_Player
 	@Override
 	public void respawn()
 	{
-		if (getHandle().isDead()) new GlowClientCommand(
+		if (getHandle().isDead()) new CraftClientCommand(
 				ClientCommand.ClientCommandType.PERFORM_RESPAWN)
 						.send(this.player);
 	}
@@ -175,13 +178,13 @@ public class GlowMC_Player extends GlowMC_EntityLiving implements MC_Player
 	@Override
 	public FancyMessage sendMessage(String message)
 	{
-		return new GlowFancyMessage(message);
+		return new FancyMessage(message);
 	}
 
 	@Override
 	public void sendActionBarMessage(String message)
 	{
-		new GlowActionBarMessage(message).send(this.player);
+		new ActionBarMessage(message).send(this.player);
 	}
 
 	@Override
@@ -194,7 +197,7 @@ public class GlowMC_Player extends GlowMC_EntityLiving implements MC_Player
 	@Override
 	public void sendTabTitle(String header, String footer)
 	{
-		new GlowTabTitle(header, footer).send(this.player);
+		new CraftTabTitle(header, footer).send(this.player);
 	}
 
 	@Override
@@ -215,6 +218,18 @@ public class GlowMC_Player extends GlowMC_EntityLiving implements MC_Player
 	public Player getHandle()
 	{
 		return this.player;
+	}
+
+	@Override
+	public MC_GameProfile getMC_GameProfile()
+	{
+		List<Property> properties = new ArrayList<Property>();
+		this.player.getProfile().getProperties().forEach(property -> {
+			properties.add(new Property(property.getName(), property.getValue(),
+					property.getSignature()));
+		});
+		return new MC_GameProfile(this.player.getUniqueId(),
+				this.player.getProfile().getName(), properties);
 	}
 
 }

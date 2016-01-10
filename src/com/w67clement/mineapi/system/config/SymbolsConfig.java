@@ -8,7 +8,7 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
-public class SymbolsConfig extends Config
+public class SymbolsConfig extends YamlConfig
 {
 
 	private HashMap<String, String> symbols;

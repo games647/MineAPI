@@ -8,7 +8,8 @@ import com.w67clement.mineapi.entity.others.MC_ArmorStand;
 
 import net.minecraft.server.v1_8_R3.EntityArmorStand;
 
-public class MC_ArmorStand_v1_8_R3 extends MC_EntityLiving_v1_8_R3 implements MC_ArmorStand
+public class MC_ArmorStand_v1_8_R3 extends MC_EntityLiving_v1_8_R3
+		implements MC_ArmorStand
 {
 
 	private EntityArmorStand armorStand;
@@ -136,6 +137,18 @@ public class MC_ArmorStand_v1_8_R3 extends MC_EntityLiving_v1_8_R3 implements MC
 	public void setArms(boolean arms)
 	{
 		this.armorStand.setArms(arms);
+	}
+
+	@Override
+	public boolean hasMarker()
+	{
+		return this.armorStand.s();
+	}
+
+	@Override
+	public void setMarker(boolean marker)
+	{
+		this.armorStand.n(marker);
 	}
 
 	@Override

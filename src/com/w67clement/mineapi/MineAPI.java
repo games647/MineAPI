@@ -25,6 +25,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
+import org.mcstats.Metrics.Graph;
 
 import com.w67clement.mineapi.api.PacketHandler;
 import com.w67clement.mineapi.api.ReflectionAPI;
@@ -34,7 +35,7 @@ import com.w67clement.mineapi.api.event.RecievePacketEvent;
 import com.w67clement.mineapi.api.event.SendPacketEvent;
 import com.w67clement.mineapi.api.event.ping.PacketPingRecieveEvent;
 import com.w67clement.mineapi.api.event.ping.PacketPingSendEvent;
-import com.w67clement.mineapi.api.wrappers.PacketWrapper;
+import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.ProtocolManager;
@@ -47,6 +48,7 @@ import com.w67clement.mineapi.system.ConfigManager;
 import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
 import com.w67clement.mineapi.system.ServerType;
+import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
 import com.w67clement.mineapi.utils.MineAPIUtils;
 import com.w67clement.mineapi.utils.PluginManagerUtils;
@@ -57,14 +59,24 @@ public class MineAPI extends JavaPlugin
 	public static final String PREFIX = ChatColor.GRAY + "["
 			+ ChatColor.DARK_AQUA + "MineAPI" + ChatColor.GRAY + "]"
 			+ ChatColor.RESET + " ";
+	public static final String DEBUG_PREFIX = ChatColor.GRAY + "["
+			+ ChatColor.DARK_AQUA + "MineAPI" + ChatColor.GRAY + "]["
+			+ ChatColor.DARK_GREEN + "Debug" + ChatColor.GRAY + "]"
+			+ ChatColor.RESET + " ";
+	public static final String CONNECTION_PREFIX = ChatColor.GRAY + "["
+			+ ChatColor.DARK_GREEN + "Connection" + ChatColor.GRAY + "]"
+			+ ChatColor.RESET + " ";
 	public static final String SIMPLE_PREFIX = "[MineAPI] ";
 	public static ConsoleCommandSender console = Bukkit.getServer()
 			.getConsoleSender();
+	public static boolean debug = false;
 	private static Map<PacketListener, List<Method>> packetListeners = new HashMap<PacketListener, List<Method>>();
 	private static ModuleManager moduleManager;
 	private static MineAPI_AutoUpdater autoUpdater;
 	private static boolean isSpigot;
+	private static boolean isPaperSpigot;
 	private static boolean isGlowstone;
+	private static boolean isGlowstonePlusPlus;
 	private static boolean isRainbow;
 	private static String serverVersion;
 	private static ServerType serverType;
@@ -73,28 +85,40 @@ public class MineAPI extends JavaPlugin
 	private static ConfigManager configManager;
 	private static MineAPIConfig config;
 	private static boolean useColor = true;
+	private static boolean debugConnection = false;
+	public boolean useModuleNmsManager;
 
 	@Override
 	public void onLoad()
 	{
 		sendMessageToConsole(PREFIX + "§aLoading §3MineAPI");
 		isSpigot = this.getServer().getVersion().contains("Spigot");
+		isPaperSpigot = this.getServer().getVersion().contains("PaperSpigot");
 		try
 		{
 			Class.forName("net.glowstone.GlowServer");
 			isGlowstone = true;
+			if (this.getServer().getName().equals("Glowstone++"))
+			{
+				isGlowstonePlusPlus = true;
+			}
 		}
 		catch (Throwable e)
 		{
 			isGlowstone = false;
 		}
 		isRainbow = this.getServer().getName().equals("Rainbow");
-		if (isSpigot) serverType = ServerType.SPIGOT;
+		if (isSpigot)
+		{
+			serverType = ServerType.SPIGOT;
+			if (isPaperSpigot) serverType = ServerType.PAPERSPIGOT;
+
+		}
 		else if (isGlowstone)
 		{
 			serverType = ServerType.GLOWSTONE;
 			sendMessageToConsole(PREFIX + ChatColor.GREEN
-					+ "Glowstone detected, starting integration for Glowstone...");
+					+ "Glowstone detected, checking type of Glowstone...");
 			Class<?> glowServer = ReflectionAPI
 					.getClass("net.glowstone.GlowServer");
 			String game_version = (String) ReflectionAPI.getValue(null,
@@ -104,6 +128,9 @@ public class MineAPI extends JavaPlugin
 							true));
 			serverVersion = "Glowstone " + game_version + " ("
 					+ protocol_version + ")";
+			if (isGlowstonePlusPlus) serverType = ServerType.GLOWSTONEPLUSPLUS;
+			sendMessageToConsole(PREFIX + ChatColor.GREEN
+					+ "Starting integration for " + serverType.getServerName());
 		}
 		else if (isRainbow)
 		{
@@ -122,8 +149,6 @@ public class MineAPI extends JavaPlugin
 	public void onEnable()
 	{
 		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Enabling MineAPI");
-		sendMessageToConsole(
-				PREFIX + ChatColor.GREEN + "Loading nms manager...");
 		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Version: "
 				+ ChatColor.DARK_GREEN + getServerVersion());
 		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Server type: "
@@ -135,77 +160,123 @@ public class MineAPI extends JavaPlugin
 		sendMessageToConsole(PREFIX + ChatColor.GREEN + "Java version: "
 				+ ChatColor.DARK_GREEN + System.getProperty("java.version"));
 
-		// Version 1.8.R3
-		if (getServerVersion().equals("v1_8_R3"))
+		sendMessageToConsole(
+				PREFIX + ChatColor.GREEN + "Loading configuration...");
+		config = new MineAPIConfig(this);
+		debug = config.enableDebug();
+		debugConnection = config.enableConnectionDebug();
+		sendMessageToConsole(PREFIX + ChatColor.GREEN
+				+ "Configuration has loaded successfully!");
+
+		// Module system
+		sendMessageToConsole(
+				PREFIX + ChatColor.GREEN + "Starting load modules...");
+		moduleManager = new ModuleManager(
+				new ModuleLoader(this.getClassLoader(), this));
+
+		File folder = new File(this.getDataFolder(), "modules/");
+		if (folder.exists())
 		{
-			nms = new NmsManager_v1_8_R3();
-			// Version 1.8.R2
-		}
-		else if (getServerVersion().equals("v1_8_R2"))
-		{
-			nms = new NmsManager_v1_8_R2();
-			// Version 1.8.R1
-		}
-		else if (getServerVersion().equals("v1_8_R1"))
-		{
-			nms = new NmsManager_v1_8_R1();
-			// No valid version detected
-		}
-		else if (isGlowstone())
-		{
-			nms = new GlowNmsManager();
-		}
-		else if (isRainbow())
-		{
-			sendMessageToConsole(
-					PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED
-							+ "You use Rainbow, isn't support by MineAPI!");
-			sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] "
-					+ ChatColor.RED
-					+ "Please install the MineAPI's module: 'RainbowMineAPI'!");
+			for (File file : folder.listFiles())
+			{
+				if (file.getName().endsWith(".jar") && file.isFile())
+				{
+					Module module = moduleManager.loadModule(file);
+					if (module != null)
+					{
+						if (module.isEnableStartup())
+						{
+							moduleManager.enableModule(module);
+						}
+					}
+				}
+			}
 		}
 		else
 		{
-			sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] "
-					+ ChatColor.RED + "Your server is outdated!");
-			sendMessageToConsole(PREFIX + ChatColor.RED
-					+ "Attempting use the NmsManager for none version...");
-			sendMessageToConsole(
-					PREFIX + ChatColor.RED + "Analysing the nms' version...");
-			if (getServerVersion().contains("v1_6"))
+			folder.mkdirs();
+		}
+
+		sendMessageToConsole(
+				PREFIX + ChatColor.GREEN + "Loading NmsManager...");
+
+		if (!this.useModuleNmsManager)
+		{
+			// Version 1.8.R3
+			if (getServerVersion().equals("v1_8_R3"))
 			{
-				sendMessageToConsole(PREFIX + ChatColor.RED
-						+ "PreNetty version detected, wasn't supported...");
-				Bukkit.getPluginManager().disablePlugin(this);
-				return;
+				nms = new NmsManager_v1_8_R3();
+				// Version 1.8.R2
 			}
-			else if (getServerVersion().contains("v1_7"))
+			else if (getServerVersion().equals("v1_8_R2"))
 			{
-				sendMessageToConsole(PREFIX + ChatColor.RED
-						+ "1.7 version don't support many functions, disabling MineAPI...");
-				Bukkit.getPluginManager().disablePlugin(this);
-				return;
+				nms = new NmsManager_v1_8_R2();
+				// Version 1.8.R1
+			}
+			else if (getServerVersion().equals("v1_8_R1"))
+			{
+				nms = new NmsManager_v1_8_R1();
+				// No valid version detected
+			}
+			else if (isGlowstone())
+			{
+				nms = new GlowNmsManager();
+			}
+			else if (isRainbow())
+			{
+				sendMessageToConsole(
+						PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED
+								+ "You use Rainbow, isn't support by MineAPI!");
+				sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] "
+						+ ChatColor.RED
+						+ "Please install the MineAPI's module: 'RainbowMineAPI'!");
 			}
 			else
 			{
-				sendMessageToConsole(
-						PREFIX + ChatColor.RED + "Using None NmsManager...");
-				nms = new NmsManager_vNone();
+				sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] "
+						+ ChatColor.RED + "Your server is outdated!");
+				sendMessageToConsole(PREFIX + ChatColor.RED
+						+ "Attempting use the NmsManager for none version...");
+				sendMessageToConsole(PREFIX + ChatColor.RED
+						+ "Analysing the nms' version...");
+				if (getServerVersion().contains("v1_6"))
+				{
+					sendMessageToConsole(PREFIX + ChatColor.RED
+							+ "PreNetty version detected, wasn't supported...");
+					Bukkit.getPluginManager().disablePlugin(this);
+					return;
+				}
+				else if (getServerVersion().contains("v1_7"))
+				{
+					sendMessageToConsole(PREFIX + ChatColor.RED
+							+ "1.7 version don't support many functions, disabling MineAPI...");
+					Bukkit.getPluginManager().disablePlugin(this);
+					return;
+				}
+				else
+				{
+					sendMessageToConsole(PREFIX + ChatColor.RED
+							+ "Using None NmsManager...");
+					nms = new NmsManager_vNone();
+				}
 			}
-		}
+			sendMessageToConsole(
+					DEBUG_PREFIX + "Using " + nms.getClass().getSimpleName(),
+					true);
 
-		// Simple injector
-		final ProtocolInjector injector = new ProtocolInjector();
+			// Simple injector
+			final ProtocolInjector injector = new ProtocolInjector();
 
-		sendMessageToConsole(
-				PREFIX + ChatColor.GREEN + "Starting protocol injector...");
-		if (injector.createInjector(this))
-		{
-			injector.addServerConnectionChannel();
-			Bukkit.getOnlinePlayers().forEach(injector::addChannel);
-			protocolManager = new ProtocolManager(this, injector);
-			this.getServer().getPluginManager().registerEvents(protocolManager,
-					this);
+			sendMessageToConsole(
+					PREFIX + ChatColor.GREEN + "Starting protocol injector...");
+			if (injector.createInjector(this))
+			{
+				injector.addServerConnectionChannel();
+				Bukkit.getOnlinePlayers().forEach(injector::addChannel);
+				protocolManager = new ProtocolManager(this, injector);
+				this.getServer().getPluginManager()
+						.registerEvents(protocolManager, this);
+			}
 		}
 
 		sendMessageToConsole(PREFIX);
@@ -240,40 +311,42 @@ public class MineAPI extends JavaPlugin
 
 		// Module system
 		sendMessageToConsole(
-				PREFIX + ChatColor.GREEN + "Starting load modules...");
-		moduleManager = new ModuleManager(
-				new ModuleLoader(this.getClassLoader(), this));
-
-		File folder = new File(this.getDataFolder(), "modules/");
-		if (folder.exists())
-		{
-			for (File file : folder.listFiles())
-			{
-				if (file.getName().endsWith(".jar") && file.isFile())
-				{
-					moduleManager.loadModule(file);
-				}
-			}
-
-			moduleManager.enableModules();
-		}
-		else
-		{
-			folder.mkdirs();
-		}
+				PREFIX + ChatColor.GREEN + "Starting enable modules...");
+		moduleManager.enableModules();
 
 		sendMessageToConsole(PREFIX);
 		sendMessageToConsole(PREFIX);
-
-		sendMessageToConsole(
-				PREFIX + ChatColor.GREEN + "Loading configuration...");
-		config = new MineAPIConfig(this);
-		sendMessageToConsole(PREFIX + ChatColor.GREEN
-				+ "Configuration has loaded successfully!");
 
 		try
 		{
 			Metrics metrics = new Metrics(this);
+
+			Graph graph_server_type = metrics.createGraph("Server Type");
+
+			graph_server_type.addPlotter(
+					new Metrics.Plotter(serverType.getServerName()) {
+
+						@Override
+						public int getValue()
+						{
+							return 1;
+						}
+
+					});
+
+			Graph graph_nms_used = metrics.createGraph("NmsManager Used");
+
+			graph_nms_used.addPlotter(
+					new Metrics.Plotter(nms.getClass().getSimpleName()) {
+
+						@Override
+						public int getValue()
+						{
+							return 1;
+						}
+
+					});
+
 			metrics.start();
 		}
 		catch (IOException e)
@@ -405,12 +478,25 @@ public class MineAPI extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		// Disabling protocol manager
-		if (protocolManager != null)
+		try
 		{
-			sendMessageToConsole(
-					PREFIX + ChatColor.RED + "Disabling protocol injector...");
-			protocolManager.disable();
+			// Disabling protocol manager
+			if (protocolManager != null)
+			{
+				sendMessageToConsole(PREFIX + ChatColor.RED
+						+ "Disabling protocol injector...");
+				protocolManager.disable();
+			}
+		}
+		catch (NoClassDefFoundError e)
+		{
+			sendMessageToConsole(PREFIX + ChatColor.RED
+					+ "Error detected during disabling protocol injector!");
+			sendMessageToConsole(PREFIX + ChatColor.RED
+					+ "Are you reload with new MineAPI's JarFile?");
+			sendMessageToConsole(DEBUG_PREFIX + ChatColor.RED + "Error: "
+					+ e.getClass().getSimpleName() + " ;; Message: "
+					+ e.getMessage());
 		}
 		sendMessageToConsole(PREFIX + ChatColor.RED + "Disabling MineAPI v"
 				+ this.getDescription().getVersion());
@@ -442,7 +528,7 @@ public class MineAPI extends JavaPlugin
 						+ "\" were loaded successfully!");
 	}
 
-	public void packetSend(PacketWrapper packetWrapper,
+	public void packetSend(MC_PacketWrapper<?> packetWrapper,
 			PacketCancellable cancellable, Player player)
 	{
 		try
@@ -463,14 +549,16 @@ public class MineAPI extends JavaPlugin
 
 					if (ann.listenType() == PacketList.ALL
 							|| ann.listenType().getPacketName()
-									.equals(packetWrapper.getPacketName()))
+									.equals(packetWrapper.getPacketName())
+							|| ann.listenType().getPacketAliases()
+									.contains(packetWrapper.getPacketName()))
 					{
 
 						method.setAccessible(true);
 						try
 						{
 							method.invoke(listener.getKey(),
-									new SendPacketEvent(packetWrapper,
+									new SendPacketEvent<>(packetWrapper,
 											cancellable, player));
 						}
 						catch (Exception e)
@@ -487,7 +575,7 @@ public class MineAPI extends JavaPlugin
 		}
 	}
 
-	public void pingPacketSend(PacketWrapper packetWrapper,
+	public void pingPacketSend(MC_PacketWrapper<?> packetWrapper,
 			PacketCancellable cancellable, String ip)
 	{
 		try
@@ -508,14 +596,16 @@ public class MineAPI extends JavaPlugin
 
 					if (ann.listenType() == PacketList.ALL
 							|| ann.listenType().getPacketName()
-									.equals(packetWrapper.getPacketName()))
+									.equals(packetWrapper.getPacketName())
+							|| ann.listenType().getPacketAliases()
+									.contains(packetWrapper.getPacketName()))
 					{
 
 						method.setAccessible(true);
 						try
 						{
 							method.invoke(listener.getKey(),
-									new PacketPingSendEvent(packetWrapper,
+									new PacketPingSendEvent<>(packetWrapper,
 											cancellable, ip));
 						}
 						catch (Exception e)
@@ -532,7 +622,7 @@ public class MineAPI extends JavaPlugin
 		}
 	}
 
-	public void packetRecieve(PacketWrapper packetWrapper,
+	public void packetRecieve(MC_PacketWrapper<?> packetWrapper,
 			PacketCancellable cancellable, Player player)
 	{
 		for (Entry<PacketListener, List<Method>> listener : packetListeners
@@ -548,14 +638,17 @@ public class MineAPI extends JavaPlugin
 
 				PacketHandler ann = method.getAnnotation(PacketHandler.class);
 
-				if (ann.listenType() == PacketList.ALL || ann.listenType()
-						.getPacketName().equals(packetWrapper.getPacketName()))
+				if (ann.listenType() == PacketList.ALL
+						|| ann.listenType().getPacketName()
+								.equals(packetWrapper.getPacketName())
+						|| ann.listenType().getPacketAliases()
+								.contains(packetWrapper.getPacketName()))
 				{
 
 					method.setAccessible(true);
 					try
 					{
-						method.invoke(listener.getKey(), new RecievePacketEvent(
+						method.invoke(listener.getKey(), new RecievePacketEvent<>(
 								packetWrapper, cancellable, player));
 					}
 					catch (Exception e)
@@ -567,7 +660,7 @@ public class MineAPI extends JavaPlugin
 		}
 	}
 
-	public void pingPacketRecieve(PacketWrapper packetWrapper,
+	public void pingPacketRecieve(MC_PacketWrapper<?> packetWrapper,
 			PacketCancellable cancellable, String ip)
 	{
 		for (Entry<PacketListener, List<Method>> listener : packetListeners
@@ -583,15 +676,18 @@ public class MineAPI extends JavaPlugin
 
 				PacketHandler ann = method.getAnnotation(PacketHandler.class);
 
-				if (ann.listenType() == PacketList.ALL || ann.listenType()
-						.getPacketName().equals(packetWrapper.getPacketName()))
+				if (ann.listenType() == PacketList.ALL
+						|| ann.listenType().getPacketName()
+								.equals(packetWrapper.getPacketName())
+						|| ann.listenType().getPacketAliases()
+								.contains(packetWrapper.getPacketName()))
 				{
 
 					method.setAccessible(true);
 					try
 					{
 						method.invoke(listener.getKey(),
-								new PacketPingRecieveEvent(packetWrapper,
+								new PacketPingRecieveEvent<>(packetWrapper,
 										cancellable, ip));
 					}
 					catch (Exception e)
@@ -620,6 +716,22 @@ public class MineAPI extends JavaPlugin
 	}
 
 	/**
+	 * Check if the server running is Glowstone++.
+	 */
+	public static boolean isGlowstonePlusPlus()
+	{
+		return isGlowstonePlusPlus;
+	}
+
+	/**
+	 * Check if the server running is Glowstone.
+	 */
+	public static boolean isPaperSpigot()
+	{
+		return isPaperSpigot;
+	}
+
+	/**
 	 * Check if the server running is Rainbow.
 	 */
 	public static boolean isRainbow()
@@ -635,6 +747,21 @@ public class MineAPI extends JavaPlugin
 	 */
 	public static void sendMessageToConsole(String msg)
 	{
+		sendMessageToConsole(msg, false);
+	}
+
+	/**
+	 * Send a message to the console.
+	 * 
+	 * @param msg
+	 *            Message for the console.
+	 */
+	public static void sendMessageToConsole(String msg, boolean debug)
+	{
+		if (debug)
+		{
+			if (!MineAPI.debug) return;
+		}
 		if (!useColor)
 		{
 			msg = ChatColor.stripColor(msg);
@@ -708,6 +835,16 @@ public class MineAPI extends JavaPlugin
 		return moduleManager;
 	}
 
+	/**
+	 * Gets whether debug connection was enabled.
+	 * 
+	 * @return Debug Connection enabled or not.
+	 */
+	public static boolean hasEnableDebugConnection()
+	{
+		return debugConnection;
+	}
+
 	private static class MineAPIConfig
 	{
 
@@ -736,6 +873,16 @@ public class MineAPI extends JavaPlugin
 		public boolean allowAutoUpdate()
 		{
 			return getConfig().getBoolean("AllowAutoUpdate", false);
+		}
+
+		public boolean enableDebug()
+		{
+			return getConfig().getBoolean("EnableDebug", false);
+		}
+
+		public boolean enableConnectionDebug()
+		{
+			return getConfig().getBoolean("EnableConnectionDebug", false);
 		}
 	}
 }

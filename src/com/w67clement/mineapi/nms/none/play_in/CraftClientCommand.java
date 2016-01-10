@@ -2,6 +2,7 @@ package com.w67clement.mineapi.nms.none.play_in;
 
 import org.bukkit.entity.Player;
 
+import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.player.ClientCommand;
 
@@ -19,22 +20,31 @@ public class CraftClientCommand extends ClientCommand
 
 	static
 	{
-		packetClass = ReflectionAPI.getNmsClass("PacketPlayInClientCommand");
-		enum_client_command = ReflectionAPI.NmsClass
-				.getEnumClientCommandClass();
-		for (Object obj : enum_client_command.getEnumConstants())
+		if (MineAPI.isGlowstone())
 		{
-			if (obj.toString().equals("PERFORM_RESPAWN"))
+			packetClass = ReflectionAPI.getClass(
+					"net.glowstone.net.message.play.player.ClientStatusMessage");
+		}
+		else
+		{
+			packetClass = ReflectionAPI
+					.getNmsClass("PacketPlayInClientCommand");
+			enum_client_command = ReflectionAPI.NmsClass
+					.getEnumClientCommandClass();
+			for (Object obj : enum_client_command.getEnumConstants())
 			{
-				enum_perform_respawn = obj;
-			}
-			else if (obj.toString().equals("REQUEST_STATS"))
-			{
-				enum_request_stats = obj;
-			}
-			else if (obj.toString().equals("OPEN_INVENTORY_ACHIEVEMENT"))
-			{
-				enum_open_inventory_achievement = obj;
+				if (obj.toString().equals("PERFORM_RESPAWN"))
+				{
+					enum_perform_respawn = obj;
+				}
+				else if (obj.toString().equals("REQUEST_STATS"))
+				{
+					enum_request_stats = obj;
+				}
+				else if (obj.toString().equals("OPEN_INVENTORY_ACHIEVEMENT"))
+				{
+					enum_open_inventory_achievement = obj;
+				}
 			}
 		}
 	}
@@ -42,7 +52,28 @@ public class CraftClientCommand extends ClientCommand
 	@Override
 	public void send(Player player)
 	{
-		Object command = null;
+		Object packet = this.constructPacket();
+		if (packet != null)
+		{
+			ReflectionAPI.NmsClass.sendPacket(player, packet);
+		}
+	}
+
+	@Override
+	public Object constructPacket()
+	{
+		if (MineAPI.isSpigot())
+		{
+			return this.constructPacket_Bukkit();
+		}
+		else if (MineAPI
+				.isGlowstone()) { return this.constructPacket_Glowstone(); }
+		return this.constructPacket_Bukkit();
+	}
+
+	private Object constructPacket_Bukkit()
+	{
+		Object command = enum_perform_respawn;
 		switch (this.commandType)
 		{
 			case PERFORM_RESPAWN:
@@ -61,8 +92,30 @@ public class CraftClientCommand extends ClientCommand
 		{
 			Object packet = ReflectionAPI.newInstance(ReflectionAPI
 					.getConstructor(packetClass, enum_client_command), command);
-			ReflectionAPI.NmsClass.sendPacket(player, packet);
+			return packet;
 		}
+		return null;
+	}
+
+	private Object constructPacket_Glowstone()
+	{
+		int command = 0;
+		switch (this.commandType)
+		{
+			case PERFORM_RESPAWN:
+				command = 0;
+				break;
+			case REQUEST_STATS:
+				command = 1;
+				break;
+			case OPEN_INVENTORY_ACHIEVEMENT:
+				command = 2;
+				break;
+			default:
+				break;
+		}
+		return ReflectionAPI.newInstance(
+				ReflectionAPI.getConstructor(packetClass, int.class), command);
 	}
 
 }

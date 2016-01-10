@@ -36,71 +36,98 @@ public class CraftPacketPlayerInfo extends PacketPlayerInfo
 
 	static
 	{
-		packetClass = ReflectionAPI.getNmsClass("PacketPlayOutPlayerInfo");
-		if (MineAPI.getServerVersion().equals("v1_8_R1"))
-			playerDataClass = ReflectionAPI.getNmsClass("PlayerInfoData");
-		else
-			playerDataClass = ReflectionAPI
-					.getNmsClass("PacketPlayOutPlayerInfo$PlayerInfoData");
-		if (MineAPI.getServerVersion().equals("v1_8_R1"))
-			enum_player_info_actionClass = ReflectionAPI
-					.getNmsClass("EnumPlayerInfoAction");
-		else
-			enum_player_info_actionClass = ReflectionAPI.getNmsClass(
-					"PacketPlayOutPlayerInfo$EnumPlayerInfoAction");
-		for (Object obj : enum_player_info_actionClass.getEnumConstants())
+		if (MineAPI.isGlowstone())
 		{
-			if (obj.toString().equals("ADD_PLAYER"))
-			{
-				enum_add_player = obj;
-			}
-			else if (obj.toString().equals("REMOVE_PLAYER"))
-			{
-				enum_remove_player = obj;
-			}
-			else if (obj.toString().equals("UPDATE_DISPLAY_NAME"))
-			{
-				enum_update_display_name = obj;
-			}
-			else if (obj.toString().equals("UPDATE_GAME_MODE"))
-			{
-				enum_update_game_mode = obj;
-			}
-			else if (obj.toString().equals("UPDATE_LATENCY"))
-			{
-				enum_update_latency = obj;
-			}
+
 		}
-		if (MineAPI.getServerVersion().equals("v1_8_R1"))
-			enum_game_modeClass = ReflectionAPI.getNmsClass("EnumGamemode");
 		else
-			enum_game_modeClass = ReflectionAPI
-					.getNmsClass("WorldSettings$EnumGamemode");
-		for (Object obj : enum_game_modeClass.getEnumConstants())
 		{
-			if (obj.toString().equals("ADVENTURE"))
+			packetClass = ReflectionAPI.getNmsClass("PacketPlayOutPlayerInfo");
+			if (MineAPI.getServerVersion().equals("v1_8_R1"))
+				playerDataClass = ReflectionAPI.getNmsClass("PlayerInfoData");
+			else
+				playerDataClass = ReflectionAPI
+						.getNmsClass("PacketPlayOutPlayerInfo$PlayerInfoData");
+			if (MineAPI.getServerVersion().equals("v1_8_R1"))
+				enum_player_info_actionClass = ReflectionAPI
+						.getNmsClass("EnumPlayerInfoAction");
+			else
+				enum_player_info_actionClass = ReflectionAPI.getNmsClass(
+						"PacketPlayOutPlayerInfo$EnumPlayerInfoAction");
+			for (Object obj : enum_player_info_actionClass.getEnumConstants())
 			{
-				enum_adventure = obj;
+				if (obj.toString().equals("ADD_PLAYER"))
+				{
+					enum_add_player = obj;
+				}
+				else if (obj.toString().equals("REMOVE_PLAYER"))
+				{
+					enum_remove_player = obj;
+				}
+				else if (obj.toString().equals("UPDATE_DISPLAY_NAME"))
+				{
+					enum_update_display_name = obj;
+				}
+				else if (obj.toString().equals("UPDATE_GAME_MODE"))
+				{
+					enum_update_game_mode = obj;
+				}
+				else if (obj.toString().equals("UPDATE_LATENCY"))
+				{
+					enum_update_latency = obj;
+				}
 			}
-			else if (obj.toString().equals("CREATIVE"))
+			if (MineAPI.getServerVersion().equals("v1_8_R1"))
+				enum_game_modeClass = ReflectionAPI.getNmsClass("EnumGamemode");
+			else
+				enum_game_modeClass = ReflectionAPI
+						.getNmsClass("WorldSettings$EnumGamemode");
+			for (Object obj : enum_game_modeClass.getEnumConstants())
 			{
-				enum_creative = obj;
+				if (obj.toString().equals("ADVENTURE"))
+				{
+					enum_adventure = obj;
+				}
+				else if (obj.toString().equals("CREATIVE"))
+				{
+					enum_creative = obj;
+				}
+				else if (obj.toString().equals("SPECTATOR"))
+				{
+					enum_spectator = obj;
+				}
+				else if (obj.toString().equals("SURVIVAL"))
+				{
+					enum_survival = obj;
+				}
 			}
-			else if (obj.toString().equals("SPECTATOR"))
-			{
-				enum_spectator = obj;
-			}
-			else if (obj.toString().equals("SURVIVAL"))
-			{
-				enum_survival = obj;
-			}
+			playerDataConstructor = playerDataClass.getConstructors()[0];
 		}
-		playerDataConstructor = playerDataClass.getConstructors()[0];
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
 	public void send(Player player)
+	{
+		ReflectionAPI.NmsClass.sendPacket(player, this.constructPacket());
+	}
+
+	@Override
+	public Object constructPacket()
+	{
+		if (MineAPI.isSpigot())
+		{
+			this.constructPacket_Bukkit();
+		}
+		else if (MineAPI
+				.isGlowstone()) { throw new UnsupportedOperationException(
+						"MineAPI cannot construct packet '"
+								+ this.getClass().getSimpleName()
+								+ "' for Glowstone."); }
+		return this.constructPacket_Bukkit();
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private Object constructPacket_Bukkit()
 	{
 		Object packet = ReflectionAPI
 				.newInstance(ReflectionAPI.getConstructor(packetClass));
@@ -158,8 +185,6 @@ public class CraftPacketPlayerInfo extends PacketPlayerInfo
 
 		ReflectionAPI.setValue(packet,
 				ReflectionAPI.getField(packetClass, "b", true), data);
-
-		ReflectionAPI.NmsClass.sendPacket(player, packet);
+		return packet;
 	}
-
 }

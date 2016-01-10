@@ -19,11 +19,16 @@ public class ConfigManager
 	public void init()
 	{
 		if (symbolsConfig == null)
+		{
+			MineAPI.sendMessageToConsole(
+					MineAPI.DEBUG_PREFIX + "Loading SymbolsConfig...", true);
 			symbolsConfig = new SymbolsConfig(this.mineapi);
+		}
 	}
 
 	/**
 	 * Gets the configuration for symbols.
+	 * 
 	 * @return SymbolsConfig Object.
 	 */
 	public SymbolsConfig getSymbolsConfig()

@@ -5,6 +5,7 @@ public enum ServerType
 	
 	CRAFTBUKKIT("CraftBukkit"),
 	GLOWSTONE("Glowstone"),
+	GLOWSTONEPLUSPLUS("Glowstone++"),
 	PAPERSPIGOT("PaperSpigot"),
 	RAINBOW_PROJECT("Rainbow_Project"),
 	SPIGOT("Spigot");

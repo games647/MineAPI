@@ -1,8 +1,11 @@
 package com.w67clement.mineapi.nms.none.play_out.tab;
 
+import java.lang.reflect.Constructor;
+
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
+import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.tab.TabTitle;
@@ -23,8 +26,14 @@ public class CraftTabTitle extends TabTitle
 
 	static
 	{
-		tabtitlePacketClass = ReflectionAPI
-				.getNmsClass("PacketPlayOutPlayerListHeaderFooter");
+		if (MineAPI.isGlowstone())
+		{
+			tabtitlePacketClass = ReflectionAPI.getClass(
+					"net.glowstone.net.message.play.game.UserListHeaderFooterMessage");
+		}
+		else
+			tabtitlePacketClass = ReflectionAPI
+					.getNmsClass("PacketPlayOutPlayerListHeaderFooter");
 	}
 
 	@Override
@@ -35,6 +44,23 @@ public class CraftTabTitle extends TabTitle
 
 	@Override
 	public void send(Player player)
+	{
+		ReflectionAPI.NmsClass.sendPacket(player, this.constructPacket());
+	}
+
+	@Override
+	public Object constructPacket()
+	{
+		if (MineAPI.isSpigot())
+		{
+			return this.constructPacket_Bukkit();
+		}
+		else if (MineAPI
+				.isGlowstone()) { return this.constructPacket_Glowstone(); }
+		return this.constructPacket_Bukkit();
+	}
+
+	private Object constructPacket_Bukkit()
 	{
 		this.header = ChatColor.translateAlternateColorCodes('&', this.header);
 		this.footer = ChatColor.translateAlternateColorCodes('&', this.footer);
@@ -55,14 +81,49 @@ public class CraftTabTitle extends TabTitle
 						String.class),
 				"{text:\"" + this.footer + ChatColor.RESET + "\"}");
 		// Set fields
-		ReflectionAPI.setValue(tabTitlePacket,
-				ReflectionAPI.getField(tabtitlePacketClass, "a", true),
-				headerComponent);
-		ReflectionAPI.setValue(tabTitlePacket,
-				ReflectionAPI.getField(tabtitlePacketClass, "b", true),
-				footerComponent);
-		// Send packet
-		ReflectionAPI.NmsClass.sendPacket(player, tabTitlePacket);
+		if ((this.header != null) && (!this.header.isEmpty()))
+			ReflectionAPI.setValue(tabTitlePacket,
+					ReflectionAPI.getField(tabtitlePacketClass, "a", true),
+					headerComponent);
+		if ((this.footer != null) && (!this.footer.isEmpty()))
+			ReflectionAPI.setValue(tabTitlePacket,
+					ReflectionAPI.getField(tabtitlePacketClass, "b", true),
+					footerComponent);
+		return tabTitlePacket;
+	}
+
+	private Object constructPacket_Glowstone()
+	{
+		this.header = ChatColor.translateAlternateColorCodes('&', this.header);
+		this.footer = ChatColor.translateAlternateColorCodes('&', this.footer);
+
+		Class<?> textMsgClass = ReflectionAPI
+				.getClass("net.glowstone.util.TextMessage");
+		Class<?> jsonObject = ReflectionAPI
+				.getClass("org.json.simple.JSONObject");
+		Class<?> jsonParserClass = ReflectionAPI
+				.getClass("org.json.simple.parser.JSONParser");
+		Object jsonParser = ReflectionAPI
+				.newInstance(ReflectionAPI.getConstructor(jsonParserClass));
+		Constructor<?> textMsgConstructor = ReflectionAPI
+				.getConstructor(textMsgClass, jsonObject);
+
+		Object header = ReflectionAPI.newInstance(textMsgConstructor,
+				ReflectionAPI.invokeMethod(jsonParser,
+						ReflectionAPI.getMethod(jsonParserClass, "parse",
+								String.class),
+						"{\"text\":\"" + this.header + "\"}"));
+		Object footer = ReflectionAPI.newInstance(textMsgConstructor,
+				ReflectionAPI.invokeMethod(jsonParser,
+						ReflectionAPI.getMethod(jsonParserClass, "parse",
+								String.class),
+						"{\"text\":\"" + this.footer + "\"}"));
+
+		// Create packet
+		Object tabTitlePacket = ReflectionAPI
+				.newInstance(ReflectionAPI.getConstructor(tabtitlePacketClass,
+						textMsgClass, textMsgClass), header, footer);
+		return tabTitlePacket;
 	}
 
 }

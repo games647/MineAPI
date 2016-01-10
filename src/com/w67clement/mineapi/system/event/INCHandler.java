@@ -12,7 +12,10 @@ import org.bukkit.entity.Player;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.event.PacketCancellable;
-import com.w67clement.mineapi.api.wrappers.PacketWrapper;
+import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
+import com.w67clement.mineapi.enums.PacketList;
+import com.w67clement.mineapi.nms.NmsPacket;
+import com.w67clement.mineapi.utils.NmsPacketReader;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -34,9 +37,11 @@ public class INCHandler implements IHandler
 			"playerConnection", true);
 	private static Field network = ReflectionAPI.getField(playerConnection,
 			"networkManager", true);
+	private static NmsPacketReader reader;
 
 	public INCHandler(MineAPI mineapi) {
 		INCHandler.mineapi = mineapi;
+		reader = new NmsPacketReader();
 	}
 
 	private static Channel getChannel(Object networkManager)
@@ -87,8 +92,14 @@ public class INCHandler implements IHandler
 				{
 					try
 					{
+						ChannelHandler handler = new ChannelHandler(player);
 						channel.pipeline().addBefore("packet_handler",
-								"MineAPI", new ChannelHandler(player));
+								"MineAPI", handler);
+						MineAPI.sendMessageToConsole(
+								MineAPI.DEBUG_PREFIX
+										+ handler.getClass().getName()
+										+ " added to " + player.getName() + ".",
+								true);
 					}
 					catch (Exception e)
 					{}
@@ -117,7 +128,12 @@ public class INCHandler implements IHandler
 				{
 					try
 					{
+						io.netty.channel.ChannelHandler handler = channel
+								.pipeline().get("MineAPI");
 						channel.pipeline().remove("MineAPI");
+						MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX
+								+ handler.getClass().getName() + " removed to "
+								+ player.getName() + ".", true);
 					}
 					catch (Exception e)
 					{}
@@ -182,9 +198,9 @@ public class INCHandler implements IHandler
 						{
 							channel = getChannel(a);
 						}
-						//if (channel.pipeline().get("MineAPI_Ping") == null)
-							channel.pipeline().addBefore("packet_handler",
-									"MineAPI_Ping", new PingChannelHandler());
+						// if (channel.pipeline().get("MineAPI_Ping") == null)
+						channel.pipeline().addBefore("packet_handler",
+								"MineAPI_Ping", new INCChannelHandler());
 					}
 					catch (Exception e)
 					{}
@@ -234,9 +250,44 @@ public class INCHandler implements IHandler
 		{
 			PacketCancellable cancel = new PacketCancellable();
 			Object packet = msg;
-			mineapi.packetSend(new PacketWrapper(packet), cancel, player);
+			NmsPacket mineapi_packet = null;
+			try
+			{
+				mineapi_packet = reader.readPacket(packet,
+						PacketList
+								.getPacketByName(
+										packet.getClass().getSimpleName())
+								.getMineAPIPacket());
+			}
+			catch (NullPointerException e)
+			{}
+			catch (RuntimeException e)
+			{
+				MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX
+						+ ChatColor.DARK_RED + "[ERROR]" + ChatColor.RED
+						+ " Error detected in the INCHandler: "
+						+ e.getClass().getSimpleName(), true);
+				MineAPI.sendMessageToConsole(
+						MineAPI.DEBUG_PREFIX + ChatColor.DARK_RED + "[ERROR]"
+								+ ChatColor.RED + " Message: " + e.getMessage(),
+						true);
+				if (MineAPI.debug) e.printStackTrace();
+			}
+			catch (Exception e)
+			{}
+			MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(
+					mineapi_packet, packet);
+			mineapi.packetSend(packetWrapper, cancel, player);
 			if (cancel.isCancelled()) { return; }
-			super.write(ctx, msg, promise);
+			if (mineapi_packet == null)
+			{
+				if (!cancel.hasForceChanges())
+				{
+					super.write(ctx, msg, promise);
+					return;
+				}
+			}
+			super.write(ctx, packetWrapper.getNmsPacket(), promise);
 		}
 
 		@Override
@@ -245,9 +296,44 @@ public class INCHandler implements IHandler
 		{
 			Object packet = msg;
 			PacketCancellable cancel = new PacketCancellable();
-			mineapi.packetRecieve(new PacketWrapper(packet), cancel, player);
+			NmsPacket mineapi_packet = null;
+			try
+			{
+				mineapi_packet = reader.readPacket(packet,
+						PacketList
+								.getPacketByName(
+										packet.getClass().getSimpleName())
+								.getMineAPIPacket());
+			}
+			catch (NullPointerException e)
+			{}
+			catch (RuntimeException e)
+			{
+				MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX
+						+ ChatColor.DARK_RED + "[ERROR]" + ChatColor.RED
+						+ " Error detected in the INCHandler: "
+						+ e.getClass().getSimpleName(), true);
+				MineAPI.sendMessageToConsole(
+						MineAPI.DEBUG_PREFIX + ChatColor.DARK_RED + "[ERROR]"
+								+ ChatColor.RED + " Message: " + e.getMessage(),
+						true);
+				if (MineAPI.debug) e.printStackTrace();
+			}
+			catch (Exception e)
+			{}
+			MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(
+					mineapi_packet, packet);
+			mineapi.packetRecieve(packetWrapper, cancel, player);
 			if (cancel.isCancelled()) { return; }
-			super.channelRead(ctx, msg);
+			if (mineapi_packet == null)
+			{
+				if (!cancel.hasForceChanges())
+				{
+					super.channelRead(ctx, msg);
+					return;
+				}
+			}
+			super.channelRead(ctx, packetWrapper.getNmsPacket());
 		}
 
 		@Override
@@ -257,7 +343,7 @@ public class INCHandler implements IHandler
 		}
 	}
 
-	public class PingChannelHandler extends ChannelDuplexHandler
+	public class INCChannelHandler extends ChannelDuplexHandler
 	{
 
 		@Override
@@ -270,26 +356,108 @@ public class INCHandler implements IHandler
 				return;
 			}
 			PacketCancellable cancel = new PacketCancellable();
-			mineapi.pingPacketSend(new PacketWrapper(msg), cancel,
+			Object packet = msg;
+			NmsPacket mineapi_packet = null;
+			try
+			{
+				mineapi_packet = reader.readPacket(packet,
+						PacketList
+								.getPacketByName(
+										packet.getClass().getSimpleName())
+								.getMineAPIPacket());
+			}
+			catch (NullPointerException e)
+			{}
+			catch (RuntimeException e)
+			{
+				MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX
+						+ ChatColor.DARK_RED + "[ERROR]" + ChatColor.RED
+						+ " Error detected in the INCHandler: "
+						+ e.getClass().getSimpleName(), true);
+				MineAPI.sendMessageToConsole(
+						MineAPI.DEBUG_PREFIX + ChatColor.DARK_RED + "[ERROR]"
+								+ ChatColor.RED + " Message: " + e.getMessage(),
+						true);
+				if (MineAPI.debug) e.printStackTrace();
+			}
+			catch (Exception e)
+			{}
+			MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(
+					mineapi_packet, packet);
+			mineapi.pingPacketSend(packetWrapper, cancel,
 					ctx.channel().remoteAddress().toString());
 			if (cancel.isCancelled()) { return; }
-			super.write(ctx, msg, promise);
+			if (mineapi_packet == null)
+			{
+				if (!cancel.hasForceChanges())
+				{
+					super.write(ctx, msg, promise);
+					return;
+				}
+			}
+			super.write(ctx, packetWrapper.getNmsPacket(), promise);
 		}
 
 		@Override
 		public void channelRead(ChannelHandlerContext ctx, Object msg)
 				throws Exception
 		{
-			if (!msg.getClass().getSimpleName().startsWith("PacketStatus"))
+			if (msg.getClass().getSimpleName()
+					.equals("PacketHandshakingInSetProtocol")
+					&& MineAPI.hasEnableDebugConnection())
+			{
+				MineAPI.sendMessageToConsole(MineAPI.CONNECTION_PREFIX + "["
+						+ ctx.channel().remoteAddress().toString() + "] "
+						+ this.getClass().getSimpleName() + " has connected.");
+			}
+			if ((!msg.getClass().getSimpleName().startsWith("PacketStatus"))
+					|| (!msg.getClass().getSimpleName()
+							.equals("PacketHandshakingInSetProtocol")))
 			{
 				super.channelRead(ctx, msg);
 				return;
 			}
 			PacketCancellable cancel = new PacketCancellable();
-			mineapi.pingPacketRecieve(new PacketWrapper(msg), cancel,
+			Object packet = msg;
+			NmsPacket mineapi_packet = null;
+			try
+			{
+				mineapi_packet = reader.readPacket(packet,
+						PacketList
+								.getPacketByName(
+										packet.getClass().getSimpleName())
+								.getMineAPIPacket());
+			}
+			catch (NullPointerException e)
+			{}
+			catch (RuntimeException e)
+			{
+				MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX
+						+ ChatColor.DARK_RED + "[ERROR]" + ChatColor.RED
+						+ " Error detected in the INCHandler: "
+						+ e.getClass().getSimpleName(), true);
+				MineAPI.sendMessageToConsole(
+						MineAPI.DEBUG_PREFIX + ChatColor.DARK_RED + "[ERROR]"
+								+ ChatColor.RED + " Message: " + e.getMessage(),
+						true);
+				if (MineAPI.debug) e.printStackTrace();
+			}
+			catch (Exception e)
+			{}
+			MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(
+					mineapi_packet, packet);
+			mineapi.pingPacketRecieve(packetWrapper, cancel,
 					ctx.channel().remoteAddress().toString());
 			if (cancel.isCancelled()) { return; }
-			super.channelRead(ctx, msg);
+			if (mineapi_packet == null)
+			{
+				if (!cancel.hasForceChanges())
+				{
+					super.channelRead(ctx, msg);
+					return;
+				}
+			}
+			super.channelRead(ctx, packetWrapper.getNmsPacket());
 		}
 	}
 }

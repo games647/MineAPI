@@ -1,5 +1,9 @@
-#Configuration of MineAPI
-#Allow auto-update's notifications.
+# Configuration of MineAPI
+# Allow auto-update's notifications.
 AllowUpdateNotifications: true
-#Allow auto updating
+# Allow auto updating
 AllowAutoUpdate: false
+# Enable debugging
+EnableDebug: false
+# Enable connection debugging
+EnableConnectionDebug: false

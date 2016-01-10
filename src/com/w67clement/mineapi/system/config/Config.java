@@ -7,8 +7,6 @@ import java.io.InputStream;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 
 public abstract class Config
@@ -16,7 +14,6 @@ public abstract class Config
 
 	protected Plugin plugin;
 	private File file;
-	protected FileConfiguration configuration;
 
 	public Config(Plugin plugin, File file) {
 		this.plugin = plugin;
@@ -31,20 +28,9 @@ public abstract class Config
 		{
 			this.saveResource(this.file.getName(), true);
 		}
-		this.configuration = YamlConfiguration.loadConfiguration(this.file);
 	}
 
-	public void save()
-	{
-		try
-		{
-			this.configuration.save(this.file);
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+	public abstract void save();
 
 	public File getFile()
 	{
@@ -52,7 +38,9 @@ public abstract class Config
 	}
 
 	/**
-	 * Same method of {@link #saveResource(String, File, boolean)} but data folder is the data folder of the plugin.
+	 * Same method of {@link #saveResource(String, File, boolean)} but data
+	 * folder is the data folder of the plugin.
+	 * 
 	 * @see #saveResource(String, File, boolean)
 	 */
 	public void saveResource(String resourcePath, boolean replace)
@@ -63,9 +51,13 @@ public abstract class Config
 	/**
 	 * Save a resource from the plugin to data folder. <br />
 	 * More than optimized method that saveResource of JavaPlugin.
-	 * @param resourcePath Path of the file in plugin.
-	 * @param dataFolder Data folder
-	 * @param replace Replace the file if exists.
+	 * 
+	 * @param resourcePath
+	 *            Path of the file in plugin.
+	 * @param dataFolder
+	 *            Data folder
+	 * @param replace
+	 *            Replace the file if exists.
 	 */
 	public void saveResource(String resourcePath, File dataFolder,
 			boolean replace)

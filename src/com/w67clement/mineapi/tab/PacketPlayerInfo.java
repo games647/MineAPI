@@ -9,9 +9,8 @@ import com.w67clement.mineapi.nms.PacketSender;
 import com.w67clement.mineapi.system.MC_GameProfile;
 
 /**
- * <h1>PacketPlayerInfo</h1>
- * Sent by the server to update the user list.
- * <br/>
+ * <h1>PacketPlayerInfo</h1> Sent by the server to update the user list. <br/>
+ * 
  * @author w67clement
  * @version 0.1
  */
@@ -78,10 +77,10 @@ public abstract class PacketPlayerInfo extends PacketSender
 	public static final class PacketPlayerInfoData
 	{
 
-		private final MC_GameProfile profile;
-		private final int ping;
-		private final GameMode gamemode;
-		private final String playerListName;
+		private MC_GameProfile profile;
+		private int ping;
+		private GameMode gamemode;
+		private String playerListName;
 
 		public PacketPlayerInfoData(MC_GameProfile profile, int ping,
 				GameMode gamemode, String playerListName) {
@@ -102,6 +101,17 @@ public abstract class PacketPlayerInfo extends PacketSender
 		}
 
 		/**
+		 * Sets the profile of the player.
+		 * 
+		 * @param newProfile
+		 *            MineAPI's GameProfile Object.
+		 */
+		public final void setProfile(MC_GameProfile newProfile)
+		{
+			this.profile = newProfile;
+		}
+
+		/**
 		 * Gets the ping of the player.
 		 * 
 		 * @return Ping displayed on the TabList.
@@ -109,6 +119,17 @@ public abstract class PacketPlayerInfo extends PacketSender
 		public final int getPing()
 		{
 			return this.ping;
+		}
+
+		/**
+		 * Sets the ping of the player.
+		 * 
+		 * @param ping
+		 *            Ping displayed on the TabList.
+		 */
+		public final void setPing(int ping)
+		{
+			this.ping = ping;
 		}
 
 		/**
@@ -122,6 +143,17 @@ public abstract class PacketPlayerInfo extends PacketSender
 		}
 
 		/**
+		 * Sets the GameMode of the player.
+		 * 
+		 * @param gamemode
+		 *            GameMode of the player.
+		 */
+		public final void setGamemode(GameMode gamemode)
+		{
+			this.gamemode = gamemode;
+		}
+
+		/**
 		 * Gets the player's list name. <br/>
 		 * This name is displayed on the TabList.
 		 * 
@@ -130,6 +162,18 @@ public abstract class PacketPlayerInfo extends PacketSender
 		public final String getPlayerListName()
 		{
 			return this.playerListName;
+		}
+
+		/**
+		 * Sets the player's list name. <br/>
+		 * This name is displayed on the TabList.
+		 * 
+		 * @param playerListName
+		 *            Player's list name.
+		 */
+		public final void setPlayerListName(String playerListName)
+		{
+			this.playerListName = playerListName;
 		}
 
 	}

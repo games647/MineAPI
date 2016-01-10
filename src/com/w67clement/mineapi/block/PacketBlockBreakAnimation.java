@@ -30,10 +30,7 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
 
 	public PacketBlockBreakAnimation(Player player, Location blockLocation,
 			byte destroyStage) {
-		Object nmsPlayer = ReflectionAPI.invokeMethod(player,
-				ReflectionAPI.getMethod(player, "getHandle"));
-		this.entityId = (int) ReflectionAPI.invokeMethod(nmsPlayer,
-				ReflectionAPI.getMethod(nmsPlayer, "getId"));
+		this.entityId = player.getEntityId();
 		this.blockLocation = blockLocation;
 		this.destroyStage = destroyStage;
 	}

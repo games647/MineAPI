@@ -156,19 +156,34 @@ public interface MC_ArmorStand extends MC_EntityLiving
 	public void setGravity(boolean gravity);
 
 	/**
-	 * Returns whether this armor stand has arms
+	 * Returns whether this armor stand has arms.
 	 *
-	 * @return Whether this has arms or not
+	 * @return Whether this has arms or not.
 	 */
 	public boolean hasArms();
 
 	/**
-	 * Sets whether this armor stand has arms
+	 * Sets whether this armor stand has arms.
 	 *
 	 * @param arms
-	 *            Whether this has arms or not
+	 *            Whether this has arms or not.
 	 */
 	public void setArms(boolean arms);
+
+	/**
+	 * Returns whether this armor stand has marker.
+	 * 
+	 * @return Whether this has marker or not.
+	 */
+	public boolean hasMarker();
+
+	/**
+	 * Sets if this armor stand has marker.
+	 * 
+	 * @param marker
+	 *            Whether this has marker or not.
+	 */
+	public void setMarker(boolean marker);
 
 	public ArmorStand getArmorHandle();
 

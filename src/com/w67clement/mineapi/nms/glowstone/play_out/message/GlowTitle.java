@@ -48,4 +48,10 @@ public class GlowTitle extends Title
 		}
 	}
 
+	@Override
+	public Object constructPacket()
+	{
+		return null;
+	}
+
 }

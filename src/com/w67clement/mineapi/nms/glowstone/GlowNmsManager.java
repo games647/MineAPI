@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.nms.glowstone;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -27,25 +28,32 @@ import com.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
-import com.w67clement.mineapi.message.ActionBarMessage;
-import com.w67clement.mineapi.message.FancyMessage;
+import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.glowstone.entity.GlowMC_Entity;
 import com.w67clement.mineapi.nms.glowstone.entity.GlowMC_Player;
-import com.w67clement.mineapi.nms.glowstone.play_in.GlowClientCommand;
-import com.w67clement.mineapi.nms.glowstone.play_out.inventory.GlowWindowItems;
-import com.w67clement.mineapi.nms.glowstone.play_out.message.GlowActionBarMessage;
-import com.w67clement.mineapi.nms.glowstone.play_out.message.GlowFancyMessage;
 import com.w67clement.mineapi.nms.glowstone.play_out.message.GlowTitle;
-import com.w67clement.mineapi.nms.glowstone.play_out.tab.GlowTabTitle;
+import com.w67clement.mineapi.nms.glowstone.world.GlowMC_World;
+import com.w67clement.mineapi.nms.glowstone.wrappers.GlowServerPingWrapper;
+import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
+import com.w67clement.mineapi.nms.none.play_out.block.CraftPacketBlockAction;
+import com.w67clement.mineapi.nms.none.play_out.block.CraftPacketBlockBreakAnimation;
+import com.w67clement.mineapi.nms.none.play_out.block.CraftPacketBlockChange;
+import com.w67clement.mineapi.nms.none.play_out.inventory.CraftWindowItems;
+import com.w67clement.mineapi.nms.none.play_out.message.CraftPacketChat;
+import com.w67clement.mineapi.nms.none.play_out.tab.CraftPacketPlayerInfo;
+import com.w67clement.mineapi.nms.none.play_out.tab.CraftTabTitle;
+import com.w67clement.mineapi.nms.none.play_out.world.CraftPacketExplosion;
+import com.w67clement.mineapi.nms.none.play_out.world.CraftPacketWorldBorder;
 import com.w67clement.mineapi.tab.PacketPlayerInfo;
 import com.w67clement.mineapi.tab.PacketPlayerInfo.PacketPlayerInfoData;
 import com.w67clement.mineapi.tab.TabTitle;
+import com.w67clement.mineapi.world.MC_World;
 import com.w67clement.mineapi.world.PacketExplosion;
 import com.w67clement.mineapi.world.PacketWorldBorder;
 
-public class GlowNmsManager implements NmsManager
+public class GlowNmsManager extends NmsManager
 {
 
 	@Override
@@ -56,21 +64,21 @@ public class GlowNmsManager implements NmsManager
 	}
 
 	@Override
-	public ActionBarMessage getActionBarMessage(String message)
+	public PacketChat getPacketChat(String content)
 	{
-		return new GlowActionBarMessage(message);
+		return new CraftPacketChat(content);
 	}
 
 	@Override
-	public FancyMessage getFancyMessage(String message)
+	public PacketChat getPacketChat(String content, byte data)
 	{
-		return new GlowFancyMessage(message);
+		return new CraftPacketChat(content, data);
 	}
 
 	@Override
 	public TabTitle getTabTitle(String header, String footer)
 	{
-		return new GlowTabTitle(header, footer);
+		return new CraftTabTitle(header, footer);
 	}
 
 	@Override
@@ -78,124 +86,134 @@ public class GlowNmsManager implements NmsManager
 			PacketPlayerInfo.MC_EnumPlayerInfoAction action,
 			List<PacketPlayerInfoData> data)
 	{
-		return null;
+		return new CraftPacketPlayerInfo(action, data);
+	}
+
+	@Override
+	public PacketPlayerInfo getPacketPlayerInfo(
+			PacketPlayerInfo.MC_EnumPlayerInfoAction action,
+			PacketPlayerInfoData... data)
+	{
+		return new CraftPacketPlayerInfo(action, Arrays.asList(data));
 	}
 
 	@Override
 	public WindowItems getWindowItemsPacket(int windowId, List<ItemStack> items)
 	{
-		return new GlowWindowItems(windowId, items);
+		return new CraftWindowItems(windowId, items);
 	}
 
 	@Override
 	public PacketExplosion getExplosionPacket(World world, double x, double y,
 			double z, float radius, boolean sound)
 	{
-		return null;
+		return new CraftPacketExplosion(world, x, y, z, radius, sound);
 	}
 
 	@Override
 	public PacketExplosion getExplosionPacket(Location loc, float radius,
 			boolean sound)
 	{
-		return null;
+		return new CraftPacketExplosion(loc, radius, sound);
 	}
 
 	@Override
 	public PacketWorldBorder getPacketWorldBorder(World world)
 	{
-		return null;
+		return new CraftPacketWorldBorder(world);
 	}
 
 	@Override
 	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(
 			MC_Player player, Location loc, byte destroyStage)
 	{
-		return null;
+		return new CraftPacketBlockBreakAnimation(player, loc, destroyStage);
 	}
 
 	@Override
 	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(
 			MC_Player player, int x, int y, int z, byte destroyStage)
 	{
-		return null;
+		return new CraftPacketBlockBreakAnimation(player, x, y, z,
+				destroyStage);
 	}
 
 	@Override
 	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player,
 			Location loc, byte destroyStage)
 	{
-		return null;
+		return new CraftPacketBlockBreakAnimation(player, loc, destroyStage);
 	}
 
 	@Override
 	public PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player,
 			int x, int y, int z, byte destroyStage)
 	{
-		return null;
+		return new CraftPacketBlockBreakAnimation(player, x, y, z,
+				destroyStage);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material,
 			Location loc)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, loc);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material, int data,
 			Location loc)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, data, loc);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material, int x,
 			int y, int z)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, x, y, z);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material, int data,
 			int x, int y, int z)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, data, x, y, z);
 	}
 
 	@Override
 	public PacketBlockAction getPacketBlockAction(Location location,
 			BlockAction action)
 	{
-		return null;
+		return new CraftPacketBlockAction(location, action);
 	}
 
 	@Override
 	public PacketBlockAction getPacketBlockAction(Location location,
 			BlockAction action, int data)
 	{
-		return null;
+		return new CraftPacketBlockAction(location, action, data);
 	}
 
 	@Override
 	public PacketBlockAction getPacketBlockAction(int x, int y, int z,
 			BlockAction action)
 	{
-		return null;
+		return new CraftPacketBlockAction(x, y, z, action);
 	}
 
 	@Override
 	public PacketBlockAction getPacketBlockAction(int x, int y, int z,
 			BlockAction action, int data)
 	{
-		return null;
+		return new CraftPacketBlockAction(x, y, z, action, data);
 	}
 
 	@Override
 	public ClientCommand getPacketPlayInClientCommand(
 			ClientCommandType commandType)
 	{
-		return new GlowClientCommand(commandType);
+		return new CraftClientCommand(commandType);
 	}
 
 	@Override
@@ -234,10 +252,24 @@ public class GlowNmsManager implements NmsManager
 		return null;
 	}
 
+	/* World */
+
+	@Override
+	public MC_World getMC_World(World world)
+	{
+		return new GlowMC_World(world);
+	}
+
+	@Override
+	public ServerPingWrapper getServerPingWrapper()
+	{
+		return new GlowServerPingWrapper();
+	}
+
 	@Override
 	public ServerPingWrapper getServerPingWrapper(Object serverPing)
 	{
-		return null;
+		return this.getServerPingWrapper();
 	}
 
 }

@@ -28,15 +28,10 @@ public class ChatComponentWrapper
 
 	public static String makeJsonByChatComponent(Object chatComponent)
 	{
-		if (chatComponent.getClass().getName().equals(
-				ReflectionAPI.NmsClass.getIChatBaseComponentClass().getName()))
-		{
-			Method a = ReflectionAPI.getMethod(
-					ReflectionAPI.NmsClass.getChatSerializerClass(), "a",
-					ReflectionAPI.NmsClass.getIChatBaseComponentClass());
-			return (String) ReflectionAPI.invokeMethod(null, a, chatComponent);
-		}
-		else
-			return null;
+		Method a = ReflectionAPI.getMethod(
+				ReflectionAPI.NmsClass.getChatSerializerClass(), "a",
+				ReflectionAPI.NmsClass.getIChatBaseComponentClass());
+		return ReflectionAPI.invokeMethodWithType(null, a, String.class,
+				chatComponent);
 	}
 }

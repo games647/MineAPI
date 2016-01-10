@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.nms.none;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Location;
@@ -27,26 +28,29 @@ import com.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
-import com.w67clement.mineapi.message.ActionBarMessage;
-import com.w67clement.mineapi.message.FancyMessage;
+import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
 import com.w67clement.mineapi.nms.none.play_out.block.CraftPacketBlockAction;
 import com.w67clement.mineapi.nms.none.play_out.block.CraftPacketBlockBreakAnimation;
+import com.w67clement.mineapi.nms.none.play_out.block.CraftPacketBlockChange;
 import com.w67clement.mineapi.nms.none.play_out.inventory.CraftWindowItems;
-import com.w67clement.mineapi.nms.none.play_out.message.CraftActionBarMessage;
-import com.w67clement.mineapi.nms.none.play_out.message.CraftFancyMessage;
+import com.w67clement.mineapi.nms.none.play_out.message.CraftPacketChat;
 import com.w67clement.mineapi.nms.none.play_out.message.CraftTitle;
 import com.w67clement.mineapi.nms.none.play_out.tab.CraftPacketPlayerInfo;
 import com.w67clement.mineapi.nms.none.play_out.tab.CraftTabTitle;
+import com.w67clement.mineapi.nms.none.play_out.world.CraftPacketExplosion;
+import com.w67clement.mineapi.nms.none.play_out.world.CraftPacketWorldBorder;
+import com.w67clement.mineapi.nms.none.wrappers.CraftServerPingWrapper;
 import com.w67clement.mineapi.tab.PacketPlayerInfo;
 import com.w67clement.mineapi.tab.PacketPlayerInfo.PacketPlayerInfoData;
 import com.w67clement.mineapi.tab.TabTitle;
+import com.w67clement.mineapi.world.MC_World;
 import com.w67clement.mineapi.world.PacketExplosion;
 import com.w67clement.mineapi.world.PacketWorldBorder;
 
-public class NmsManager_vNone implements NmsManager
+public class NmsManager_vNone extends NmsManager
 {
 
 	@Override
@@ -57,15 +61,15 @@ public class NmsManager_vNone implements NmsManager
 	}
 
 	@Override
-	public ActionBarMessage getActionBarMessage(String message)
+	public PacketChat getPacketChat(String content)
 	{
-		return new CraftActionBarMessage(message);
+		return new CraftPacketChat(content);
 	}
 
 	@Override
-	public FancyMessage getFancyMessage(String message)
+	public PacketChat getPacketChat(String content, byte data)
 	{
-		return new CraftFancyMessage(message);
+		return new CraftPacketChat(content, data);
 	}
 
 	@Override
@@ -83,6 +87,14 @@ public class NmsManager_vNone implements NmsManager
 	}
 
 	@Override
+	public PacketPlayerInfo getPacketPlayerInfo(
+			PacketPlayerInfo.MC_EnumPlayerInfoAction action,
+			PacketPlayerInfoData... data)
+	{
+		return new CraftPacketPlayerInfo(action, Arrays.asList(data));
+	}
+
+	@Override
 	public WindowItems getWindowItemsPacket(int windowId, List<ItemStack> items)
 	{
 		return new CraftWindowItems(windowId, items);
@@ -92,20 +104,20 @@ public class NmsManager_vNone implements NmsManager
 	public PacketExplosion getExplosionPacket(World world, double x, double y,
 			double z, float radius, boolean sound)
 	{
-		return null;
+		return new CraftPacketExplosion(world, x, y, z, radius, sound);
 	}
 
 	@Override
 	public PacketExplosion getExplosionPacket(Location loc, float radius,
 			boolean sound)
 	{
-		return null;
+		return new CraftPacketExplosion(loc, radius, sound);
 	}
 
 	@Override
 	public PacketWorldBorder getPacketWorldBorder(World world)
 	{
-		return null;
+		return new CraftPacketWorldBorder(world);
 	}
 
 	@Override
@@ -142,28 +154,28 @@ public class NmsManager_vNone implements NmsManager
 	public PacketBlockChange getPacketBlockChange(Material material,
 			Location loc)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, loc);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material, int data,
 			Location loc)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, data, loc);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material, int x,
 			int y, int z)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, x, y, z);
 	}
 
 	@Override
 	public PacketBlockChange getPacketBlockChange(Material material, int data,
 			int x, int y, int z)
 	{
-		return null;
+		return new CraftPacketBlockChange(material, data, x, y, z);
 	}
 
 	@Override
@@ -237,10 +249,24 @@ public class NmsManager_vNone implements NmsManager
 		return null;
 	}
 
+	/* World */
+
+	@Override
+	public MC_World getMC_World(World world)
+	{
+		return null;
+	}
+
+	@Override
+	public ServerPingWrapper getServerPingWrapper()
+	{
+		return new CraftServerPingWrapper();
+	}
+
 	@Override
 	public ServerPingWrapper getServerPingWrapper(Object serverPing)
 	{
-		return null;
+		return this.getServerPingWrapper();
 	}
 
 }

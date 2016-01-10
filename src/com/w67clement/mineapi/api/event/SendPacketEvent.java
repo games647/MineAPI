@@ -4,22 +4,34 @@ import java.util.UUID;
 
 import org.bukkit.entity.Player;
 
+import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
 import com.w67clement.mineapi.api.wrappers.PacketWrapper;
+import com.w67clement.mineapi.nms.NmsPacket;
 
-public class SendPacketEvent
+public class SendPacketEvent<T extends NmsPacket>
 {
 
-	private PacketWrapper packet;
+	private MC_PacketWrapper<T> packet;
 	private PacketCancellable cancellable;
 	private Player player;
 
-	public SendPacketEvent(PacketWrapper packet, PacketCancellable cancellable, Player player) {
+	public SendPacketEvent(MC_PacketWrapper<T> packet,
+			PacketCancellable cancellable, Player player) {
 		this.packet = packet;
 		this.cancellable = cancellable;
 		this.player = player;
 	}
 
+	@Deprecated
 	public PacketWrapper getPacket()
+	{
+		return this.packet.getOldWrapper();
+	}
+
+	/**
+	 * Gets the MineAPI's packet wrapper.
+	 */
+	public MC_PacketWrapper<T> getPacketWrapper()
 	{
 		return this.packet;
 	}
@@ -34,7 +46,6 @@ public class SendPacketEvent
 		return this.player.getUniqueId();
 	}
 
-	@Deprecated
 	public String getRecieverName()
 	{
 		return this.player.getName();
@@ -48,5 +59,15 @@ public class SendPacketEvent
 	public void setCancelled(boolean cancel)
 	{
 		this.cancellable.setCancelled(cancel);
+	}
+
+	public boolean hasForceChanges()
+	{
+		return this.cancellable.hasForceChanges();
+	}
+
+	public void setForceChanges(boolean forceChanges)
+	{
+		this.cancellable.setForceChanges(forceChanges);
 	}
 }

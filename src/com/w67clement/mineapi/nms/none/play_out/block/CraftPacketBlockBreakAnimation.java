@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.BlockPositionWrapper;
 import com.w67clement.mineapi.block.PacketBlockBreakAnimation;
@@ -38,24 +39,46 @@ public class CraftPacketBlockBreakAnimation extends PacketBlockBreakAnimation
 	@Override
 	public void send(Player player)
 	{
-		// Get packet class
-		Class<?> packetClass = ReflectionAPI
-				.getNmsClass("PacketPlayOutBlockBreakAnimation");
-		// Create packet
-		Object packet = ReflectionAPI.newInstance(
-				ReflectionAPI.getConstructor(packetClass, int.class,
-						ReflectionAPI.getNmsClass("BlockPosition"), int.class),
-				this.entityId, BlockPositionWrapper
-						.fromLocation(this.blockLocation).toBlockPosition(),
-				this.destroyStage);
 		// Send the packet.
-		ReflectionAPI.NmsClass.sendPacket(player, packet);
+		ReflectionAPI.NmsClass.sendPacket(player, this.constructPacket());
 	}
 
 	@Override
 	public PacketType getPacketType()
 	{
 		return PacketType.PACKETPLAYOUT;
+	}
+
+	@Override
+	public Object constructPacket()
+	{
+		if (MineAPI.isSpigot())
+		{
+			return this.constructPacket_Bukkit();
+		}
+		else if (MineAPI
+				.isGlowstone()) { return this.constructPacket_Glowstone(); }
+		return this.constructPacket_Bukkit();
+	}
+
+	private Object constructPacket_Bukkit()
+	{
+		Class<?> packetClass = ReflectionAPI
+				.getNmsClass("PacketPlayOutBlockBreakAnimation");
+		// Create packet
+		return ReflectionAPI.newInstance(
+				ReflectionAPI.getConstructor(packetClass, int.class,
+						ReflectionAPI.getNmsClass("BlockPosition"), int.class),
+				this.entityId, BlockPositionWrapper
+						.fromLocation(this.blockLocation).toBlockPosition(),
+				this.destroyStage);
+	}
+
+	private Object constructPacket_Glowstone()
+	{
+		throw new UnsupportedOperationException(
+				"[" + this.getClass().getSimpleName()
+						+ "] Glowstone don't support this packet!");
 	}
 
 }

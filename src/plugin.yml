@@ -3,7 +3,7 @@ authors: [w67clement]
 main: com.w67clement.mineapi.MineAPI
 description: An API to make it easy some codes.
 website: https://w67clement.github.io/plugins/MineAPI
-version: 2.1.0
+version: 2.2.0
 load: startup
 
 commands:

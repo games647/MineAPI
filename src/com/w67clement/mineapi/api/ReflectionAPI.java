@@ -7,7 +7,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,19 +49,6 @@ public class ReflectionAPI
 		}
 		catch (NoSuchFieldException e)
 		{
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Error in com.w67clement.mineapi.api.ReflectionAPI:getField(Class<?>, String, boolean)");
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Value: clazz: "
-					+ clazz.getSimpleName() + " fieldName: " + fieldName
-					+ " declared: " + declared);
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Exception: NoSuchFieldException, Message: "
-					+ ChatColor.DARK_RED + e.getMessage());
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 			e.printStackTrace();
 		}
 		catch (SecurityException e)
@@ -101,28 +87,10 @@ public class ReflectionAPI
 			}
 			catch (IllegalArgumentException e)
 			{
-				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-						+ "[ERROR]" + ChatColor.RED
-						+ " Error in com.w67clement.mineapi.api.Reflection:setValue(Object, Field, Object)");
-				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-						+ "[ERROR]" + ChatColor.RED
-						+ " Exception: IllegalArgumentException, Message: "
-						+ ChatColor.DARK_RED + e.getMessage());
-				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-						+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 				e.printStackTrace();
 			}
 			catch (IllegalAccessException e)
 			{
-				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-						+ "[ERROR]" + ChatColor.RED
-						+ " Error in com.w67clement.mineapi.api.Reflection:setValue(Object, Field, Object)");
-				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-						+ "[ERROR]" + ChatColor.RED
-						+ " Exception: IllegalAccessException, Message: "
-						+ ChatColor.DARK_RED + e.getMessage());
-				MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-						+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 				e.printStackTrace();
 			}
 		}
@@ -137,29 +105,11 @@ public class ReflectionAPI
 		}
 		catch (IllegalArgumentException e)
 		{
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Error in com.w67clement.mineapi.api.Reflection:getValue(Object, Field)");
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Exception: IllegalArgumentException, Message: "
-					+ ChatColor.DARK_RED + e.getMessage());
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 			e.printStackTrace();
 			return null;
 		}
 		catch (IllegalAccessException e)
 		{
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Error in com.w67clement.mineapi.api.Reflection:getValue(Object, Field)");
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Exception: IllegalAccessException, Message: "
-					+ ChatColor.DARK_RED + e.getMessage());
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 			e.printStackTrace();
 			return null;
 		}
@@ -179,6 +129,33 @@ public class ReflectionAPI
 		Field f = getField(obj.getClass(), field, declared);
 		String str = (String) f.get(obj);
 		return str;
+	}
+
+	public static int getIntValue(Object obj, Field field)
+	{
+		if (getValue(obj, field) == null) return 0;
+		return Integer.valueOf(String.valueOf(getValue(obj, field)));
+	}
+
+	@SuppressWarnings("unchecked")
+	public static <U> U getValueWithType(Object obj, Field field, Class<U> type)
+	{
+		if (!field.getType().equals(type))
+		{
+			if (type.equals(Number.class) || type.equals(Integer.class)
+					|| type.equals(int.class) || type.equals(Double.class)
+					|| type.equals(double.class) || type.equals(Float.class)
+					|| type.equals(float.class) || type.equals(Long.class)
+					|| type.equals(long.class) || type.equals(Short.class)
+					|| type.equals(short.class))
+				return (U) new Integer(0);
+			if (type.equals(Boolean.class) || type.equals(boolean.class))
+				return (U) Boolean.TRUE;
+			if (type.equals(Byte.class) || type.equals(byte.class))
+				return (U) new Byte((byte) 0);
+			return null;
+		}
+		return (U) getValue(obj, field);
 	}
 
 	/*
@@ -228,6 +205,28 @@ public class ReflectionAPI
 		}
 	}
 
+	@SuppressWarnings("unchecked")
+	public static <U> U invokeMethodWithType(Object obj, Method method,
+			Class<U> type, Object... arguments)
+	{
+		if (!method.getReturnType().equals(type))
+		{
+			if (type.equals(Number.class) || type.equals(Integer.class)
+					|| type.equals(int.class) || type.equals(Double.class)
+					|| type.equals(double.class) || type.equals(Float.class)
+					|| type.equals(float.class) || type.equals(Long.class)
+					|| type.equals(long.class) || type.equals(Short.class)
+					|| type.equals(short.class))
+				return (U) new Integer(0);
+			if (type.equals(Boolean.class) || type.equals(boolean.class))
+				return (U) Boolean.TRUE;
+			if (type.equals(Byte.class) || type.equals(byte.class))
+				return (U) new Byte((byte) 0);
+			return null;
+		}
+		return (U) invokeMethod(obj, method, arguments);
+	}
+
 	/*
 	 * CONSTRUCTOR
 	 */
@@ -241,33 +240,6 @@ public class ReflectionAPI
 		}
 		catch (NoSuchMethodException e)
 		{
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Error in com.w67clement.mineapi.api.ReflectionAPI:getContructor(Class<?>, Class<?> ...)");
-			String argumentsType = "";
-			for (int i = 0; i < arguments.length; i++)
-			{
-				if (i + 1 == arguments.length)
-				{
-					argumentsType = argumentsType
-							+ arguments[i].getSimpleName();
-				}
-				else
-				{
-					argumentsType = argumentsType + arguments[i].getSimpleName()
-							+ ", ";
-				}
-			}
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Value: clazz: "
-					+ clazz.getSimpleName() + " argumentsType: "
-					+ argumentsType);
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED
-					+ " Exception: NoSuchMethodException, Message: "
-					+ ChatColor.DARK_RED + e.getMessage());
-			MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.DARK_RED
-					+ "[ERROR]" + ChatColor.RED + " Stacktrace: ");
 			e.printStackTrace();
 		}
 		catch (SecurityException e)
@@ -306,6 +278,17 @@ public class ReflectionAPI
 		return null;
 	}
 
+	public static Method getFirstMethodOfType(Class<?> clazz, Class<?> type)
+	{
+		for (Method methods : clazz.getDeclaredMethods())
+		{
+			if (methods.getReturnType().equals(type) && (methods
+					.getParameterTypes().length == 0)) { return ReflectionAPI
+							.getMethod(clazz, methods.getName()); }
+		}
+		return null;
+	}
+
 	public static Field getLastFieldOfType(Class<?> clazz, Class<?> type)
 	{
 		Field field = null;
@@ -334,8 +317,8 @@ public class ReflectionAPI
 	{
 		try
 		{
-			return Class.forName("net.minecraft.server."
-					+ MineAPI.getServerVersion() + "." + name);
+			return Class.forName(
+					"net.minecraft.server." + getServerVersion() + "." + name);
 		}
 		catch (ClassNotFoundException e)
 		{
@@ -389,6 +372,18 @@ public class ReflectionAPI
 		}
 	}
 
+	/**
+	 * Gets the version of your server by the packages
+	 * 
+	 * @return The server version
+	 */
+	public static String getServerVersion()
+	{
+		return Bukkit.getServer().getClass().getPackage().getName()
+				.substring(23);
+
+	}
+
 	public static enum CraftPackage
 	{
 
@@ -402,83 +397,43 @@ public class ReflectionAPI
 		ORG_BUKKIT_CONFIGURATION_SERIALIZATION(
 												"org.bukkit.configuration.serialization"),
 		ORG_BUKKIT_CONVERSATIONS("org.bukkit.conversations"),
-		ORG_BUKKIT_CRAFTBUKKIT(
-								"org.bukkit.craftbukkit."
-										+ MineAPI.getServerVersion()),
-		ORG_BUKKIT_CRAFTBUKKIT_BLOCK(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".block"),
-		ORG_BUKKIT_CRAFTBUKKIT_CHUNKIO(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".chunkio"),
-		ORG_BUKKIT_CRAFTBUKKIT_COMMAND(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".command"),
-		ORG_BUKKIT_CRAFTBUKKIT_CONVERSATIONS(
-												"org.bukkit.craftbukkit."
-														+ MineAPI
-																.getServerVersion()
-														+ ".conversations"),
-		ORG_BUKKIT_CRAFTBUKKIT_ENCHANTMENTS(
-											"org.bukkit.craftbukkit."
-													+ MineAPI.getServerVersion()
-													+ ".enchantments"),
-		ORG_BUKKIT_CRAFTBUKKIT_ENTITY(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".entity"),
-		ORG_BUKKIT_CRAFTBUKKIT_EVENT(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".event"),
-		ORG_BUKKIT_CRAFTBUKKIT_GENERATOR(
-											"org.bukkit.craftbukkit."
-													+ MineAPI.getServerVersion()
-													+ ".generator"),
-		ORG_BUKKIT_CRAFTBUKKIT_HELP(
-									"org.bukkit.craftbukkit."
-											+ MineAPI.getServerVersion()
-											+ ".help"),
-		ORG_BUKKIT_CRAFTBUKKIT_INVENTORY(
-											"org.bukkit.craftbukkit."
-													+ MineAPI.getServerVersion()
-													+ ".inventory"),
-		ORG_BUKKIT_CRAFTBUKKIT_MAP(
-									"org.bukkit.craftbukkit."
-											+ MineAPI.getServerVersion()
-											+ ".map"),
-		ORG_BUKKIT_CRAFTBUKKIT_METADATA(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".metadata"),
-		ORG_BUKKIT_CRAFTBUKKIT_POTION(
-										"org.bukkit.craftbukkit."
-												+ MineAPI.getServerVersion()
-												+ ".potion"),
-		ORG_BUKKIT_CRAFTBUKKIT_PROJECTILES(
-											"org.bukkit.craftbukkit."
-													+ MineAPI.getServerVersion()
-													+ ".projectiles"),
-		ORG_BUKKIT_CRAFTBUKKIT_SCHEDULER(
-											"org.bukkit.craftbukkit."
-													+ MineAPI.getServerVersion()
-													+ ".scheduler"),
-		ORG_BUKKIT_CRAFTBUKKIT_SCOREBOARD(
-											"org.bukkit.craftbukkit."
-													+ MineAPI.getServerVersion()
-													+ ".scoreboard"),
-		ORG_BUKKIT_CRAFTBUKKIT_UTIL(
-									"org.bukkit.craftbukkit."
-											+ MineAPI.getServerVersion()
-											+ ".util"),
-		ORG_BUKKIT_CRAFTBUKKIT_UTIL_PERMISIONS(
-												"org.bukkit.craftbukkit."
-														+ MineAPI
-																.getServerVersion()
-														+ ".util.permissions"),
+		ORG_BUKKIT_CRAFTBUKKIT("org.bukkit.craftbukkit." + getServerVersion()),
+		ORG_BUKKIT_CRAFTBUKKIT_BLOCK("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".block"),
+		ORG_BUKKIT_CRAFTBUKKIT_CHUNKIO("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".chunkio"),
+		ORG_BUKKIT_CRAFTBUKKIT_COMMAND("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".command"),
+		ORG_BUKKIT_CRAFTBUKKIT_CONVERSATIONS("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".conversations"),
+		ORG_BUKKIT_CRAFTBUKKIT_ENCHANTMENTS("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".enchantments"),
+		ORG_BUKKIT_CRAFTBUKKIT_ENTITY("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".entity"),
+		ORG_BUKKIT_CRAFTBUKKIT_EVENT("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".event"),
+		ORG_BUKKIT_CRAFTBUKKIT_GENERATOR("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".generator"),
+		ORG_BUKKIT_CRAFTBUKKIT_HELP("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".help"),
+		ORG_BUKKIT_CRAFTBUKKIT_INVENTORY("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".inventory"),
+		ORG_BUKKIT_CRAFTBUKKIT_MAP("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".map"),
+		ORG_BUKKIT_CRAFTBUKKIT_METADATA("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".metadata"),
+		ORG_BUKKIT_CRAFTBUKKIT_POTION("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".potion"),
+		ORG_BUKKIT_CRAFTBUKKIT_PROJECTILES("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".projectiles"),
+		ORG_BUKKIT_CRAFTBUKKIT_SCHEDULER("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".scheduler"),
+		ORG_BUKKIT_CRAFTBUKKIT_SCOREBOARD("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".scoreboard"),
+		ORG_BUKKIT_CRAFTBUKKIT_UTIL("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".util"),
+		ORG_BUKKIT_CRAFTBUKKIT_UTIL_PERMISIONS("org.bukkit.craftbukkit."
+				+ getServerVersion() + ".util.permissions"),
 		ORG_BUKKIT_ENCHANTMENTS("org.bukkit.enchantments"),
 		ORG_BUKKIT_ENTITY("org.bukkit.entity"),
 		ORG_BUKKIT_ENTITY_MINECART("org.bukkit.entity.minecart"),
@@ -537,24 +492,32 @@ public class ReflectionAPI
 
 		public static Class<?> getChatSerializerClass()
 		{
-			return MineAPI.getServerVersion().equals("v1_8_R1")
+			return getServerVersion().equals("v1_8_R1")
 					? getNmsClass("ChatSerializer")
 					: getNmsClass("IChatBaseComponent$ChatSerializer");
 		}
 
 		public static Class<?> getEnumChatVisibilityClass()
 		{
-			return MineAPI.getServerVersion().equals("v1_8_R1")
+			return getServerVersion().equals("v1_8_R1")
 					? getNmsClass("EnumChatVisibility")
 					: getNmsClass("EntityHuman$EnumChatVisibility");
 		}
 
 		public static Class<?> getEnumClientCommandClass()
 		{
-			return MineAPI.getServerVersion().equals("v1_8_R1")
+			return getServerVersion().equals("v1_8_R1")
 					? getNmsClass("EnumClientCommand")
 					: getNmsClass(
 							"PacketPlayInClientCommand$EnumClientCommand");
+		}
+
+		public static Class<?> getEnumWorldBorderActionClass()
+		{
+			return getServerVersion().equals("v1_8_R1")
+					? getNmsClass("EnumWorldBorderAction")
+					: getNmsClass(
+							"PacketPlayOutWorldBorder$EnumWorldBorderAction");
 		}
 
 		public static Class<?> getIChatBaseComponentClass()
@@ -580,9 +543,36 @@ public class ReflectionAPI
 
 		public static Object getPlayerConnectionByPlayer(Player player)
 		{
+			switch (MineAPI.getServerType())
+			{
+				case CRAFTBUKKIT:
+					return getPlayerConnectionByPlayer_Bukkit(player);
+				case GLOWSTONE:
+					return getPlayerConnectionByPlayer_Glowstone(player);
+				case GLOWSTONEPLUSPLUS:
+					return getPlayerConnectionByPlayer_Glowstone(player);
+				case PAPERSPIGOT:
+					return getPlayerConnectionByPlayer_Bukkit(player);
+				case SPIGOT:
+					return getPlayerConnectionByPlayer_Bukkit(player);
+				default:
+					throw new UnsupportedOperationException(
+							"Not recognized server type & version.");
+			}
+		}
+
+		private static Object getPlayerConnectionByPlayer_Bukkit(Player player)
+		{
 			Object nmsPlayer = getEntityPlayerByPlayer(player);
 			return ReflectionAPI.getValue(nmsPlayer, ReflectionAPI
 					.getField(nmsPlayer.getClass(), "playerConnection", false));
+		}
+
+		private static Object getPlayerConnectionByPlayer_Glowstone(
+				Player player)
+		{
+			return ReflectionAPI.invokeMethod(player,
+					ReflectionAPI.getMethod(player, "getSession"));
 		}
 
 		public static Object getPlayerConnectionByEntityPlayer(Object player)
@@ -603,11 +593,48 @@ public class ReflectionAPI
 
 		public static void sendPacket(Player player, Object obj)
 		{
+			switch (MineAPI.getServerType())
+			{
+				case CRAFTBUKKIT:
+					sendPacket_Bukkit(player, obj);
+					break;
+				case GLOWSTONE:
+					sendPacket_Glowstone(player, obj);
+					break;
+				case GLOWSTONEPLUSPLUS:
+					sendPacket_Glowstone(player, obj);
+					break;
+				case PAPERSPIGOT:
+					sendPacket_Bukkit(player, obj);
+					break;
+				case RAINBOW_PROJECT:
+					break;
+				case SPIGOT:
+					sendPacket_Bukkit(player, obj);
+					break;
+				default:
+					throw new UnsupportedOperationException(
+							"Not recognized server type & version.");
+			}
+		}
+
+		private static void sendPacket_Bukkit(Player player, Object obj)
+		{
 			Object playerConnection = getPlayerConnectionByPlayer(player);
 			ReflectionAPI.invokeMethod(playerConnection,
 					ReflectionAPI.getMethod(playerConnection, "sendPacket",
 							new Class<?>[] { getNmsClass("Packet") }),
 					new Object[] { obj });
+		}
+
+		private static void sendPacket_Glowstone(Player player, Object obj)
+		{
+			Object session = getPlayerConnectionByPlayer(player);
+			ReflectionAPI.invokeMethod(session,
+					ReflectionAPI.getMethod(session, "send",
+							ReflectionAPI.getClass(
+									"com.flowpowered.networking.Message")),
+					obj);
 		}
 	}
 
@@ -630,6 +657,13 @@ public class ReflectionAPI
 			Method asNmsCopy = getMethod(CraftClass.getCraftItemStackClass(),
 					"asNMSCopy", item.getClass());
 			return invokeMethod(null, asNmsCopy, item);
+		}
+
+		public static ItemStack fromNms(Object item)
+		{
+			Method asNmsCopy = getMethod(CraftClass.getCraftItemStackClass(),
+					"asBukkitCopy", getNmsClass("ItemStack"));
+			return invokeMethodWithType(null, asNmsCopy, ItemStack.class, item);
 		}
 
 	}

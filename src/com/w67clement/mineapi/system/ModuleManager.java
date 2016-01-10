@@ -54,16 +54,17 @@ public class ModuleManager
 		return false;
 	}
 
-	public void loadModule(File file)
+	public Module loadModule(File file)
 	{
 		try
 		{
-			this.loader.loadModule(file);
+			return this.loader.loadModule(file);
 		}
 		catch (InvalidModuleException e)
 		{
 			e.printStackTrace();
 		}
+		return null;
 	}
 
 	public void enableModule(Module module)

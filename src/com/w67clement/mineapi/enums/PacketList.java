@@ -1,143 +1,526 @@
 package com.w67clement.mineapi.enums;
 
-public enum PacketList {
+import com.w67clement.mineapi.entity.packets.PacketCamera;
+import com.w67clement.mineapi.entity.player.ClientCommand;
+import com.w67clement.mineapi.inventory.packets.WindowItems;
+import com.w67clement.mineapi.message.PacketChat;
+import com.w67clement.mineapi.nms.NmsPacket;
+import com.w67clement.mineapi.packets.handshake.PacketHandshake;
+import com.w67clement.mineapi.tab.TabTitle;
+import com.w67clement.mineapi.world.PacketExplosion;
 
-	ALL("ALL", null),
-	//Packet play out
-	PacketPlayOutAbilities("PacketPlayOutAbilities", PacketType.PACKETPLAYOUT),
-	PacketPlayOutAnimation("PacketPlayOutAnimation", PacketType.PACKETPLAYOUT),
-	PacketPlayOutAttachEntity("PacketPlayOutAttachEntity", PacketType.PACKETPLAYOUT),
-	PacketPlayOutBed("PacketPlayOutBed", PacketType.PACKETPLAYOUT),
-	PacketPlayOutBlockAction("PacketPlayOutBlockAction", PacketType.PACKETPLAYOUT),
-	PacketPlayOutBlockBreakAnimation("PacketPlayOutBlockBreakAnimation", PacketType.PACKETPLAYOUT),
-	PacketPlayOutBlockChange("PacketPlayOutBlockChange", PacketType.PACKETPLAYOUT),
-	PacketPlayOutCamera("PacketPlayOutCamera", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1),
-	PacketPlayOutChat("PacketPlayOutChat", PacketType.PACKETPLAYOUT),
-	PacketPlayOutCloseWindow("PacketPlayOutCloseWindow", PacketType.PACKETPLAYOUT),
-	PacketPlayOutCollect("PacketPlayOutCollect", PacketType.PACKETPLAYOUT),
-	PacketPlayOutCombatEvent("PacketPlayOutCombatEvent", PacketType.PACKETPLAYOUT),
-	PacketPlayOutCustomPayload("PacketPlayOutCustomPayload", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntity("PacketPlayOutEntity", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityDestroy("PacketPlayOutEntityDestroy", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityEffect("PacketPlayOutEntityEffect", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityEquipment("PacketPlayOutEntityEquipment", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityHeadRotation("PacketPlayOutEntityHeadRotation", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityLook("PacketPlayOutEntityLook", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityMetadata("PacketPlayOutEntityMetadata", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityStatus("PacketPlayOutEntityStatus", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityTeleport("PacketPlayOutEntityTeleport", PacketType.PACKETPLAYOUT),
-	PacketPlayOutEntityVelocity("PacketPlayOutEntityVelocity", PacketType.PACKETPLAYOUT),
-	PacketPlayOutExperience("PacketPlayOutExperience", PacketType.PACKETPLAYOUT),
-	PacketPlayOutExplosion("PacketPlayOutExplosion", PacketType.PACKETPLAYOUT),
-	PacketPlayOutGameStateChange("PacketPlayOutGameStateChange", PacketType.PACKETPLAYOUT),
-	PacketPlayOutHeldItemSlot("PacketPlayOutHeldItemSlot", PacketType.PACKETPLAYOUT),
-	PacketPlayOutKeepAlive("PacketPlayOutKeepAlive", PacketType.PACKETPLAYOUT),
-	PacketPlayOutKickDisconnect("PacketPlayOutKickDisconnect", PacketType.PACKETPLAYOUT),
-	PacketPlayOutLogin("PacketPlayOutLogin", PacketType.PACKETPLAYOUT),
-	PacketPlayOutMap("PacketPlayOutMap", PacketType.PACKETPLAYOUT),
-	PacketPlayOutMapChunk("PacketPlayOutMapChunk", PacketType.PACKETPLAYOUT),
-	PacketPlayOutMapChunkBulk("PacketPlayOutMapChunkBulk", PacketType.PACKETPLAYOUT),
-	PacketPlayOutMultiBlockChange("PacketPlayOutMultiBlockChange", PacketType.PACKETPLAYOUT),
-	PacketPlayOutNamedEntitySpawn("PacketPlayOutNamedEntitySpawn", PacketType.PACKETPLAYOUT),
-	PacketPlayOutNamedSoundEffect("PacketPlayOutNamedSoundEffect", PacketType.PACKETPLAYOUT),
-	PacketPlayOutOpenSignEditor("PacketPlayOutOpenSignEditor", PacketType.PACKETPLAYOUT),
-	PacketPlayOutOpenWindow("PacketPlayOutOpenWindow", PacketType.PACKETPLAYOUT),
-	PacketPlayOutPlayerInfo("PacketPlayOutPlayerInfo", PacketType.PACKETPLAYOUT),
-	PacketPlayOutPlayerListHeaderFooter("PacketPlayOutPlayerListHeaderFooter", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1),
-	PacketPlayOutPosition("PacketPlayOutPosition", PacketType.PACKETPLAYOUT),
-	PacketPlayOutRelEntityMove("PacketPlayOutRelEntityMove", PacketType.PACKETPLAYOUT),
-	PacketPlayOutRelEntityMoveLook("PacketPlayOutRelEntityMoveLook", PacketType.PACKETPLAYOUT),
-	PacketPlayOutRemoveEntityEffect("PacketPlayOutRemoveEntityEffect", PacketType.PACKETPLAYOUT),
-	PacketPlayOutResourcePackSend("PacketPlayOutResourcePackSend", PacketType.PACKETPLAYOUT),
-	PacketPlayOutRespawn("PacketPlayOutRespawn", PacketType.PACKETPLAYOUT),
-	PacketPlayOutScoreboardDisplayObjective("PacketPlayOutScoreboardDisplayObjective", PacketType.PACKETPLAYOUT),
-	PacketPlayOutScoreboardObjective("PacketPlayOutScoreboardObjective", PacketType.PACKETPLAYOUT),
-	PacketPlayOutScoreboardScore("PacketPlayOutScoreboardScore", PacketType.PACKETPLAYOUT),
-	PacketPlayOutScoreboardTeam("PacketPlayOutScoreboardTeam", PacketType.PACKETPLAYOUT),
-	PacketPlayOutServerDifficulty("PacketPlayOutServerDifficulty", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSetCompression("PacketPlayOutSetCompression", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSetSlot("PacketPlayOutSetSlot", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSpawnEntity("PacketPlayOutSpawnEntity", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSpawnEntityExperienceOrb("PacketPlayOutSpawnEntityExperienceOrb", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSpawnEntityLiving("PacketPlayOutSpawnEntityLiving", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSpawnEntityPainting("PacketPlayOutSpawnEntityPainting", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSpawnEntityWeather("PacketPlayOutSpawnEntityWeather", PacketType.PACKETPLAYOUT),
-	PacketPlayOutSpawnPosition("PacketPlayOutSpawnPosition", PacketType.PACKETPLAYOUT),
-	PacketPlayOutStatistic("PacketPlayOutStatistic", PacketType.PACKETPLAYOUT),
-	PacketPlayOutTabComplete("PacketPlayOutTabComplete", PacketType.PACKETPLAYOUT),
-	PacketPlayOutTileEntityData("PacketPlayOutTileEntityData", PacketType.PACKETPLAYOUT),
-	PacketPlayOutTitle("PacketPlayoutTitle", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1),
-	PacketPlayOutTransaction("PacketPlayOutTransaction", PacketType.PACKETPLAYOUT),
-	PacketPlayOutUpdateAttributes("PacketPlayOutUpdateAttributes", PacketType.PACKETPLAYOUT),
-	PacketPlayOutUpdateEntityNBT("PacketPlayOutUpdateEntityNBT", PacketType.PACKETPLAYOUT),
-	PacketPlayOutUpdateHealth("PacketPlayOutUpdateHealth", PacketType.PACKETPLAYOUT),
-	PacketPlayOutUpdateSign("PacketPlayOutUpdateSign", PacketType.PACKETPLAYOUT),
-	PacketPlayOutUpdateTime("PacketPlayOutUpdateTime", PacketType.PACKETPLAYOUT),
-	PacketPlayOutWindowData("PacketPlayOutWindowData", PacketType.PACKETPLAYOUT),
-	PacketPlayOutWindowItems("PacketPlayOutWindowItems", PacketType.PACKETPLAYOUT),
-	PacketPlayOutWorldBorder("PacketPlayOutWorldBorder", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1),
-	PacketPlayOutWorldEvent("PacketPlayOutWorldEvent", PacketType.PACKETPLAYOUT),
-	PacketPlayOutWorldParticles("PacketPlayOutWorldParticles", PacketType.PACKETPLAYOUT),
-	//Packet play in
-	PacketPlayInAbilities("PacketPlayInAbilities", PacketType.PACKETPLAYIN),
-	PacketPlayInArmAnimation("PacketPlayInArmAnimation", PacketType.PACKETPLAYIN),
-	PacketPlayInBlockDig("PacketPlayInBlockDig", PacketType.PACKETPLAYIN),
-	PacketPlayInBlockPlace("PacketPlayInBlockPlace", PacketType.PACKETPLAYIN),
-	PacketPlayInChat("PacketPlayInChat", PacketType.PACKETPLAYIN),
-	PacketPlayInClientCommand("PacketPlayInClientCommand", PacketType.PACKETPLAYIN),
-	PacketPlayInCloseWindow("PacketPlayInCloseWindow", PacketType.PACKETPLAYIN),
-	PacketPlayInCustomPayload("PacketPlayInCustomPayload", PacketType.PACKETPLAYIN),
-	PacketPlayInEnchantItem("PacketPlayInEnchantItem", PacketType.PACKETPLAYIN),
-	PacketPlayInEntityAction("PacketPlayInEntityAction", PacketType.PACKETPLAYIN),
-	PacketPlayInFlying("PacketPlayInFlying", PacketType.PACKETPLAYIN),
-	PacketPlayInHeldItemSlot("PacketPlayInHeldItemSlot", PacketType.PACKETPLAYIN),
-	PacketPlayInKeepAlive("PacketPlayInKeepAlive", PacketType.PACKETPLAYIN),
-	PacketPlayInLook("PacketPlayInLook", PacketType.PACKETPLAYIN),
-	PacketPlayInPosition("PacketPlayInPosition", PacketType.PACKETPLAYIN),
-	PacketPlayInPositionLook("PacketPlayInPositionLook", PacketType.PACKETPLAYIN),
-	PacketPlayInResourcePackStatus("PacketPlayInResourcePackStatus", PacketType.PACKETPLAYIN),
-	PacketPlayInSetCreativeSlot("PacketPlayInSetCreativeSlot", PacketType.PACKETPLAYIN),
-	PacketPlayInSettings("PacketPlayInSettings", PacketType.PACKETPLAYIN),
-	PacketPlayInSpectate("PacketPlayInSpectate", PacketType.PACKETPLAYIN),
-	PacketPlayInSteerVehicle("PacketPlayInSteerVehicle", PacketType.PACKETPLAYIN),
-	PacketPlayInTabComplete("PacketPlayInTabComplete", PacketType.PACKETPLAYIN),
-	PacketPlayInTransaction("PacketPlayInTransaction", PacketType.PACKETPLAYIN),
-	PacketPlayInUpdateSign("PacketPlayInUpdateSign", PacketType.PACKETPLAYIN),
-	PacketPlayInUseEntity("PacketPlayInUseEntity", PacketType.PACKETPLAYIN),
-	PacketPlayInWindowClick("PacketPlayInWindowClick", PacketType.PACKETPLAYIN),
-	
-	
-	PacketStatusInPing("PacketStatusInPing", PacketType.PACKETSTATUS),
-	PacketStatusInStart("PacketStatusInStart", PacketType.PACKETSTATUS),
-	
-	PacketStatusOutPong("PacketStatusOutPong", PacketType.PACKETSTATUS),
-	PacketStatusOutServerInfo("PacketStatusOutServerInfo", PacketType.PACKETSTATUS);
-	
+public enum PacketList
+{
+
+	ALL("ALL", "ALL", null),
+	// Packet play out
+	PacketPlayOutAbilities("PacketPlayOutAbilities", "PlayerAbilitiesMessage", PacketType.PACKETPLAYOUT),
+	PacketPlayOutAnimation(
+							"PacketPlayOutAnimation",
+							"AnimateEntityMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutAttachEntity(
+								"PacketPlayOutAttachEntity",
+								"AttachEntityMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutBed("PacketPlayOutBed", "", PacketType.PACKETPLAYOUT),
+	PacketPlayOutBlockAction(
+								"PacketPlayOutBlockAction",
+								"BlockActionMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutBlockBreakAnimation(
+										"PacketPlayOutBlockBreakAnimation",
+										"",
+										PacketType.PACKETPLAYOUT),
+	PacketPlayOutBlockChange(
+								"PacketPlayOutBlockChange",
+								"BlockChangeMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutCamera(
+						"PacketPlayOutCamera",
+						"CameraMessage",
+						PacketType.PACKETPLAYOUT,
+						MinecraftVersion.v1_8_R1,
+						PacketCamera.class),
+	PacketPlayOutChat(
+						"PacketPlayOutChat",
+						"ChatMessage",
+						PacketType.PACKETPLAYOUT,
+						PacketChat.class),
+	PacketPlayOutCloseWindow(
+								"PacketPlayOutCloseWindow",
+								"CloseWindowMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutCollect(
+							"PacketPlayOutCollect",
+							"CollectItemMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutCombatEvent(
+								"PacketPlayOutCombatEvent",
+								"CombatEventMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutCustomPayload(
+								"PacketPlayOutCustomPayload",
+								"PluginMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntity("PacketPlayOutEntity", "", PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityDestroy(
+								"PacketPlayOutEntityDestroy",
+								"DestroyEntitiesMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityEffect(
+								"PacketPlayOutEntityEffect",
+								"EntityEffectMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityEquipment(
+									"PacketPlayOutEntityEquipment",
+									"EntityEquipmentMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityHeadRotation(
+									"PacketPlayOutEntityHeadRotation",
+									"EntityHeadRotationMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityLook(
+							"PacketPlayOutEntityLook",
+							"",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityMetadata(
+								"PacketPlayOutEntityMetadata",
+								"EntityMetadataMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityStatus(
+								"PacketPlayOutEntityStatus",
+								"EntityStatusMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityTeleport(
+								"PacketPlayOutEntityTeleport",
+								"EntityTeleportMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutEntityVelocity(
+								"PacketPlayOutEntityVelocity",
+								"EntityVelocityMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutExperience(
+							"PacketPlayOutExperience",
+							"ExperienceMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutExplosion(
+							"PacketPlayOutExplosion",
+							"ExplosionMessage",
+							PacketType.PACKETPLAYOUT,
+							PacketExplosion.class),
+	PacketPlayOutGameStateChange(
+									"PacketPlayOutGameStateChange",
+									"StateChangeMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutHeldItemSlot(
+								"PacketPlayOutHeldItemSlot",
+								"HeldItemMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutKeepAlive(
+							"PacketPlayOutKeepAlive",
+							"PingMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutKickDisconnect(
+								"PacketPlayOutKickDisconnect",
+								"KickMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutLogin(
+						"PacketPlayOutLogin",
+						"JoinGameMessage",
+						PacketType.PACKETPLAYOUT),
+	PacketPlayOutMap(
+						"PacketPlayOutMap",
+						"MapDataMessage",
+						PacketType.PACKETPLAYOUT),
+	PacketPlayOutMapChunk(
+							"PacketPlayOutMapChunk",
+							"ChunkDataMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutMapChunkBulk(
+								"PacketPlayOutMapChunkBulk",
+								"ChunkBulkMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutMultiBlockChange(
+									"PacketPlayOutMultiBlockChange",
+									"MultiBlockChangeMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutNamedEntitySpawn(
+									"PacketPlayOutNamedEntitySpawn",
+									"SpawnPlayerMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutNamedSoundEffect(
+									"PacketPlayOutNamedSoundEffect",
+									"PlaySoundMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutOpenSignEditor(
+								"PacketPlayOutOpenSignEditor",
+								"SignEditorMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutOpenWindow(
+							"PacketPlayOutOpenWindow",
+							"OpenWindowMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutPlayerInfo(
+							"PacketPlayOutPlayerInfo",
+							"UserListItemMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutPlayerListHeaderFooter(
+										"PacketPlayOutPlayerListHeaderFooter",
+										"UserListHeaderFooterMessage",
+										PacketType.PACKETPLAYOUT,
+										MinecraftVersion.v1_8_R1,
+										TabTitle.class),
+	PacketPlayOutPosition(
+							"PacketPlayOutPosition",
+							"",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutRelEntityMove(
+								"PacketPlayOutRelEntityMove",
+								"RelativeEntityPositionMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutRelEntityMoveLook(
+									"PacketPlayOutRelEntityMoveLook",
+									"RelativeEntityPositionRotationMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutRemoveEntityEffect(
+									"PacketPlayOutRemoveEntityEffect",
+									"EntityRemoveEffectMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutResourcePackSend(
+									"PacketPlayOutResourcePackSend",
+									"ResourcePackSendMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutRespawn(
+							"PacketPlayOutRespawn",
+							"RespawnMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutScoreboardDisplayObjective(
+											"PacketPlayOutScoreboardDisplayObjective",
+											"",
+											PacketType.PACKETPLAYOUT),
+	PacketPlayOutScoreboardObjective(
+										"PacketPlayOutScoreboardObjective",
+										"",
+										PacketType.PACKETPLAYOUT),
+	PacketPlayOutScoreboardScore(
+									"PacketPlayOutScoreboardScore",
+									"",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutScoreboardTeam(
+								"PacketPlayOutScoreboardTeam",
+								"",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutServerDifficulty(
+									"PacketPlayOutServerDifficulty",
+									"ServerDifficultyMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutSetCompression(
+								"PacketPlayOutSetCompression",
+								"SetCompressionMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutSetSlot(
+							"PacketPlayOutSetSlot",
+							"SetWindowSlotMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutSpawnEntity(
+								"PacketPlayOutSpawnEntity",
+								"SpawnObjectMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutSpawnEntityExperienceOrb(
+											"PacketPlayOutSpawnEntityExperienceOrb",
+											"SpawnXpOrbMessage",
+											PacketType.PACKETPLAYOUT),
+	PacketPlayOutSpawnEntityLiving(
+									"PacketPlayOutSpawnEntityLiving",
+									"SpawnMobMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutSpawnEntityPainting(
+										"PacketPlayOutSpawnEntityPainting",
+										"SpawnPaintingMessage",
+										PacketType.PACKETPLAYOUT),
+	PacketPlayOutSpawnEntityWeather(
+									"PacketPlayOutSpawnEntityWeather",
+									"SpawnLightningStrikeMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutSpawnPosition(
+								"PacketPlayOutSpawnPosition",
+								"SpawnPositionMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutStatistic(
+							"PacketPlayOutStatistic",
+							"StatisticMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutTabComplete(
+								"PacketPlayOutTabComplete",
+								"TabCompleteResponseMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutTileEntityData(
+								"PacketPlayOutTileEntityData",
+								"UpdateBlockEntityMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutTitle(
+						"PacketPlayoutTitle",
+						"TitleMessage",
+						PacketType.PACKETPLAYOUT,
+						MinecraftVersion.v1_8_R1),
+	PacketPlayOutTransaction(
+								"PacketPlayOutTransaction",
+								"TransactionMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutUpdateAttributes(
+									"PacketPlayOutUpdateAttributes",
+									"",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutUpdateEntityNBT(
+									"PacketPlayOutUpdateEntityNBT",
+									"UpdateEntityNBTMessage",
+									PacketType.PACKETPLAYOUT),
+	PacketPlayOutUpdateHealth(
+								"PacketPlayOutUpdateHealth",
+								"HealthMessage",
+								PacketType.PACKETPLAYOUT),
+	PacketPlayOutUpdateSign(
+							"PacketPlayOutUpdateSign",
+							"UpdateSignMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutUpdateTime(
+							"PacketPlayOutUpdateTime",
+							"TimeMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutWindowData(
+							"PacketPlayOutWindowData",
+							"WindowPropertyMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutWindowItems(
+								"PacketPlayOutWindowItems",
+								"SetWindowContentsMessage",
+								PacketType.PACKETPLAYOUT,
+								WindowItems.class),
+	PacketPlayOutWorldBorder(
+								"PacketPlayOutWorldBorder",
+								"WorldBorderMessage",
+								PacketType.PACKETPLAYOUT,
+								MinecraftVersion.v1_8_R1),
+	PacketPlayOutWorldEvent(
+							"PacketPlayOutWorldEvent",
+							"PlayEffectMessage",
+							PacketType.PACKETPLAYOUT),
+	PacketPlayOutWorldParticles(
+								"PacketPlayOutWorldParticles",
+								"PlayParticleMessage",
+								PacketType.PACKETPLAYOUT),
+	// Packet play in
+	PacketPlayInAbilities("PacketPlayInAbilities", "PlayerAbilitiesMessage", PacketType.PACKETPLAYIN),
+	PacketPlayInArmAnimation(
+								"PacketPlayInArmAnimation",
+								"PlayerSwingArmMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInBlockDig(
+							"PacketPlayInBlockDig",
+							"DiggingMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInBlockPlace(
+							"PacketPlayInBlockPlace",
+							"BlockPlacementMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInChat(
+						"PacketPlayInChat",
+						"IncomingChatMessage",
+						PacketType.PACKETPLAYIN,
+						com.w67clement.mineapi.packets.play.in.PacketPlayInChat.class),
+	PacketPlayInClientCommand(
+								"PacketPlayInClientCommand",
+								"ClientStatusMessage",
+								PacketType.PACKETPLAYIN,
+								ClientCommand.class),
+	PacketPlayInCloseWindow(
+							"PacketPlayInCloseWindow",
+							"CloseWindowMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInCustomPayload(
+								"PacketPlayInCustomPayload",
+								"PluginMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInEnchantItem(
+							"PacketPlayInEnchantItem",
+							"EnchantItemMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInEntityAction(
+								"PacketPlayInEntityAction",
+								"PlayerActionMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInFlying("PacketPlayInFlying", "", PacketType.PACKETPLAYIN),
+	PacketPlayInHeldItemSlot(
+								"PacketPlayInHeldItemSlot",
+								"HeldItemMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInKeepAlive(
+							"PacketPlayInKeepAlive",
+							"PingMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInLook(
+						"PacketPlayInLook",
+						"PlayerLookMessage",
+						PacketType.PACKETPLAYIN),
+	PacketPlayInPosition(
+							"PacketPlayInPosition",
+							"PlayerPositionMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInPositionLook(
+								"PacketPlayInPositionLook",
+								"PlayerPositionLookMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInResourcePackStatus(
+									"PacketPlayInResourcePackStatus",
+									"ResourcePackStatusMessage",
+									PacketType.PACKETPLAYIN),
+	PacketPlayInSetCreativeSlot(
+								"PacketPlayInSetCreativeSlot",
+								"CreativeItemMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInSettings(
+							"PacketPlayInSettings",
+							"ClientSettingsMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInSpectate(
+							"PacketPlayInSpectate",
+							"SpectateMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInSteerVehicle(
+								"PacketPlayInSteerVehicle",
+								"SteerVehicleMessage",
+								PacketType.PACKETPLAYIN),
+	PacketPlayInTabComplete(
+							"PacketPlayInTabComplete",
+							"TabCompleteMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInTransaction(
+							"PacketPlayInTransaction",
+							"TransactionMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInUpdateSign(
+							"PacketPlayInUpdateSign",
+							"UpdateSignMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInUseEntity(
+							"PacketPlayInUseEntity",
+							"InteractEntityMessage",
+							PacketType.PACKETPLAYIN),
+	PacketPlayInWindowClick(
+							"PacketPlayInWindowClick",
+							"WindowClickMessage",
+							PacketType.PACKETPLAYIN),
+
+	// Status
+
+	PacketStatusInPing("PacketStatusInPing", "StatusPingMessage", PacketType.PACKETSTATUS),
+	PacketStatusInStart(
+						"PacketStatusInStart",
+						"StatusRequestMessage",
+						PacketType.PACKETSTATUS),
+
+	PacketStatusOutPong(
+						"PacketStatusOutPong",
+						"StatusPingMessage",
+						PacketType.PACKETSTATUS,
+						com.w67clement.mineapi.packets.status.PacketStatusOutPong.class),
+	PacketStatusOutServerInfo(
+								"PacketStatusOutServerInfo",
+								"StatusResponseMessage",
+								PacketType.PACKETSTATUS,
+								com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo.class),
+
+	// Handshake
+
+	Handshake("PacketHandshakingInSetProtocol", "HandshakeMessage", PacketType.HANDSHAKE, PacketHandshake.class);
+
 	private String packetName;
+	private String packetAliases;
 	private PacketType packetType;
 	private MinecraftVersion packetVersion;
-	
-	private PacketList(String packetName, PacketType packetType) {
+	private Class<? extends NmsPacket> mineapi_packet;
+
+	private PacketList(String packetName, String packetAliases,
+			PacketType packetType) {
 		this.packetName = packetName;
+		this.packetAliases = packetAliases;
 		this.packetType = packetType;
 		this.packetVersion = MinecraftVersion.UNKNOW;
 	}
-	
-	private PacketList(String packetName, PacketType packetType, MinecraftVersion packetVersion) {
+
+	private PacketList(String packetName, String packetAliases,
+			PacketType packetType, Class<? extends NmsPacket> mineapi_packet) {
 		this.packetName = packetName;
+		this.packetAliases = packetAliases;
+		this.packetType = packetType;
+		this.packetVersion = MinecraftVersion.UNKNOW;
+		this.mineapi_packet = mineapi_packet;
+	}
+
+	private PacketList(String packetName, String packetAliases,
+			PacketType packetType, MinecraftVersion packetVersion) {
+		this.packetName = packetName;
+		this.packetAliases = packetAliases;
 		this.packetType = packetType;
 		this.packetVersion = packetVersion;
 	}
-	
-	public String getPacketName() {
+
+	private PacketList(String packetName, String packetAliases,
+			PacketType packetType, MinecraftVersion packetVersion,
+			Class<? extends NmsPacket> mineapi_packet) {
+		this.packetName = packetName;
+		this.packetAliases = packetAliases;
+		this.packetType = packetType;
+		this.packetVersion = packetVersion;
+		this.mineapi_packet = mineapi_packet;
+	}
+
+	public String getPacketName()
+	{
 		return this.packetName;
 	}
-	
-	public PacketType getPacketType() {
+
+	public String getPacketAliases()
+	{
+		return this.packetAliases;
+	}
+
+	public PacketType getPacketType()
+	{
 		return this.packetType;
 	}
-	
-	public MinecraftVersion getPacketVersion() {
+
+	public MinecraftVersion getPacketVersion()
+	{
 		return this.packetVersion;
+	}
+
+	public Class<? extends NmsPacket> getMineAPIPacket()
+	{
+		return this.mineapi_packet;
+	}
+
+	public boolean hasMineAPIPacket()
+	{
+		return this.mineapi_packet != null;
+	}
+
+	public static PacketList getPacketByName(String name)
+	{
+		for (PacketList packet : values())
+		{
+			if (packet.getPacketName().equals(name)) { return packet; }
+		}
+		return null;
+	}
+
+	public static PacketList getPacketByAliase(String name)
+	{
+		for (PacketList packet : values())
+		{
+			if (packet.getPacketAliases().contains(name)) { return packet; }
+		}
+		return null;
 	}
 }

@@ -4,7 +4,8 @@ public enum PacketType {
 	
 	PACKETPLAYOUT("PacketPlayOut"),
 	PACKETPLAYIN("PacketPlayIn"),
-	PACKETSTATUS("PacketStatus");
+	PACKETSTATUS("PacketStatus"),
+	HANDSHAKE("Handshake");
 	
 	private String a;
 

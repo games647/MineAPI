@@ -100,6 +100,10 @@ public class CraftTitle extends Title
 			ReflectionAPI.NmsClass.sendPacket(player, subtitleTitlePacket);
 		}
 	}
+	
+	public Object constructPacket() {
+		return null;
+	}
 
 	@Override
 	public PacketType getPacketType()

@@ -15,6 +15,7 @@ import com.w67clement.mineapi.entity.MC_Entity;
 import com.w67clement.mineapi.entity.MC_EntityLiving;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.w67clement.mineapi.message.FancyMessage;
+import com.w67clement.mineapi.system.MC_GameProfile;
 
 public interface MC_Player extends MC_EntityLiving
 {
@@ -34,16 +35,20 @@ public interface MC_Player extends MC_EntityLiving
 	 * @author Upd4ting
 	 */
 	public void sendChunkChange(Chunk chunk);
-	
+
 	/**
 	 * If player isn't in Spectator mode is set, and he spectate a Entity.
-	 * @param entity Observed entity.
+	 * 
+	 * @param entity
+	 *            Observed entity.
 	 */
 	public void spectateEntity(Entity entity);
-	
+
 	/**
 	 * If player isn't in Spectator mode is set, and he spectate a Entity.
-	 * @param entity Observed entity.
+	 * 
+	 * @param entity
+	 *            Observed entity.
 	 * @see #spectateEntity(Entity)
 	 */
 	public void spectateEntity(MC_Entity entity);
@@ -70,9 +75,10 @@ public interface MC_Player extends MC_EntityLiving
 	 * @return Ping value
 	 */
 	public int getPing();
-	
+
 	/**
 	 * Gets the windowId of the active container.
+	 * 
 	 * @return WindowId.
 	 */
 	public int getActiveContainerId();
@@ -87,7 +93,8 @@ public interface MC_Player extends MC_EntityLiving
 
 	public void sendActionBarMessage(String message);
 
-	public void sendTitle(int fadeIn, int stay, int fadeOut, String title, String subtitle);
+	public void sendTitle(int fadeIn, int stay, int fadeOut, String title,
+			String subtitle);
 
 	public void sendTabTitle(String header, String footer);
 
@@ -103,4 +110,11 @@ public interface MC_Player extends MC_EntityLiving
 	public Player getHandle();
 
 	public Object getMC_Handle();
+
+	/**
+	 * Gets the GameProfile.
+	 * 
+	 * @return Player's GameProfile.
+	 */
+	public MC_GameProfile getMC_GameProfile();
 }

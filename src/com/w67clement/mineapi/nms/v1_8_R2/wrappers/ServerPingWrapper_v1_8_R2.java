@@ -22,14 +22,32 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 	private ServerPing ping;
 
 	public ServerPingWrapper_v1_8_R2(Object serverPing) {
-		if (ServerPing.class.equals(serverPing.getClass()))
+		if (serverPing != null)
 		{
-			this.ping = (ServerPing) serverPing;
+			if (ServerPing.class.equals(serverPing.getClass()))
+			{
+				this.ping = (ServerPing) serverPing;
+			}
+			else
+			{
+				MinecraftServer server = (MinecraftServer) ReflectionAPI
+						.getValue(((CraftServer) Bukkit.getServer()),
+								ReflectionAPI
+										.getField(
+												((CraftServer) Bukkit
+														.getServer())
+																.getClass(),
+												"console", true));
+				this.ping = server.aF();
+			}
 		}
 		else
 		{
-			MinecraftServer server = (MinecraftServer) ReflectionAPI.getValue(((CraftServer) Bukkit.getServer()),
-					ReflectionAPI.getField(((CraftServer) Bukkit.getServer()).getClass(), "console", true));
+			MinecraftServer server = (MinecraftServer) ReflectionAPI.getValue(
+					((CraftServer) Bukkit.getServer()),
+					ReflectionAPI.getField(
+							((CraftServer) Bukkit.getServer()).getClass(),
+							"console", true));
 			this.ping = server.aF();
 		}
 	}
@@ -49,7 +67,13 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 	@Override
 	public void setMotd(Object obj)
 	{
-		this.ping.setMOTD((IChatBaseComponent) obj);
+		if (obj instanceof String)
+		{
+			this.ping.setMOTD((IChatBaseComponent) ChatComponentWrapper
+					.makeChatComponentByJson((String) obj));
+		}
+		else
+			this.ping.setMOTD((IChatBaseComponent) obj);
 	}
 
 	@Override
@@ -64,7 +88,8 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 		// ServerData
 		ServerPing.ServerData data = this.ping.c();
 		// Change version
-		ReflectionAPI.setValue(data, ReflectionAPI.getField(data.getClass(), "a", true), version);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "a", true), version);
 		// Apply change
 		this.ping.setServerInfo(data);
 	}
@@ -81,7 +106,8 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 		// ServerData
 		ServerPing.ServerData data = this.ping.c();
 		// Change version
-		ReflectionAPI.setValue(data, ReflectionAPI.getField(data.getClass(), "b", true), protocol);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "b", true), protocol);
 		// Apply change
 		this.ping.setServerInfo(data);
 	}
@@ -98,7 +124,8 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 		// ServerData
 		ServerPing.ServerPingPlayerSample data = this.ping.b();
 		// Change onlines players
-		ReflectionAPI.setValue(data, ReflectionAPI.getField(data.getClass(), "a", true), onlines);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "a", true), onlines);
 		// Apply change
 		this.ping.setPlayerSample(data);
 	}
@@ -115,7 +142,8 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 		// ServerData
 		ServerPing.ServerPingPlayerSample data = this.ping.b();
 		// Change maximum players
-		ReflectionAPI.setValue(data, ReflectionAPI.getField(data.getClass(), "b", true), max);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "b", true), max);
 		// Apply change
 		this.ping.setPlayerSample(data);
 	}
@@ -142,19 +170,40 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 		List<GameProfile> playerList = new ArrayList<GameProfile>();
 		for (OfflinePlayer player : players)
 		{
-			playerList.add(new GameProfile(player.getUniqueId(), player.getName()));
+			playerList.add(
+					new GameProfile(player.getUniqueId(), player.getName()));
 		}
 		GameProfile[] temp = new GameProfile[] {};
 		GameProfile[] playerListArray = playerList.toArray(temp);
 		// Change the player list
-		ReflectionAPI.setValue(data, ReflectionAPI.getField(data.getClass(), "c", true), playerListArray);
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "c", true),
+				playerListArray);
 		// Apply change
 		this.ping.setPlayerSample(data);
+	}
+
+	@Override
+	public String getFavicon()
+	{
+		return this.ping.d();
+	}
+
+	@Override
+	public void setFavicon(String favicon)
+	{
+		this.ping.setFavicon(favicon);
 	}
 
 	@Override
 	public Object toServerPing()
 	{
 		return this.ping;
+	}
+
+	@Override
+	public String toJson()
+	{
+		return new Serializer().serialize(this, null, null).toString();
 	}
 }

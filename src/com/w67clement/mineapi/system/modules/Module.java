@@ -1,8 +1,5 @@
 package com.w67clement.mineapi.system.modules;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.system.ModuleManager;
@@ -13,6 +10,7 @@ public abstract class Module
 	private ModuleInformations informations;
 	private boolean isEnabled;
 	protected MineAPI mineapi;
+	protected boolean enable_startup = false;
 
 	public String getName()
 	{
@@ -54,11 +52,6 @@ public abstract class Module
 		this.mineapi = mineapi;
 	}
 
-	public Server getServer()
-	{
-		return Bukkit.getServer();
-	}
-
 	public NmsManager getNmsManager()
 	{
 		return MineAPI.getNmsManager();
@@ -67,6 +60,11 @@ public abstract class Module
 	public ModuleManager getModuleManager()
 	{
 		return MineAPI.getModuleManager();
+	}
+
+	public boolean isEnableStartup()
+	{
+		return this.enable_startup;
 	}
 
 }

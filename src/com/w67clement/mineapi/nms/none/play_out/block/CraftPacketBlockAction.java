@@ -1,10 +1,13 @@
 package com.w67clement.mineapi.nms.none.play_out.block;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 
+import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.BlockPositionWrapper;
 import com.w67clement.mineapi.block.BlockAction;
@@ -46,21 +49,67 @@ public class CraftPacketBlockAction extends PacketBlockAction
 
 	static
 	{
-		blockClass = ReflectionAPI.getNmsClass("Block");
-		blocksClass = ReflectionAPI.getNmsClass("Blocks");
-		blockPositionClass = ReflectionAPI.getNmsClass("BlockPosition");
-		packetClass = ReflectionAPI.getNmsClass("PacketPlayOutBlockAction");
+		if (MineAPI.isGlowstone())
+		{
+			initGlowstone();
+		}
+		else
+		{
+			blockClass = ReflectionAPI.getNmsClass("Block");
+			blocksClass = ReflectionAPI.getNmsClass("Blocks");
+			blockPositionClass = ReflectionAPI.getNmsClass("BlockPosition");
+			packetClass = ReflectionAPI.getNmsClass("PacketPlayOutBlockAction");
 
-		noteblock = ReflectionAPI.getValue(null,
-				ReflectionAPI.getField(blocksClass, "NOTEBLOCK", true));
-		piston = ReflectionAPI.getValue(null,
-				ReflectionAPI.getField(blocksClass, "PISTON", true));
-		chest = ReflectionAPI.getValue(null,
-				ReflectionAPI.getField(blocksClass, "CHEST", true));
+			noteblock = ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(blocksClass, "NOTEBLOCK", true));
+			piston = ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(blocksClass, "PISTON", true));
+			chest = ReflectionAPI.getValue(null,
+					ReflectionAPI.getField(blocksClass, "CHEST", true));
+		}
+	}
+
+	private static void initGlowstone()
+	{
+		blockClass = ReflectionAPI
+				.getClass("net.glowstone.block.blocktype.BlockType");
+		blocksClass = ReflectionAPI.getClass("net.glowstone.block.ItemTable");
+		packetClass = ReflectionAPI.getClass(
+				"net.glowstone.net.message.play.game.BlockActionMessage");
+
+		Object itemTableInstance = ReflectionAPI.invokeMethod(null,
+				ReflectionAPI.getMethod(blocksClass, "instance"));
+		Method getBlock = ReflectionAPI.getMethod(blocksClass, "getBlock",
+				Material.class);
+
+		noteblock = ReflectionAPI.invokeMethod(itemTableInstance, getBlock,
+				BlockAction.BlockActionType.NOTE_BLOCK.getMaterial());
+		piston = ReflectionAPI.invokeMethod(itemTableInstance, getBlock,
+				BlockAction.BlockActionType.PISTON.getMaterial());
+		chest = ReflectionAPI.invokeMethod(itemTableInstance, getBlock,
+				BlockAction.BlockActionType.CHEST.getMaterial());
 	}
 
 	@Override
 	public void send(Player player)
+	{
+		// Send the packet
+		ReflectionAPI.NmsClass.sendPacket(player, this.constructPacket());
+	}
+
+	@Override
+	public Object constructPacket()
+	{
+		if (MineAPI.isSpigot())
+		{
+			return this.constructPacket_Bukkit();
+		}
+		else if (MineAPI
+				.isGlowstone()) { return this.constructPacket_Glowstone(); }
+		return this.constructPacket_Bukkit();
+	}
+
+	private Object constructPacket_Bukkit()
 	{
 		// Constructing the packet
 		Constructor<?> constructor = ReflectionAPI.getConstructor(packetClass,
@@ -82,12 +131,41 @@ public class CraftPacketBlockAction extends PacketBlockAction
 				break;
 		}
 
-		Object packet = ReflectionAPI.newInstance(constructor,
+		return ReflectionAPI.newInstance(constructor,
 				BlockPositionWrapper.fromLocation(location).toBlockPosition(),
 				block, this.action.getAction(), this.data);
-		
-		// Send the packet
-		ReflectionAPI.NmsClass.sendPacket(player, packet);
+	}
+
+	private Object constructPacket_Glowstone()
+	{
+		Constructor<?> constructor = ReflectionAPI.getConstructor(packetClass,
+				int.class, int.class, int.class, int.class, int.class,
+				int.class);
+		@SuppressWarnings("deprecation")
+		int block = Material.CHEST.getId();
+
+		switch (action.getType())
+		{
+			case CHEST:
+				block = ReflectionAPI.invokeMethodWithType(chest,
+						ReflectionAPI.getMethod(chest, "getId"), int.class);
+				break;
+			case PISTON:
+				block = ReflectionAPI.invokeMethodWithType(piston,
+						ReflectionAPI.getMethod(piston, "getId"), int.class);;
+				break;
+			case NOTE_BLOCK:
+				block = ReflectionAPI.invokeMethodWithType(noteblock,
+						ReflectionAPI.getMethod(noteblock, "getId"),
+						int.class);;
+				break;
+			default:
+				break;
+		}
+
+		return ReflectionAPI.newInstance(constructor, this.location.getBlockX(),
+				this.location.getBlockY(), this.location.getBlockZ(),
+				this.action.getAction(), this.data, block);
 	}
 
 }

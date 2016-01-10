@@ -30,19 +30,21 @@ public class ProtocolManager implements Listener
 		}
 	}
 
-	@EventHandler
+	@EventHandler(priority = EventPriority.MONITOR)
 	public void onJoin(final PlayerLoginEvent e)
 	{
 		final Player player = e.getPlayer();
-		if (!player.isBanned())
+		if ((!player.isBanned())
+				&& (e.getResult() == PlayerLoginEvent.Result.ALLOWED))
 		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this.mineapi, new Runnable() {
-				@Override
-				public void run()
-				{
-					ProtocolManager.this.injector.addChannel(player);
-				}
-			}, 2L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(this.mineapi,
+					new Runnable() {
+						@Override
+						public void run()
+						{
+							ProtocolManager.this.injector.addChannel(player);
+						}
+					}, 2L);
 		}
 	}
 

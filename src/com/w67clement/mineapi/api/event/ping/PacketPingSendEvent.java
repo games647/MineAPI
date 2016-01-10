@@ -1,22 +1,34 @@
 package com.w67clement.mineapi.api.event.ping;
 
 import com.w67clement.mineapi.api.event.PacketCancellable;
+import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
 import com.w67clement.mineapi.api.wrappers.PacketWrapper;
+import com.w67clement.mineapi.nms.NmsPacket;
 
-public class PacketPingSendEvent
+public class PacketPingSendEvent<T extends NmsPacket>
 {
 
-	private PacketWrapper packet;
+	private MC_PacketWrapper<T> packet;
 	private PacketCancellable cancellable;
 	private String ip;
 
-	public PacketPingSendEvent(PacketWrapper packet, PacketCancellable cancellable, String ip) {
+	public PacketPingSendEvent(MC_PacketWrapper<T> packet,
+			PacketCancellable cancellable, String ip) {
 		this.packet = packet;
 		this.cancellable = cancellable;
 		this.ip = ip;
 	}
 
+	@Deprecated
 	public PacketWrapper getPacket()
+	{
+		return this.packet.getOldWrapper();
+	}
+
+	/**
+	 * Gets the MineAPI's packet wrapper.
+	 */
+	public MC_PacketWrapper<T> getPacketWrapper()
 	{
 		return this.packet;
 	}
@@ -36,4 +48,13 @@ public class PacketPingSendEvent
 		this.cancellable.setCancelled(cancel);
 	}
 
+	public boolean hasForceChanges()
+	{
+		return this.cancellable.hasForceChanges();
+	}
+
+	public void setForceChanges(boolean forceChanges)
+	{
+		this.cancellable.setForceChanges(forceChanges);
+	}
 }

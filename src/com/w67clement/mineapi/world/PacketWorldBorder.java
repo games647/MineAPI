@@ -4,11 +4,12 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
 
+import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.enums.PacketType;
 
 public abstract class PacketWorldBorder extends WorldPacket
 {
-	
+
 	protected World world;
 	protected Location center;
 	protected int warningDistance;
@@ -19,11 +20,21 @@ public abstract class PacketWorldBorder extends WorldPacket
 
 	public PacketWorldBorder(World world) {
 		this.world = world;
-		WorldBorder worldBorder = this.world.getWorldBorder();
-		this.center = worldBorder.getCenter();
-		this.warningDistance = worldBorder.getWarningDistance();
-		this.warningTime = worldBorder.getWarningTime();
-		this.radius = worldBorder.getSize();
+		if (MineAPI.isGlowstone())
+		{
+			this.center = world.getSpawnLocation();
+			this.radius = 60000000;
+			this.warningDistance = 5;
+			this.warningTime = 15;
+		}
+		else
+		{
+			WorldBorder worldBorder = this.world.getWorldBorder();
+			this.center = worldBorder.getCenter();
+			this.warningDistance = worldBorder.getWarningDistance();
+			this.warningTime = worldBorder.getWarningTime();
+			this.radius = worldBorder.getSize();
+		}
 	}
 
 	public PacketType getPacketType()
@@ -85,7 +96,7 @@ public abstract class PacketWorldBorder extends WorldPacket
 		this.warningTime = time;
 		return this;
 	}
-	
+
 	public int getWarningTime()
 	{
 		return this.warningTime;
@@ -117,7 +128,12 @@ public abstract class PacketWorldBorder extends WorldPacket
 
 	public enum PacketWorldBorderAction
 	{
-		SET_SIZE(0), LERP_SIZE(1), SET_CENTER(2), INITIALIZE(3), SET_WARNING_TIME(4), SET_WARNING_BLOCKS(5);
+		SET_SIZE(0),
+		LERP_SIZE(1),
+		SET_CENTER(2),
+		INITIALIZE(3),
+		SET_WARNING_TIME(4),
+		SET_WARNING_BLOCKS(5);
 
 		private int actionId;
 

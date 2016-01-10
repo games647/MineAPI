@@ -25,6 +25,7 @@ import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
+import com.w67clement.mineapi.system.MC_GameProfile;
 
 import net.minecraft.server.v1_8_R1.ChunkCoordIntPair;
 import net.minecraft.server.v1_8_R1.EntityPlayer;
@@ -263,6 +264,11 @@ public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1
 			throw new IllegalArgumentException(e.getMessage(), e);
 		}
 		this.player.playerConnection.sendPacket(nmsPacket);
+	}
+	
+	@Override
+	public MC_GameProfile getMC_GameProfile() {
+		return MC_GameProfile.getByMojangObject(this.player.getProfile());
 	}
 
 }

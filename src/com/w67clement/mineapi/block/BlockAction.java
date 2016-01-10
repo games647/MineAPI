@@ -1,5 +1,7 @@
 package com.w67clement.mineapi.block;
 
+import org.bukkit.Material;
+
 public enum BlockAction
 {
 
@@ -60,9 +62,21 @@ public enum BlockAction
 
 	public static enum BlockActionType
 	{
-		CHEST(),
-		NOTE_BLOCK(),
-		PISTON();
+		CHEST(Material.CHEST),
+		NOTE_BLOCK(Material.NOTE_BLOCK),
+		PISTON(Material.PISTON_BASE);
+		
+		private Material material;
+		
+		private BlockActionType(Material material) 
+		{
+			this.material = material;
+		}
+		
+		public Material getMaterial() 
+		{
+			return this.material;
+		}
 	}
 
 }
