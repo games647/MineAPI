@@ -2,11 +2,13 @@ package com.w67clement.mineapi.nms.none.wrappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
+import com.w67clement.mineapi.system.MC_GameProfile;
 
 import net.glowstone.GlowServer;
 
@@ -18,7 +20,7 @@ public class CraftServerPingWrapper implements ServerPingWrapper
 	private int protocol;
 	private int onlinePlayers;
 	private int maxplayers;
-	private List<OfflinePlayer> players;
+	private List<MC_GameProfile> players;
 	private String favicon;
 
 	public CraftServerPingWrapper() {
@@ -27,9 +29,10 @@ public class CraftServerPingWrapper implements ServerPingWrapper
 		this.protocol = GlowServer.PROTOCOL_VERSION;
 		this.onlinePlayers = Bukkit.getOnlinePlayers().size();
 		this.maxplayers = Bukkit.getMaxPlayers();
-		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+		List<MC_GameProfile> players = new ArrayList<MC_GameProfile>();
 		Bukkit.getOnlinePlayers().forEach(player -> {
-			players.add(player);
+			players.add(
+					new MC_GameProfile(player.getUniqueId(), player.getName()));
 		});
 		this.players = players;
 		this.favicon = "";
@@ -101,8 +104,19 @@ public class CraftServerPingWrapper implements ServerPingWrapper
 		this.maxplayers = max;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public List<OfflinePlayer> getPlayerList()
+	{
+		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+		this.players.forEach(profile -> {
+			players.add(Bukkit.getOfflinePlayer(profile.getName()));
+		});
+		return players;
+	}
+
+	@Override
+	public List<MC_GameProfile> getProfilesList()
 	{
 		return this.players;
 	}
@@ -110,9 +124,30 @@ public class CraftServerPingWrapper implements ServerPingWrapper
 	@Override
 	public void setPlayerList(List<OfflinePlayer> players)
 	{
+		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
+		players.forEach(player -> {
+			profiles.add(
+					new MC_GameProfile(player.getUniqueId(), player.getName()));
+		});
+		this.players = profiles;
+	}
+
+	@Override
+	public void setPlayerListWithName(List<String> players)
+	{
+		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
+		players.forEach(player -> {
+			profiles.add(new MC_GameProfile(UUID.randomUUID(), player));
+		});
+		this.players = profiles;
+	}
+
+	@Override
+	public void setPlayerListWithGameProfile(List<MC_GameProfile> players)
+	{
 		this.players = players;
 	}
-	
+
 	@Override
 	public String getFavicon()
 	{

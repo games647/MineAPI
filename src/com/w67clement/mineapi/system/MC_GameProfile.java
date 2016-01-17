@@ -29,12 +29,13 @@ import net.glowstone.entity.meta.profile.PlayerProperty;
 public class MC_GameProfile
 {
 
+	private static final JsonParser parser = new JsonParser();
 	private final UUID uuid;
 	private final String name;
 	private List<Property> properties;
 
 	public MC_GameProfile(UUID uuid, String name) {
-		this(uuid, name, null);
+		this(uuid, name, new ArrayList<Property>());
 	}
 
 	public MC_GameProfile(UUID uuid, String name, List<Property> properties) {
@@ -270,6 +271,41 @@ public class MC_GameProfile
 			else
 				return null;
 		}
+	}
+
+	/**
+	 * Gets MC_GameProfile by Mojang's GameProfile Object serialized.
+	 * 
+	 * @param json
+	 *            GameProfile serialized in Json
+	 * @return MC_GameProfile with Mojang's GameProfile serialized values.
+	 */
+	public static MC_GameProfile fromJson(String json)
+	{
+		return fromJson(parser.parse(json));
+	}
+
+	/**
+	 * Gets MC_GameProfile by Mojang's GameProfile Object serialized.
+	 * 
+	 * @param json
+	 *            GameProfile serialized in Json
+	 * @return MC_GameProfile with Mojang's GameProfile serialized values.
+	 */
+	public static MC_GameProfile fromJson(JsonElement json)
+	{
+		if (json instanceof JsonObject)
+		{
+			JsonObject obj = new JsonObject();
+			UUID id = UUID.fromString(obj.get("id").getAsString());
+			String name = obj.get("name").getAsString();
+			MC_GameProfile profile = new MC_GameProfile(id, name);
+			List<Property> properties = deserializeProperties(
+					obj.get("properties"));
+			profile.setProperties(properties);
+			return profile;
+		}
+		return null;
 	}
 
 	public static class Property

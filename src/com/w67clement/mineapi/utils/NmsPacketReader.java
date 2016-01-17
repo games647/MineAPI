@@ -1,7 +1,6 @@
 package com.w67clement.mineapi.utils;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,31 +30,48 @@ import com.w67clement.mineapi.world.PacketExplosion;
 
 public class NmsPacketReader
 {
+	private static NmsPacketReader injectReader = null;
 	private static JsonParser json_parser = new JsonParser();
 
 	public <U extends NmsPacket> U readPacket(Object packet,
 			Class<? extends U> mineapi_packet)
 	{
-		boolean hasReader = false;
-		for (Method method : this.getClass().getDeclaredMethods())
+		if (injectReader == null)
 		{
-			if (method.getName()
-					.equals("readPacket_" + mineapi_packet.getSimpleName()))
+			boolean hasReader = false;
+			for (Method method : this.getClass().getDeclaredMethods())
 			{
-				hasReader = true;
-				break;
+				if (method.getName()
+						.equals("readPacket_" + mineapi_packet.getSimpleName()))
+				{
+					hasReader = true;
+					break;
+				}
 			}
+			if (hasReader)
+				return ReflectionAPI
+						.invokeMethodWithType(this,
+								ReflectionAPI.getMethod(this.getClass(),
+										"readPacket_" + mineapi_packet
+												.getSimpleName(),
+										Object.class),
+								mineapi_packet, packet);
+			throw new RuntimeException("Cannot found reader for read '"
+					+ packet.getClass().getSimpleName()
+					+ "' for create instance of '"
+					+ mineapi_packet.getSimpleName() + "'.");
 		}
-		if (hasReader) return ReflectionAPI.invokeMethodWithType(this,
-				ReflectionAPI.getMethod(this.getClass(),
-						"readPacket_" + mineapi_packet.getSimpleName(),
-						Object.class),
-				mineapi_packet, packet);
-		throw new RuntimeException("Cannot found reader for read '"
-				+ packet.getClass().getSimpleName()
-				+ "' for create instance of '" + mineapi_packet.getSimpleName()
-				+ "'.");
+		else
+			return injectReader.readPacket(packet, mineapi_packet);
+	}
 
+	/**
+	 * Inject a new NmsPacketReader, use it only if you work for a new MC
+	 * version or a module for support new server type or versions.
+	 */
+	public static void injectReader(NmsPacketReader newReader)
+	{
+		injectReader = newReader;
 	}
 
 	/* HANDSHAKE */
@@ -161,9 +177,15 @@ public class NmsPacketReader
 			}
 			else
 			{
-				for (Field field : packet.getClass().getDeclaredFields())
+				Object enum_constant = ReflectionAPI.getValue(packet,
+						ReflectionAPI.getField(packet.getClass(), "a", true));
+				int id = ReflectionAPI.invokeMethodWithType(enum_constant,
+						ReflectionAPI.getMethod(enum_constant, "ordinal"),
+						int.class);
+				for (ClientCommandType type : ClientCommandType.values())
 				{
-					MineAPI.sendMessageToConsole(field.getName());
+					if (id == type.getId()) minePacket = MineAPI.getNmsManager()
+							.getPacketPlayInClientCommand(type);
 				}
 			}
 			return minePacket;

@@ -2,6 +2,7 @@ package com.w67clement.mineapi.nms.v1_8_R1.wrappers;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -11,6 +12,7 @@ import com.mojang.authlib.GameProfile;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
+import com.w67clement.mineapi.system.MC_GameProfile;
 
 import net.minecraft.server.v1_8_R1.IChatBaseComponent;
 import net.minecraft.server.v1_8_R1.MinecraftServer;
@@ -165,22 +167,59 @@ public class ServerPingWrapper_v1_8_R1 implements ServerPingWrapper
 	}
 
 	@Override
+	public List<MC_GameProfile> getProfilesList()
+	{
+		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
+		// ServerData
+		ServerPingPlayerSample data = this.ping.b();
+		for (GameProfile player : data.c())
+		{
+			profiles.add(MC_GameProfile.getByMojangObject(player));
+		}
+		return profiles;
+	}
+
+	@Override
 	public void setPlayerList(List<OfflinePlayer> players)
 	{
 		// ServerData
 		ServerPingPlayerSample data = this.ping.b();
-		List<GameProfile> playerList = new ArrayList<GameProfile>();
-		for (OfflinePlayer player : players)
+		GameProfile[] array = new GameProfile[players.size()];
+		for (int i = 0; i < array.length; i++)
 		{
-			playerList.add(
-					new GameProfile(player.getUniqueId(), player.getName()));
+			OfflinePlayer p = players.get(i);
+			array[i] = new GameProfile(p.getUniqueId(), p.getName());
 		}
-		GameProfile[] temp = new GameProfile[] {};
-		GameProfile[] playerListArray = playerList.toArray(temp);
 		// Change the player list
 		ReflectionAPI.setValue(data,
-				ReflectionAPI.getField(data.getClass(), "c", true),
-				playerListArray);
+				ReflectionAPI.getField(data.getClass(), "c", true), array);
+		// Apply change
+		this.ping.setPlayerSample(data);
+	}
+
+	@Override
+	public void setPlayerListWithName(List<String> players)
+	{
+		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
+		players.forEach(player -> {
+			profiles.add(new MC_GameProfile(UUID.randomUUID(), player));
+		});
+		this.setPlayerListWithGameProfile(profiles);
+	}
+
+	@Override
+	public void setPlayerListWithGameProfile(List<MC_GameProfile> players)
+	{
+		// ServerData
+		ServerPingPlayerSample data = this.ping.b();
+		GameProfile[] array = new GameProfile[players.size()];
+		for (int i = 0; i < array.length; i++)
+		{
+			array[i] = (GameProfile) players.get(i).toNms();
+		}
+		// Change the player list
+		ReflectionAPI.setValue(data,
+				ReflectionAPI.getField(data.getClass(), "c", true), array);
 		// Apply change
 		this.ping.setPlayerSample(data);
 	}

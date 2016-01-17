@@ -4,7 +4,6 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
 
@@ -18,6 +17,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.system.MC_GameProfile;
 
 /**
  * Use and change the ServerPing!
@@ -118,12 +118,35 @@ public interface ServerPingWrapper
 	public List<OfflinePlayer> getPlayerList();
 
 	/**
+	 * Gets the player list!
+	 * 
+	 * @return The list in ServerPing
+	 */
+	public List<MC_GameProfile> getProfilesList();
+
+	/**
 	 * Change the player list!
 	 * 
 	 * @param players
 	 *            The list of Offline players!
 	 */
 	public void setPlayerList(List<OfflinePlayer> players);
+
+	/**
+	 * Change the player list!
+	 * 
+	 * @param players
+	 *            The list of players' name!
+	 */
+	public void setPlayerListWithName(List<String> players);
+
+	/**
+	 * Change the player list!
+	 * 
+	 * @param players
+	 *            The list of GameProfiles!
+	 */
+	public void setPlayerListWithGameProfile(List<MC_GameProfile> players);
 
 	/**
 	 * Gets the favicon encoded in Base64.
@@ -155,7 +178,6 @@ public interface ServerPingWrapper
 	{
 		private static Serializer serializer = new Serializer();
 
-		@SuppressWarnings("deprecation")
 		@Override
 		public ServerPingWrapper deserialize(JsonElement jsonElement, Type type,
 				JsonDeserializationContext context) throws JsonParseException
@@ -185,14 +207,12 @@ public interface ServerPingWrapper
 					if (json.get("sample") instanceof JsonArray)
 					{
 						JsonArray sample = json.getAsJsonArray("sample");
-						List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
+						List<MC_GameProfile> players = new ArrayList<MC_GameProfile>();
 						sample.forEach(element -> {
 							if (element instanceof JsonObject)
-								players.add(Bukkit.getOfflinePlayer(
-										element.getAsJsonObject().get("name")
-												.getAsString()));
+								players.add(MC_GameProfile.fromJson(element));
 						});
-						obj.setPlayerList(players);
+						obj.setPlayerListWithGameProfile(players);
 					}
 				}
 				if (json.has("favicon"))

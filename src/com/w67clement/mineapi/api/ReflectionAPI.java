@@ -176,12 +176,26 @@ public class ReflectionAPI
 		}
 	}
 
+	public static Method getMethod(Object obj, String name, boolean declared,
+			Class<?>... parameterTypes)
+	{
+		return getMethod(obj.getClass(), name, declared, parameterTypes);
+	}
+
 	public static Method getMethod(Class<?> classOfMethod, String name,
 			Class<?>... parameterTypes)
 	{
+		return getMethod(classOfMethod, name, false, parameterTypes);
+	}
+
+	public static Method getMethod(Class<?> classOfMethod, String name,
+			boolean declared, Class<?>... parameterTypes)
+	{
 		try
 		{
-			return classOfMethod.getMethod(name, parameterTypes);
+			return declared
+					? classOfMethod.getDeclaredMethod(name, parameterTypes)
+					: classOfMethod.getMethod(name, parameterTypes);
 		}
 		catch (NoSuchMethodException | SecurityException e)
 		{
