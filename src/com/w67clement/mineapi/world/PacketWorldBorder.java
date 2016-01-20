@@ -1,11 +1,10 @@
 package com.w67clement.mineapi.world;
 
+import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.enums.PacketType;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldBorder;
-
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.enums.PacketType;
 
 public abstract class PacketWorldBorder extends WorldPacket
 {

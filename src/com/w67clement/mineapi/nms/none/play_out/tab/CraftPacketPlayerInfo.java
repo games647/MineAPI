@@ -1,15 +1,13 @@
 package com.w67clement.mineapi.nms.none.play_out.tab;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.w67clement.mineapi.tab.PacketPlayerInfo;
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.entity.Player;
 
 public class CraftPacketPlayerInfo extends PacketPlayerInfo
 {

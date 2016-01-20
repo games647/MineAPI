@@ -1,9 +1,8 @@
 package com.w67clement.mineapi.nms.v1_8_R2.entity;
 
+import com.w67clement.mineapi.entity.MC_Entity;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftEntity;
 import org.bukkit.entity.Entity;
-
-import com.w67clement.mineapi.entity.MC_Entity;
 
 public class MC_Entity_v1_8_R2 implements MC_Entity
 {

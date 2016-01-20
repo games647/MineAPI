@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.system.modules;
 
+import com.w67clement.mineapi.MineAPI;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -13,13 +14,10 @@ import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
-
 import org.apache.commons.lang.Validate;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.yaml.snakeyaml.error.YAMLException;
-
-import com.w67clement.mineapi.MineAPI;
 
 public class ModuleLoader
 {

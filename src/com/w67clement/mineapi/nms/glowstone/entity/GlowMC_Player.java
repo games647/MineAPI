@@ -1,22 +1,5 @@
 package com.w67clement.mineapi.nms.glowstone.entity;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
-import org.bukkit.Chunk;
-import org.bukkit.GameMode;
-import org.bukkit.Material;
-import org.bukkit.block.Beacon;
-import org.bukkit.block.BrewingStand;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
-import org.bukkit.block.Hopper;
-import org.bukkit.block.Sign;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-
 import com.flowpowered.networking.Message;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.MC_Entity;
@@ -30,12 +13,26 @@ import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
 import com.w67clement.mineapi.nms.none.play_out.tab.CraftTabTitle;
 import com.w67clement.mineapi.system.MC_GameProfile;
 import com.w67clement.mineapi.system.MC_GameProfile.Property;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import net.glowstone.GlowChunk;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.inventory.InventoryMonitor;
 import net.glowstone.net.message.play.game.PluginMessage;
 import net.glowstone.net.message.play.player.CameraMessage;
+import org.bukkit.Chunk;
+import org.bukkit.GameMode;
+import org.bukkit.Material;
+import org.bukkit.block.Beacon;
+import org.bukkit.block.BrewingStand;
+import org.bukkit.block.Dispenser;
+import org.bukkit.block.Furnace;
+import org.bukkit.block.Hopper;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 public class GlowMC_Player extends GlowMC_EntityLiving implements MC_Player
 {

@@ -1,8 +1,7 @@
 package com.w67clement.mineapi.entity.animals;
 
-import org.bukkit.entity.Pig;
-
 import com.w67clement.mineapi.entity.MC_EntityAnimals;
+import org.bukkit.entity.Pig;
 
 public interface MC_Pig extends MC_EntityAnimals
 {

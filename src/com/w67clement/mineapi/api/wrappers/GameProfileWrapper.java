@@ -1,8 +1,7 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import java.util.UUID;
-
 import com.mojang.authlib.GameProfile;
+import java.util.UUID;
 
 @Deprecated
 /**

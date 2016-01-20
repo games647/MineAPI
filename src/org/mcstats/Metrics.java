@@ -27,15 +27,6 @@
  */
 package org.mcstats;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Server;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
-import org.bukkit.scheduler.BukkitTask;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -57,6 +48,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
+import org.bukkit.Bukkit;
+import org.bukkit.Server;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.scheduler.BukkitTask;
 
 public class Metrics {
 
@@ -269,7 +268,7 @@ public class Metrics {
     /**
      * Enables metrics for the server by setting "opt-out" to false in the config file and starting the metrics task.
      *
-     * @throws java.io.IOException
+     * @throws java.io.IOException ?
      */
     public void enable() throws IOException {
         // This has to be synchronized or it can collide with the check in the task.
@@ -290,7 +289,7 @@ public class Metrics {
     /**
      * Disables metrics for the server by setting "opt-out" to true in the config file and canceling the metrics task.
      *
-     * @throws java.io.IOException
+     * @throws java.io.IOException ?
      */
     public void disable() throws IOException {
         // This has to be synchronized or it can collide with the check in the task.
@@ -513,8 +512,8 @@ public class Metrics {
     /**
      * GZip compress a string of bytes
      *
-     * @param input
-     * @return
+     * @param input ?
+     * @return ?
      */
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

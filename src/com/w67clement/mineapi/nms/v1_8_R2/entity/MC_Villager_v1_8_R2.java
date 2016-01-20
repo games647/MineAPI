@@ -1,20 +1,17 @@
 package com.w67clement.mineapi.nms.v1_8_R2.entity;
 
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.craftbukkit.v1_8_R2.entity.CraftVillager;
-import org.bukkit.entity.Villager;
-import org.bukkit.entity.Villager.Profession;
-
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.villager.MC_MerchantRecipe;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
-
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import net.minecraft.server.v1_8_R2.EntityVillager;
 import net.minecraft.server.v1_8_R2.MerchantRecipe;
 import net.minecraft.server.v1_8_R2.MerchantRecipeList;
+import org.bukkit.craftbukkit.v1_8_R2.entity.CraftVillager;
+import org.bukkit.entity.Villager;
+import org.bukkit.entity.Villager.Profession;
 
 public class MC_Villager_v1_8_R2 extends MC_EntityAgeable_v1_8_R2 implements MC_Villager
 {

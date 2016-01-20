@@ -1,12 +1,11 @@
 package com.w67clement.mineapi.nms.none.play_out.message;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.message.Title;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class CraftTitle extends Title
 {

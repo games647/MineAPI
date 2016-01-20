@@ -1,5 +1,25 @@
 package com.w67clement.mineapi.nms.v1_8_R1.entity;
 
+import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.api.ReflectionAPI;
+import com.w67clement.mineapi.api.wrappers.ChatVisibilityWrapper;
+import com.w67clement.mineapi.entity.MC_Entity;
+import com.w67clement.mineapi.entity.player.ClientCommand;
+import com.w67clement.mineapi.entity.player.MC_Player;
+import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
+import com.w67clement.mineapi.message.FancyMessage;
+import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
+import com.w67clement.mineapi.system.MC_GameProfile;
+import net.minecraft.server.v1_8_R1.ChunkCoordIntPair;
+import net.minecraft.server.v1_8_R1.EntityPlayer;
+import net.minecraft.server.v1_8_R1.Packet;
+import net.minecraft.server.v1_8_R1.PacketPlayOutCamera;
+import net.minecraft.server.v1_8_R1.TileEntityBeacon;
+import net.minecraft.server.v1_8_R1.TileEntityBrewingStand;
+import net.minecraft.server.v1_8_R1.TileEntityDispenser;
+import net.minecraft.server.v1_8_R1.TileEntityFurnace;
+import net.minecraft.server.v1_8_R1.TileEntityHopper;
+import net.minecraft.server.v1_8_R1.TileEntitySign;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.block.Beacon;
@@ -15,28 +35,6 @@ import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
-import com.w67clement.mineapi.api.wrappers.ChatVisibilityWrapper;
-import com.w67clement.mineapi.entity.MC_Entity;
-import com.w67clement.mineapi.entity.player.ClientCommand;
-import com.w67clement.mineapi.entity.player.MC_Player;
-import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
-import com.w67clement.mineapi.message.FancyMessage;
-import com.w67clement.mineapi.nms.none.play_in.CraftClientCommand;
-import com.w67clement.mineapi.system.MC_GameProfile;
-
-import net.minecraft.server.v1_8_R1.ChunkCoordIntPair;
-import net.minecraft.server.v1_8_R1.EntityPlayer;
-import net.minecraft.server.v1_8_R1.Packet;
-import net.minecraft.server.v1_8_R1.PacketPlayOutCamera;
-import net.minecraft.server.v1_8_R1.TileEntityBeacon;
-import net.minecraft.server.v1_8_R1.TileEntityBrewingStand;
-import net.minecraft.server.v1_8_R1.TileEntityDispenser;
-import net.minecraft.server.v1_8_R1.TileEntityFurnace;
-import net.minecraft.server.v1_8_R1.TileEntityHopper;
-import net.minecraft.server.v1_8_R1.TileEntitySign;
 
 public class MC_Player_v1_8_R1 extends MC_EntityLiving_v1_8_R1
 		implements MC_Player

@@ -6,64 +6,71 @@ import com.w67clement.mineapi.packets.ProtocolState;
 
 /**
  * Packet of handshaking! More information at:
- * <a href=http://wiki.vg/Protocol#Handshake>Wiki.vg Handshake packet</a> <br/>
+ * <a href=http://wiki.vg/Protocol#Handshake>Wiki.vg Handshake packet</a> <br>
  * <b>This packet is read only!</b>
- * 
- * @author w67clement
  *
+ * @author w67clement
  */
 public abstract class PacketHandshake implements NmsPacket
 {
-	protected final int protocol;
-	protected final String hostNameOrIP;
-	protected final int port;
-	protected final ProtocolState nextProtocolType;
+    protected final int protocol;
+    protected final String hostNameOrIP;
+    protected final int port;
+    protected final ProtocolState nextProtocolType;
 
-	public PacketHandshake(final int protocol, final String hostNameOrIP,
-			final int port, final ProtocolState nextProtocolType) {
-		this.protocol = protocol;
-		this.hostNameOrIP = hostNameOrIP;
-		this.port = port;
-		this.nextProtocolType = nextProtocolType;
-	}
+    public PacketHandshake(final int protocol, final String hostNameOrIP, final int port, final ProtocolState nextProtocolType)
+    {
+        this.protocol = protocol;
+        this.hostNameOrIP = hostNameOrIP;
+        this.port = port;
+        this.nextProtocolType = nextProtocolType;
+    }
 
-	/**
-	 * Gets the version of the protocol of the player.
-	 */
-	public final int getProtocol()
-	{
-		return this.protocol;
-	}
+    /**
+     * Gets the version of the protocol of the player.
+     *
+     * @return Protocol's version.
+     */
+    public final int getProtocol()
+    {
+        return this.protocol;
+    }
 
-	/**
-	 * Gets the host name or IP of the player.
-	 */
-	public final String getHostNameOrIP()
-	{
-		return this.hostNameOrIP;
-	}
+    /**
+     * Gets the host name or IP of the player.
+     *
+     * @return Host name or IP address.
+     */
+    public final String getHostNameOrIP()
+    {
+        return this.hostNameOrIP;
+    }
 
-	/**
-	 * Gets the port used by the player.
-	 */
-	public final int getPort()
-	{
-		return this.port;
-	}
+    /**
+     * Gets the port used by the player.
+     *
+     * @return Port.
+     */
+    public final int getPort()
+    {
+        return this.port;
+    }
 
-	/**
-	 * Gets the next protocol type used for the player. <br/>
-	 * <b>DO NOT CHANGE IT!</b>
-	 */
-	public final ProtocolState getNextProtocolType()
-	{
-		return this.nextProtocolType;
-	}
+    /**
+     * Gets the next protocol type used for the player. <br>
+     * <b>DO NOT CHANGE IT!</b>
+     *
+     * @return Next protocol type.
+     */
+    public final ProtocolState getNextProtocolType()
+    {
+        return this.nextProtocolType;
+    }
 
-	@Override
-	public final PacketType getPacketType()
-	{
-		return PacketType.HANDSHAKE;
-	}
+    @Override
+    public final PacketType getPacketType()
+    {
+        return PacketType.HANDSHAKE;
+    }
 
 }

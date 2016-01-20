@@ -1,12 +1,11 @@
 package com.w67clement.mineapi.system;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import com.w67clement.mineapi.system.modules.InvalidModuleException;
 import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ModuleManager
 {
@@ -95,6 +94,8 @@ public class ModuleManager
 
 	/**
 	 * Lists the modules.
+	 *
+	 * @return All loaded modules.
 	 */
 	public List<Module> getModules()
 	{

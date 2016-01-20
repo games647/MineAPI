@@ -1,18 +1,16 @@
 package com.w67clement.mineapi.nms.none.play_out.world;
 
+import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.api.ReflectionAPI;
+import com.w67clement.mineapi.world.PacketExplosion;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
-
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
-import com.w67clement.mineapi.world.PacketExplosion;
 
 /**
  * Create some explosions with the packet PlayOutExplosion.

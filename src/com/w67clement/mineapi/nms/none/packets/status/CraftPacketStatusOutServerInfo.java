@@ -1,11 +1,10 @@
 package com.w67clement.mineapi.nms.none.packets.status;
 
-import java.lang.reflect.Constructor;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo;
+import java.lang.reflect.Constructor;
 
 public class CraftPacketStatusOutServerInfo extends PacketStatusOutServerInfo
 {

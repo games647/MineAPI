@@ -1,12 +1,10 @@
 package com.w67clement.mineapi.nms.v1_8_R1.entity;
 
+import com.w67clement.mineapi.entity.others.MC_ArmorStand;
+import net.minecraft.server.v1_8_R1.EntityArmorStand;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftArmorStand;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.util.EulerAngle;
-
-import com.w67clement.mineapi.entity.others.MC_ArmorStand;
-
-import net.minecraft.server.v1_8_R1.EntityArmorStand;
 
 public class MC_ArmorStand_v1_8_R1 extends MC_EntityLiving_v1_8_R1
 		implements MC_ArmorStand

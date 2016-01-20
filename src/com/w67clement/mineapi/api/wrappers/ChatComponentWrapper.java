@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import java.lang.reflect.Method;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.message.FancyMessage;
+import java.lang.reflect.Method;
 
 public class ChatComponentWrapper
 {

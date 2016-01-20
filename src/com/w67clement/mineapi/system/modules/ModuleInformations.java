@@ -2,7 +2,6 @@ package com.w67clement.mineapi.system.modules;
 
 import java.io.InputStream;
 import java.util.Map;
-
 import org.bukkit.plugin.InvalidDescriptionException;
 import org.yaml.snakeyaml.Yaml;
 

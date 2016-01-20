@@ -1,13 +1,12 @@
 package com.w67clement.mineapi;
 
+import com.w67clement.mineapi.enums.MinecraftVersion;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-
-import com.w67clement.mineapi.enums.MinecraftVersion;
 
 public class VersionCommand implements CommandExecutor
 {

@@ -1,13 +1,12 @@
 package com.w67clement.mineapi.nms.none.packets.handshake;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.packets.ProtocolState;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public final class CraftPacketHandshake extends PacketHandshake
 {

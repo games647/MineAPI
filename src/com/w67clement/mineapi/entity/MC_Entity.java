@@ -70,7 +70,7 @@ public interface MC_Entity {
      * Sets whether the mob should be
      * invisible or not
      *
-     * @param visible Whether the mob is invisible or not
+     * @param invisible Whether the mob is invisible or not
      */
 	public void setInvisible(boolean invisible);
 	

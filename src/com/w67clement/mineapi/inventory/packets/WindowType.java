@@ -1,7 +1,6 @@
 package com.w67clement.mineapi.inventory.packets;
 
 import java.util.HashMap;
-
 import org.bukkit.event.inventory.InventoryType;
 
 /**

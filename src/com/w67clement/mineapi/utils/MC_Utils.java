@@ -1,11 +1,9 @@
 package com.w67clement.mineapi.utils;
 
+import com.w67clement.mineapi.api.ReflectionAPI;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-
 import org.bukkit.util.EulerAngle;
-
-import com.w67clement.mineapi.api.ReflectionAPI;
 
 public class MC_Utils
 {

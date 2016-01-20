@@ -1,12 +1,10 @@
 package com.w67clement.mineapi.api.event;
 
-import java.util.UUID;
-
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
 import com.w67clement.mineapi.api.wrappers.PacketWrapper;
 import com.w67clement.mineapi.nms.NmsPacket;
+import java.util.UUID;
+import org.bukkit.entity.Player;
 
 public class SendPacketEvent<T extends NmsPacket>
 {
@@ -30,6 +28,8 @@ public class SendPacketEvent<T extends NmsPacket>
 
 	/**
 	 * Gets the MineAPI's packet wrapper.
+	 *
+	 * @return MineAPI's packet wrapper.
 	 */
 	public MC_PacketWrapper<T> getPacketWrapper()
 	{

@@ -1,14 +1,12 @@
 package com.w67clement.mineapi.nms.none.play_out.tab;
 
-import java.lang.reflect.Constructor;
-
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.tab.TabTitle;
+import java.lang.reflect.Constructor;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 /**
  * Set a title (header and footer) of the player list Tab.

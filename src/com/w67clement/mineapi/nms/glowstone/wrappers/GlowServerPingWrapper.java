@@ -1,21 +1,18 @@
 package com.w67clement.mineapi.nms.glowstone.wrappers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.system.MC_GameProfile;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.glowstone.GlowServer;
 import net.glowstone.util.GlowServerIcon;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 
 public class GlowServerPingWrapper implements ServerPingWrapper
 {

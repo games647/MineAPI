@@ -1,11 +1,9 @@
 package com.w67clement.mineapi.nms.v1_8_R2.entity;
 
+import com.w67clement.mineapi.entity.animals.MC_Pig;
+import net.minecraft.server.v1_8_R2.EntityPig;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftPig;
 import org.bukkit.entity.Pig;
-
-import com.w67clement.mineapi.entity.animals.MC_Pig;
-
-import net.minecraft.server.v1_8_R2.EntityPig;
 
 public class MC_Pig_v1_8_R2 extends MC_EntityAgeable_v1_8_R2 implements MC_Pig
 {

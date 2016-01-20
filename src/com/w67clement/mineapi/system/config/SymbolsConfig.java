@@ -3,7 +3,6 @@ package com.w67clement.mineapi.system.config;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
-
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;

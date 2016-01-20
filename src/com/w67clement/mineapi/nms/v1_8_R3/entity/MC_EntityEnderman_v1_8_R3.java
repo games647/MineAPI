@@ -1,14 +1,12 @@
 package com.w67clement.mineapi.nms.v1_8_R3.entity;
 
+import com.w67clement.mineapi.entity.monster.MC_EntityEnderman;
+import net.minecraft.server.v1_8_R3.Block;
+import net.minecraft.server.v1_8_R3.EntityEnderman;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftEnderman;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Enderman;
 import org.bukkit.inventory.ItemStack;
-
-import com.w67clement.mineapi.entity.monster.MC_EntityEnderman;
-
-import net.minecraft.server.v1_8_R3.Block;
-import net.minecraft.server.v1_8_R3.EntityEnderman;
 
 public class MC_EntityEnderman_v1_8_R3 extends MC_EntityCreature_v1_8_R3 implements MC_EntityEnderman
 {

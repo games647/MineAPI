@@ -1,10 +1,8 @@
 package com.w67clement.mineapi.nms.glowstone.entity;
 
-import org.bukkit.entity.Entity;
-
 import com.w67clement.mineapi.entity.MC_Entity;
-
 import net.glowstone.entity.GlowEntity;
+import org.bukkit.entity.Entity;
 
 public class GlowMC_Entity implements MC_Entity
 {

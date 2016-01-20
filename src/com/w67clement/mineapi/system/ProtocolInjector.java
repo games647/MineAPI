@@ -1,12 +1,11 @@
 package com.w67clement.mineapi.system;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.system.event.GlowHandler;
 import com.w67clement.mineapi.system.event.IHandler;
 import com.w67clement.mineapi.system.event.INCHandler;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class ProtocolInjector
 {

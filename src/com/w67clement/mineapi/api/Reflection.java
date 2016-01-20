@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.api;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-
 import com.w67clement.mineapi.enums.MinecraftVersion;
 import com.w67clement.mineapi.enums.ParticleType;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class Reflection
 {

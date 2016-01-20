@@ -1,18 +1,5 @@
 package com.w67clement.mineapi.nms;
 
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
-
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.block.BlockAction;
 import com.w67clement.mineapi.block.PacketBlockAction;
@@ -45,190 +32,186 @@ import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.MC_World;
 import com.w67clement.mineapi.world.PacketExplosion;
 import com.w67clement.mineapi.world.PacketWorldBorder;
+import java.util.List;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * NmsManager is a manager of nms' class!
- * 
- * @author 67clement
- * 
+ *
+ * @author w67clement
  */
 public abstract class NmsManager
 {
 
-	/**
-	 * Get the MineAPI's title object.
-	 * 
-	 * @author 67clement
-	 * @param title
-	 *            The title will be displayed.
-	 * @param subtitle
-	 *            The subtitle.
-	 * @param fadeIn
-	 * @param stay
-	 * @param fadeOut
-	 * @return A new MineAPI's title object.
-	 */
-	public abstract Title getTitle(String title, String subtitle, int fadeIn,
-			int stay, int fadeOut);
+    /**
+     * Get the MineAPI's title object.
+     *
+     * @param title    The title will be displayed.
+     * @param subtitle The subtitle.
+     * @param fadeIn   Fade in of the title.
+     * @param stay     Stay times of the title.
+     * @param fadeOut  Fade out of the title.
+     *
+     * @return A new MineAPI's title object.
+     *
+     * @author w67clement
+     */
+    public abstract Title getTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut);
 
-	/**
-	 * 
-	 * @author w67clement
-	 * @param message
-	 * @return A new MineAPI's action bar message object.
-	 * @version MineAPI 2.2.0 (Event system v2)
-	 */
-	public ActionBarMessage getActionBarMessage(String message)
-	{
-		return new ActionBarMessage(message);
-	}
+    /**
+     * @param message Message displayed in ActionBar.
+     *
+     * @return A new MineAPI's action bar message object.
+     *
+     * @author w67clement
+     * @version MineAPI 2.2.0 (Event system v2)
+     */
+    public ActionBarMessage getActionBarMessage(String message)
+    {
+        return new ActionBarMessage(message);
+    }
 
-	/**
-	 * @author w67clement
-	 * @param message
-	 * @return A new MineAPI's FancyMessage object.
-	 * @version MineAPI 2.2.0 (Event system v2)
-	 */
-	public FancyMessage getFancyMessage(String message)
-	{
-		return new FancyMessage(message);
-	}
+    /**
+     * @param message First part of the message.
+     *
+     * @return A new MineAPI's FancyMessage object.
+     *
+     * @author w67clement
+     * @version MineAPI 2.2.0 (Event system v2)
+     */
+    public FancyMessage getFancyMessage(String message)
+    {
+        return new FancyMessage(message);
+    }
 
-	/**
-	 * @see PacketChat
-	 * @return A new PacketChat instance.
-	 * @version MineAPI 2.2.0 (Event system v2)
-	 */
-	public abstract PacketChat getPacketChat(String content);
+    /**
+     * @param content Message in Json.
+     *
+     * @return A new PacketChat instance.
+     *
+     * @version MineAPI 2.2.0 (Event system v2)
+     * @see PacketChat
+     */
+    public abstract PacketChat getPacketChat(String content);
 
-	/**
-	 * @see PacketChat
-	 * @return A new PacketChat instance.
-	 * @version MineAPI 2.2.0 (Event system v2)
-	 */
-	public abstract PacketChat getPacketChat(String content, byte data);
+    /**
+     * @param content Message in Json.
+     * @param data    Data of the message.
+     *
+     * @return A new PacketChat instance.
+     *
+     * @version MineAPI 2.2.0 (Event system v2)
+     * @see PacketChat
+     */
+    public abstract PacketChat getPacketChat(String content, byte data);
 
-	public abstract TabTitle getTabTitle(String header, String footer);
+    public abstract TabTitle getTabTitle(String header, String footer);
 
-	public abstract PacketPlayerInfo getPacketPlayerInfo(
-			PacketPlayerInfo.MC_EnumPlayerInfoAction action,
-			List<PacketPlayerInfoData> data);
+    public abstract PacketPlayerInfo getPacketPlayerInfo(PacketPlayerInfo.MC_EnumPlayerInfoAction action, List<PacketPlayerInfoData> data);
 
-	public abstract PacketPlayerInfo getPacketPlayerInfo(
-			PacketPlayerInfo.MC_EnumPlayerInfoAction action,
-			PacketPlayerInfoData... data);
+    public abstract PacketPlayerInfo getPacketPlayerInfo(PacketPlayerInfo.MC_EnumPlayerInfoAction action, PacketPlayerInfoData... data);
 
-	public abstract WindowItems getWindowItemsPacket(int windowId,
-			List<ItemStack> items);
+    public abstract WindowItems getWindowItemsPacket(int windowId, List<ItemStack> items);
 
 	/* Packet play out - World */
 
-	public abstract PacketExplosion getExplosionPacket(World world, double x,
-			double y, double z, float radius, boolean sound);
+    public abstract PacketExplosion getExplosionPacket(World world, double x, double y, double z, float radius, boolean sound);
 
-	public abstract PacketExplosion getExplosionPacket(Location loc,
-			float radius, boolean sound);
+    public abstract PacketExplosion getExplosionPacket(Location loc, float radius, boolean sound);
 
-	public abstract PacketWorldBorder getPacketWorldBorder(World world);
+    public abstract PacketWorldBorder getPacketWorldBorder(World world);
 
 	/* Packet play out - Block */
 
-	public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(
-			MC_Player player, Location loc, byte destroyStage);
+    public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(MC_Player player, Location loc, byte destroyStage);
 
-	public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(
-			MC_Player player, int x, int y, int z, byte destroyStage);
+    public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(MC_Player player, int x, int y, int z, byte destroyStage);
 
-	public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(
-			Player player, Location loc, byte destroyStage);
+    public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player, Location loc, byte destroyStage);
 
-	public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(
-			Player player, int x, int y, int z, byte destroyStage);
+    public abstract PacketBlockBreakAnimation getPacketBlockBreakAnimation(Player player, int x, int y, int z, byte destroyStage);
 
-	public abstract PacketBlockChange getPacketBlockChange(Material material,
-			Location loc);
+    public abstract PacketBlockChange getPacketBlockChange(Material material, Location loc);
 
-	public abstract PacketBlockChange getPacketBlockChange(Material material,
-			int data, Location loc);
+    public abstract PacketBlockChange getPacketBlockChange(Material material, int data, Location loc);
 
-	public abstract PacketBlockChange getPacketBlockChange(Material material,
-			int x, int y, int z);
+    public abstract PacketBlockChange getPacketBlockChange(Material material, int x, int y, int z);
 
-	public abstract PacketBlockChange getPacketBlockChange(Material material,
-			int data, int x, int y, int z);
+    public abstract PacketBlockChange getPacketBlockChange(Material material, int data, int x, int y, int z);
 
-	public abstract PacketBlockAction getPacketBlockAction(Location location,
-			BlockAction action);
+    public abstract PacketBlockAction getPacketBlockAction(Location location, BlockAction action);
 
-	public abstract PacketBlockAction getPacketBlockAction(Location location,
-			BlockAction action, int data);
+    public abstract PacketBlockAction getPacketBlockAction(Location location, BlockAction action, int data);
 
-	public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z,
-			BlockAction action);
+    public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z, BlockAction action);
 
-	public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z,
-			BlockAction action, int data);
+    public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z, BlockAction action, int data);
 
 	/* PACKET PLAY IN */
 
-	public PacketPlayInChat getPacketPlayInChat(String msg)
-	{
-		return new CraftPacketPlayInChat(msg);
-	}
+    public PacketPlayInChat getPacketPlayInChat(String msg)
+    {
+        return new CraftPacketPlayInChat(msg);
+    }
 
-	public abstract ClientCommand getPacketPlayInClientCommand(
-			ClientCommand.ClientCommandType commandType);
+    public abstract ClientCommand getPacketPlayInClientCommand(ClientCommand.ClientCommandType commandType);
 
 	/* MC ENTITY */
 
-	public abstract MC_Entity getMC_Entity(Entity entity);
+    public abstract MC_Entity getMC_Entity(Entity entity);
 
-	public abstract MC_ArmorStand getMC_ArmorStand(ArmorStand armorstand);
+    public abstract MC_ArmorStand getMC_ArmorStand(ArmorStand armorstand);
 
-	public abstract MC_EntityEnderman getMC_EntityEnderman(Enderman enderman);
+    public abstract MC_EntityEnderman getMC_EntityEnderman(Enderman enderman);
 
-	/**
-	 * Get a MC_Player, MC_Player is a advanced Player interface.
-	 * 
-	 * @param player
-	 *            The Bukkit Player Object.
-	 * @return A new MC_Player Object
-	 */
-	public abstract MC_Player getMCPlayer(Player player);
+    /**
+     * Gets a MC_Player, MC_Player is a advanced Player interface.
+     *
+     * @param player The Bukkit Player Object.
+     *
+     * @return A new MC_Player Object
+     */
+    public abstract MC_Player getMCPlayer(Player player);
 
-	public abstract MC_Pig getMCPig(Pig pig);
+    public abstract MC_Pig getMCPig(Pig pig);
 
-	public abstract MC_Villager getMCVillager(Villager villager);
+    public abstract MC_Villager getMCVillager(Villager villager);
 
 	/* World */
 
-	public abstract MC_World getMC_World(World world);
+    public abstract MC_World getMC_World(World world);
 
 	/* Status */
 
-	public PacketStatusOutServerInfo getPacketStatusOutServerInfo(
-			ServerPingWrapper ping)
-	{
-		return new CraftPacketStatusOutServerInfo(ping);
-	}
+    public PacketStatusOutServerInfo getPacketStatusOutServerInfo(ServerPingWrapper ping)
+    {
+        return new CraftPacketStatusOutServerInfo(ping);
+    }
 
-	public PacketStatusOutPong getPacketStatusOutPong(long pong)
-	{
-		return new CraftPacketStatusOutPong(pong);
-	}
+    public PacketStatusOutPong getPacketStatusOutPong(long pong)
+    {
+        return new CraftPacketStatusOutPong(pong);
+    }
 
 	/* Handshake */
 
-	public PacketHandshake getPacketHandshake(int protocol, String hostnameOrIp,
-			int port, ProtocolState nextProtocolType)
-	{
-		return new CraftPacketHandshake(protocol, hostnameOrIp, port,
-				nextProtocolType);
-	}
+    public PacketHandshake getPacketHandshake(int protocol, String hostnameOrIp, int port, ProtocolState nextProtocolType)
+    {
+        return new CraftPacketHandshake(protocol, hostnameOrIp, port, nextProtocolType);
+    }
 
 	/* WRAPPERS */
 
-	public abstract ServerPingWrapper getServerPingWrapper();
+    public abstract ServerPingWrapper getServerPingWrapper();
 
-	public abstract ServerPingWrapper getServerPingWrapper(Object serverPing);
+    public abstract ServerPingWrapper getServerPingWrapper(Object serverPing);
 }

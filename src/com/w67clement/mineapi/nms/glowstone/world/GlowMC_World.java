@@ -1,11 +1,9 @@
 package com.w67clement.mineapi.nms.glowstone.world;
 
+import com.w67clement.mineapi.world.MC_World;
+import net.glowstone.GlowWorld;
 import org.bukkit.Material;
 import org.bukkit.World;
-
-import com.w67clement.mineapi.world.MC_World;
-
-import net.glowstone.GlowWorld;
 
 public class GlowMC_World extends MC_World
 {

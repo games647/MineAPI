@@ -2,9 +2,6 @@ package com.w67clement.mineapi.system.modules;
 
 public class InvalidModuleException extends Exception {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 2543761343127659581L;
 
 	public InvalidModuleException(Throwable cause) {

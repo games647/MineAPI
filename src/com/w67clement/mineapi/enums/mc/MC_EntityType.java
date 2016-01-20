@@ -1,12 +1,5 @@
 package com.w67clement.mineapi.enums.mc;
 
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
-
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.MC_Entity;
 import com.w67clement.mineapi.entity.animals.MC_Pig;
@@ -14,6 +7,12 @@ import com.w67clement.mineapi.entity.monster.MC_EntityEnderman;
 import com.w67clement.mineapi.entity.others.MC_ArmorStand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
 
 public enum MC_EntityType {
 

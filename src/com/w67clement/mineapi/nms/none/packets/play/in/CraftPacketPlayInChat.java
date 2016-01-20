@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.nms.none.packets.play.in;
 
-import java.lang.reflect.Constructor;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
+import java.lang.reflect.Constructor;
 
 public class CraftPacketPlayInChat extends PacketPlayInChat
 {

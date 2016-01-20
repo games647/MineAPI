@@ -1,9 +1,8 @@
 package com.w67clement.mineapi.world;
 
+import com.w67clement.mineapi.enums.PacketType;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import com.w67clement.mineapi.enums.PacketType;
 
 /**
  * With this class, you can send the packet of the explosion.

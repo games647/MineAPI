@@ -1,11 +1,9 @@
 package com.w67clement.mineapi.nms.v1_8_R2.entity;
 
+import com.w67clement.mineapi.entity.MC_EntityAgeable;
+import net.minecraft.server.v1_8_R2.EntityAgeable;
 import org.bukkit.craftbukkit.v1_8_R2.entity.CraftAgeable;
 import org.bukkit.entity.Ageable;
-
-import com.w67clement.mineapi.entity.MC_EntityAgeable;
-
-import net.minecraft.server.v1_8_R2.EntityAgeable;
 
 public class MC_EntityAgeable_v1_8_R2 extends MC_EntityCreature_v1_8_R2 implements MC_EntityAgeable
 {

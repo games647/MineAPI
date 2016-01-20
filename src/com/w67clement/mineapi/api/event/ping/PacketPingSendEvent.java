@@ -27,6 +27,8 @@ public class PacketPingSendEvent<T extends NmsPacket>
 
 	/**
 	 * Gets the MineAPI's packet wrapper.
+	 *
+	 * @return MineAPI's packet wrapper.
 	 */
 	public MC_PacketWrapper<T> getPacketWrapper()
 	{

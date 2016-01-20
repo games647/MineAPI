@@ -1,19 +1,16 @@
 package com.w67clement.mineapi.entity.villager;
 
+import com.w67clement.mineapi.entity.MC_EntityAgeable;
 import java.util.List;
-
 import org.bukkit.entity.Villager;
 import org.bukkit.entity.Villager.Profession;
-
-import com.w67clement.mineapi.entity.MC_EntityAgeable;
 
 public interface MC_Villager extends MC_EntityAgeable
 {
 
 	/**
 	 * Sets the profession of the villager.
-	 * 
-	 * @see #setProfession(Profession)
+	 *
 	 * @param id
 	 *            Id of the profession.
 	 */

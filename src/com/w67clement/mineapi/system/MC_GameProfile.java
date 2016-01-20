@@ -1,5 +1,13 @@
 package com.w67clement.mineapi.system;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSerializationContext;
+import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.api.ReflectionAPI;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
@@ -11,20 +19,9 @@ import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
-import org.apache.commons.codec.binary.Base64;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSerializationContext;
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
-
 import net.glowstone.entity.meta.profile.PlayerProfile;
 import net.glowstone.entity.meta.profile.PlayerProperty;
+import org.apache.commons.codec.binary.Base64;
 
 public class MC_GameProfile
 {
@@ -116,6 +113,28 @@ public class MC_GameProfile
 					profile.getClass(), "properties", true), properties);
 			return profile;
 		}
+	}
+
+	/**
+	 * Gets the GameProfile in JsonObject.
+	 * @return Gson's JsonObject.
+     */
+	public JsonObject toJson()
+	{
+		JsonObject gameprofile = new JsonObject();
+		gameprofile.addProperty("id", this.uuid.toString());
+		gameprofile.addProperty("name", this.name);
+		gameprofile.add("properties", serializeProperties(this.properties));
+		return gameprofile;
+	}
+
+	/**
+	 * Gets the GameProfile in Json.
+	 * @return GameProfile in Json.
+     */
+	public String toJsonString()
+	{
+		return this.toJson().toString();
 	}
 
 	/**

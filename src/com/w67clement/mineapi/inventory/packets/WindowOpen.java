@@ -1,9 +1,8 @@
 package com.w67clement.mineapi.inventory.packets;
 
-import org.bukkit.inventory.Inventory;
-
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
+import org.bukkit.inventory.Inventory;
 
 public abstract class WindowOpen extends PacketSender
 {

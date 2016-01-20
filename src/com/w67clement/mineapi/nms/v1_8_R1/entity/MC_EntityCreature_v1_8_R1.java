@@ -1,11 +1,9 @@
 package com.w67clement.mineapi.nms.v1_8_R1.entity;
 
+import com.w67clement.mineapi.entity.MC_EntityCreature;
+import net.minecraft.server.v1_8_R1.EntityCreature;
 import org.bukkit.craftbukkit.v1_8_R1.entity.CraftCreature;
 import org.bukkit.entity.Creature;
-
-import com.w67clement.mineapi.entity.MC_EntityCreature;
-
-import net.minecraft.server.v1_8_R1.EntityCreature;
 
 public class MC_EntityCreature_v1_8_R1 extends MC_EntityLiving_v1_8_R1 implements MC_EntityCreature
 {

@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.player.MC_Player;
+import org.bukkit.entity.Player;
 
 public class EntityPlayerWrapper
 {

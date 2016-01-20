@@ -1,18 +1,15 @@
 package com.w67clement.mineapi.entity.villager;
 
-import java.lang.reflect.Constructor;
-
-import org.bukkit.inventory.ItemStack;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
-
+import java.lang.reflect.Constructor;
 import net.minecraft.server.v1_8_R1.MerchantRecipe;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * An Merchant recipe generator.
  * 
- * @author 67clement
+ * @author w67clement
  *
  */
 public class MC_MerchantRecipe
@@ -142,8 +139,8 @@ public class MC_MerchantRecipe
 	}
 
 	/**
-	 * Sets the selling item of the Merchant recipe. <br />
-	 * <br />
+	 * Sets the selling item of the Merchant recipe. <br>
+	 * <br>
 	 * <b>Note</b>: The parameter stack cannot be null.
 	 * 
 	 * @param stack

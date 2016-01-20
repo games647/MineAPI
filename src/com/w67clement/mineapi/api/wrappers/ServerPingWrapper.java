@@ -1,12 +1,5 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.ChatColor;
-import org.bukkit.OfflinePlayer;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -18,6 +11,11 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.system.MC_GameProfile;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.ChatColor;
+import org.bukkit.OfflinePlayer;
 
 /**
  * Use and change the ServerPing!
@@ -165,11 +163,15 @@ public interface ServerPingWrapper
 
 	/**
 	 * Gets the ServerPing object.
+     *
+     * @return ServerPing Nms' object.
 	 */
 	public Object toServerPing();
 
 	/**
 	 * Gets the ServerPing data in Json.
+	 *
+	 * @return ServerPing in Json.
 	 */
 	public String toJson();
 

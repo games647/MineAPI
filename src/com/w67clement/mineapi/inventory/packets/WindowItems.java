@@ -1,13 +1,11 @@
 package com.w67clement.mineapi.inventory.packets;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
+import java.util.Arrays;
+import java.util.List;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public abstract class WindowItems extends PacketSender
 {

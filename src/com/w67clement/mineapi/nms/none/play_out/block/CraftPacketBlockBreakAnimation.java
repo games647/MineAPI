@@ -1,15 +1,14 @@
 package com.w67clement.mineapi.nms.none.play_out.block;
 
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.BlockPositionWrapper;
 import com.w67clement.mineapi.block.PacketBlockBreakAnimation;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.PacketType;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 public class CraftPacketBlockBreakAnimation extends PacketBlockBreakAnimation
 {

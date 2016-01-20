@@ -1,5 +1,7 @@
 package com.w67clement.mineapi.nms;
 
+import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.system.ProtocolInjector;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -7,9 +9,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.system.ProtocolInjector;
 
 public class ProtocolManager implements Listener
 {

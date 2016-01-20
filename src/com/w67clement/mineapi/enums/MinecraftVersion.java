@@ -1,12 +1,10 @@
 package com.w67clement.mineapi.enums;
 
-import java.util.Map;
-
-import org.apache.commons.lang.Validate;
-
 import com.google.common.collect.Maps;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
+import java.util.Map;
+import org.apache.commons.lang.Validate;
 
 public enum MinecraftVersion
 {

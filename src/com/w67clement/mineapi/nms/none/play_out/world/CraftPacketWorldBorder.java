@@ -1,14 +1,12 @@
 package com.w67clement.mineapi.nms.none.play_out.world;
 
-import java.lang.reflect.Constructor;
-
-import org.bukkit.World;
-import org.bukkit.WorldBorder;
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.world.PacketWorldBorder;
+import java.lang.reflect.Constructor;
+import org.bukkit.World;
+import org.bukkit.WorldBorder;
+import org.bukkit.entity.Player;
 
 public class CraftPacketWorldBorder extends PacketWorldBorder
 {

@@ -1,13 +1,11 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import java.lang.reflect.Field;
-
-import org.apache.commons.lang.Validate;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.Reflection;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.enums.ParticleType;
+import java.lang.reflect.Field;
+import org.apache.commons.lang.Validate;
 
 public class PacketWrapper
 {

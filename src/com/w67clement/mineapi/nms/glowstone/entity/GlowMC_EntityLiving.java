@@ -1,14 +1,11 @@
 package com.w67clement.mineapi.nms.glowstone.entity;
 
-import java.util.List;
-
-import org.apache.commons.lang.Validate;
-import org.bukkit.entity.LivingEntity;
-
 import com.w67clement.mineapi.entity.MC_Entity;
 import com.w67clement.mineapi.entity.MC_EntityLiving;
-
+import java.util.List;
 import net.glowstone.entity.GlowLivingEntity;
+import org.apache.commons.lang.Validate;
+import org.bukkit.entity.LivingEntity;
 
 public class GlowMC_EntityLiving extends GlowMC_Entity
 		implements MC_EntityLiving

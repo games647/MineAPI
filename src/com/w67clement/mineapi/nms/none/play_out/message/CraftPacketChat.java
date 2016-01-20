@@ -1,16 +1,14 @@
 package com.w67clement.mineapi.nms.none.play_out.message;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-
-import org.bukkit.entity.Player;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.w67clement.mineapi.message.PacketChat;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import org.bukkit.entity.Player;
 
 public class CraftPacketChat extends PacketChat
 {

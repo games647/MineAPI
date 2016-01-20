@@ -7,13 +7,13 @@ import org.bukkit.ChatColor;
 public class Scroller
 {
 
-	private static final char COLOUR_CHAR = '§';
+	private static final char COLOUR_CHAR = '\u00a7';
 	private int position;
 	private List<String> list;
 	private ChatColor colour = ChatColor.RESET;
 
 	public Scroller(String message, int width, int spaceBetween, char colourChar) {
-		list = new ArrayList<String>();
+		list = new ArrayList<>();
 		if (message.length() < width)
 		{
 			StringBuilder sb = new StringBuilder(message);
@@ -24,7 +24,7 @@ public class Scroller
 		width -= 2;
 		if (width < 1) width = 1;
 		if (spaceBetween < 0) spaceBetween = 0;
-		if (colourChar != '§') message = ChatColor.translateAlternateColorCodes(colourChar, message);
+		if (colourChar != '\u00a7') message = ChatColor.translateAlternateColorCodes(colourChar, message);
 		for (int i = 0; i < message.length() - width; i++)
 			list.add(message.substring(i, i + width));
 		StringBuilder space = new StringBuilder();

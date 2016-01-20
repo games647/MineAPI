@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import org.bukkit.Location;
-import org.bukkit.World;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
+import org.bukkit.Location;
+import org.bukkit.World;
 
 /**
  * 

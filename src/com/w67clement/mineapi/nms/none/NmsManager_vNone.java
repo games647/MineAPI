@@ -1,19 +1,5 @@
 package com.w67clement.mineapi.nms.none;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
-import org.bukkit.inventory.ItemStack;
-
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.block.BlockAction;
 import com.w67clement.mineapi.block.PacketBlockAction;
@@ -49,6 +35,18 @@ import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.MC_World;
 import com.w67clement.mineapi.world.PacketExplosion;
 import com.w67clement.mineapi.world.PacketWorldBorder;
+import java.util.Arrays;
+import java.util.List;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Enderman;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Pig;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Villager;
+import org.bukkit.inventory.ItemStack;
 
 public class NmsManager_vNone extends NmsManager
 {

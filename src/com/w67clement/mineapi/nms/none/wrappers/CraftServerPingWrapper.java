@@ -1,16 +1,13 @@
 package com.w67clement.mineapi.nms.none.wrappers;
 
+import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
+import com.w67clement.mineapi.system.MC_GameProfile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import net.glowstone.GlowServer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
-
-import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
-import com.w67clement.mineapi.system.MC_GameProfile;
-
-import net.glowstone.GlowServer;
 
 public class CraftServerPingWrapper implements ServerPingWrapper
 {

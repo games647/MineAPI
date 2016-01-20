@@ -1,8 +1,7 @@
 package com.w67clement.mineapi.world;
 
-import org.bukkit.World;
-
 import com.w67clement.mineapi.nms.PacketSender;
+import org.bukkit.World;
 
 /**
  * The main interface for the world's interface packet!

@@ -1,15 +1,13 @@
 package com.w67clement.mineapi.nms.none.play_out.inventory;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
+import java.util.ArrayList;
+import java.util.List;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 public class CraftWindowItems extends WindowItems
 {

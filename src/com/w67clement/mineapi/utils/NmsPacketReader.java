@@ -1,13 +1,5 @@
 package com.w67clement.mineapi.utils;
 
-import java.lang.reflect.Array;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.bukkit.inventory.ItemStack;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.w67clement.mineapi.MineAPI;
@@ -27,6 +19,12 @@ import com.w67clement.mineapi.packets.status.PacketStatusOutPong;
 import com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo;
 import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.PacketExplosion;
+import java.lang.reflect.Array;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.bukkit.inventory.ItemStack;
 
 public class NmsPacketReader
 {
@@ -68,6 +66,8 @@ public class NmsPacketReader
 	/**
 	 * Inject a new NmsPacketReader, use it only if you work for a new MC
 	 * version or a module for support new server type or versions.
+	 *
+	 * @param newReader New reader.
 	 */
 	public static void injectReader(NmsPacketReader newReader)
 	{

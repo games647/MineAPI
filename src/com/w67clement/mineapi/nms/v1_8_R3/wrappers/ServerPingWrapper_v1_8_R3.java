@@ -1,22 +1,19 @@
 package com.w67clement.mineapi.nms.v1_8_R3.wrappers;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
-
 import com.mojang.authlib.GameProfile;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.system.MC_GameProfile;
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.ServerPing;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.craftbukkit.v1_8_R3.CraftServer;
 
 public class ServerPingWrapper_v1_8_R3 implements ServerPingWrapper
 {

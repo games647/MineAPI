@@ -27,6 +27,8 @@ public class MC_PacketWrapper<T extends NmsPacket>
 
 	/**
 	 * Gets the packet of MineAPI and modify values.
+     *
+     * @return MineAPI's packet.
 	 */
 	public T getPacket()
 	{
@@ -48,7 +50,7 @@ public class MC_PacketWrapper<T extends NmsPacket>
 	/**
 	 * Gets the packet of Nms.
 	 * 
-	 * @return
+	 * @return Nms' packet.
 	 */
 	public Object getNmsPacket()
 	{
@@ -57,6 +59,8 @@ public class MC_PacketWrapper<T extends NmsPacket>
 
 	/**
 	 * Gets the Old Wrapper (Before MineAPI v2.2.0)
+	 *
+	 * @return Old Wrapper
 	 */
 	@Deprecated
 	public PacketWrapper getOldWrapper()
@@ -74,6 +78,8 @@ public class MC_PacketWrapper<T extends NmsPacket>
 
 	/**
 	 * Gets the Nms' packet name.
+     *
+     * @return Nms' packet name.
 	 */
 	public String getPacketName()
 	{

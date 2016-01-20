@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.nms.none.play_in;
 
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.player.ClientCommand;
+import org.bukkit.entity.Player;
 
 public class CraftClientCommand extends ClientCommand
 {

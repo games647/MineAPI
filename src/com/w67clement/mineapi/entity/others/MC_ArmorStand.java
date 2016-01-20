@@ -1,9 +1,8 @@
 package com.w67clement.mineapi.entity.others;
 
+import com.w67clement.mineapi.entity.MC_EntityLiving;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.util.EulerAngle;
-
-import com.w67clement.mineapi.entity.MC_EntityLiving;
 
 public interface MC_ArmorStand extends MC_EntityLiving
 {

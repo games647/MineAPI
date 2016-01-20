@@ -1,10 +1,9 @@
 package com.w67clement.mineapi.block;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
+import org.bukkit.Location;
+import org.bukkit.Material;
 
 public abstract class PacketBlockChange extends PacketSender
 {

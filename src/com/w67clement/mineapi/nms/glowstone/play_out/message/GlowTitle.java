@@ -1,13 +1,11 @@
 package com.w67clement.mineapi.nms.glowstone.play_out.message;
 
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.message.Title;
-
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.message.play.game.TitleMessage;
+import org.bukkit.ChatColor;
+import org.bukkit.entity.Player;
 
 public class GlowTitle extends Title
 {

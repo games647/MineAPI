@@ -1,8 +1,5 @@
 package com.w67clement.mineapi.system.event;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
 import com.flowpowered.networking.ConnectionManager;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
@@ -11,7 +8,6 @@ import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.nms.NmsPacket;
 import com.w67clement.mineapi.utils.NmsPacketReader;
-
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelDuplexHandler;
@@ -28,6 +24,8 @@ import net.glowstone.net.pipeline.MessageHandler;
 import net.glowstone.net.pipeline.NoopHandler;
 import net.glowstone.net.protocol.ProtocolType;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 public class GlowHandler implements IHandler
 {

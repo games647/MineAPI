@@ -1,22 +1,19 @@
 package com.w67clement.mineapi.nms.v1_8_R3.entity;
 
+import com.w67clement.mineapi.entity.MC_Entity;
+import com.w67clement.mineapi.entity.MC_EntityLiving;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-
+import net.minecraft.server.v1_8_R3.AxisAlignedBB;
+import net.minecraft.server.v1_8_R3.Entity;
+import net.minecraft.server.v1_8_R3.EntityLiving;
+import net.minecraft.server.v1_8_R3.GenericAttributes;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.v1_8_R3.CraftWorld;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
-
-import com.w67clement.mineapi.entity.MC_Entity;
-import com.w67clement.mineapi.entity.MC_EntityLiving;
-
-import net.minecraft.server.v1_8_R3.AxisAlignedBB;
-import net.minecraft.server.v1_8_R3.Entity;
-import net.minecraft.server.v1_8_R3.EntityLiving;
-import net.minecraft.server.v1_8_R3.GenericAttributes;
 
 public class MC_EntityLiving_v1_8_R3 extends MC_Entity_v1_8_R3 implements MC_EntityLiving
 {
