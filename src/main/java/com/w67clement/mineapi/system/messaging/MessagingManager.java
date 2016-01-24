@@ -18,6 +18,7 @@ public class MessagingManager
     private final EventLoopGroup workerGroup = new NioEventLoopGroup();
     private Bootstrap bootstrap;
     private MineConnection connection = null;
+    private PacketRegistry packetRegistry = PacketRegistry.getInstance();
 
     public void init()
     {
@@ -29,6 +30,11 @@ public class MessagingManager
     public MineConnection getConnection()
     {
         return this.connection;
+    }
+
+    public PacketRegistry getPacketRegistry()
+    {
+        return this.packetRegistry;
     }
 
     public class MineChannelInitializer extends ChannelInitializer<SocketChannel>

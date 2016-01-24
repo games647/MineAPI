@@ -21,6 +21,9 @@ import com.w67clement.mineapi.system.ConfigManager;
 import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
 import com.w67clement.mineapi.system.ServerType;
+import com.w67clement.mineapi.system.messaging.MessagingManager;
+import com.w67clement.mineapi.system.messaging.defaults.MessagingDisconnect;
+import com.w67clement.mineapi.system.messaging.defaults.MessagingKeepAlivePacket;
 import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
 import com.w67clement.mineapi.utils.MineAPIUtils;
@@ -59,7 +62,7 @@ public class MineAPI extends JavaPlugin
     public static final String CONNECTION_PREFIX = ChatColor.GRAY + "[" + ChatColor.DARK_GREEN + "Connection" + ChatColor.GRAY + "]" + ChatColor.RESET + " ";
     public static ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
     public static boolean debug = false;
-    private static Map<PacketListener, List<Method>> packetListeners = new HashMap<PacketListener, List<Method>>();
+    private static Map<PacketListener, List<Method>> packetListeners = new HashMap<>();
     private static ModuleManager moduleManager;
     private static MineAPIAutoUpdater autoUpdater;
     private static String serverVersion;
@@ -67,6 +70,7 @@ public class MineAPI extends JavaPlugin
     private static NmsManager nms;
     private static ProtocolManager protocolManager;
     private static ConfigManager configManager;
+    private static MessagingManager messagingManager;
     private static MineAPIConfig config;
     private static boolean useColor = true;
     private static boolean debugConnection = false;
@@ -311,6 +315,12 @@ public class MineAPI extends JavaPlugin
             // Failed to submit the stats :-(
         }
 
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Plugin Messaging system...");
+        messagingManager = new MessagingManager();
+        messagingManager.getPacketRegistry().registerPlugin("Default");
+        messagingManager.getPacketRegistry().registerPacket("Default", 1, MessagingDisconnect.class);
+        messagingManager.getPacketRegistry().registerPacket("Default", 2, MessagingKeepAlivePacket.class);
+
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");
         autoUpdater = new MineAPIAutoUpdater(true, this);
         if (autoUpdater.haveNewUpdate())
@@ -503,7 +513,7 @@ public class MineAPI extends JavaPlugin
         }
     }
 
-    public void packetRecieve(MC_PacketWrapper<?> packetWrapper, PacketCancellable cancellable, Player player)
+    public void packetReceive(MC_PacketWrapper<?> packetWrapper, PacketCancellable cancellable, Player player)
     {
         for (Entry<PacketListener, List<Method>> listener : packetListeners.entrySet())
         {
@@ -533,7 +543,7 @@ public class MineAPI extends JavaPlugin
         }
     }
 
-    public void pingPacketRecieve(MC_PacketWrapper<?> packetWrapper, PacketCancellable cancellable, String ip)
+    public void pingPacketReceive(MC_PacketWrapper<?> packetWrapper, PacketCancellable cancellable, String ip)
     {
         for (Entry<PacketListener, List<Method>> listener : packetListeners.entrySet())
         {
@@ -614,7 +624,7 @@ public class MineAPI extends JavaPlugin
     }
 
     /**
-     * Send a message to the console.
+     * Sends a message to the console.
      *
      * @param msg Message for the console.
      */
@@ -624,7 +634,7 @@ public class MineAPI extends JavaPlugin
     }
 
     /**
-     * Send a message to the console.
+     * Sends a message to the console.
      *
      * @param msg   Message for the console.
      * @param debug Message is a debug message.

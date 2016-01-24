@@ -320,7 +320,7 @@ public class INCHandler implements IHandler
 			{}
 			MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(
 					mineapi_packet, packet);
-			mineapi.packetRecieve(packetWrapper, cancel, player);
+			mineapi.packetReceive(packetWrapper, cancel, player);
 			if (cancel.isCancelled()) { return; }
 			if (mineapi_packet == null)
 			{
@@ -443,8 +443,8 @@ public class INCHandler implements IHandler
 			{}
 			MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(
 					mineapi_packet, packet);
-			mineapi.pingPacketRecieve(packetWrapper, cancel,
-					ctx.channel().remoteAddress().toString());
+			mineapi.pingPacketReceive(packetWrapper, cancel,
+									  ctx.channel().remoteAddress().toString());
 			if (cancel.isCancelled()) { return; }
 			if (mineapi_packet == null)
 			{
