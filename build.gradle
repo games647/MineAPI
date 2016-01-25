@@ -23,21 +23,17 @@ repositories {
     }
     repositories {
         maven {
-            url "craftbukkit-repo/"
-        }
-    }
-    repositories {
-        maven {
-            url "glowstone-repo/"
-        }
-    }
-    repositories {
-        maven {
-            url "spigot-repo/"
+            url "http://repo.glowstone.net/content/repositories/snapshots/"
         }
     }
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    ivy {
+        url "http://www.tcpr.ca/files/"
+        layout 'pattern' , {
+            artifact '[module]/[module]-[revision].[ext]'
+        }
     }
     mavenCentral();
 }
@@ -49,10 +45,10 @@ configurations {
 
 dependencies {
     provided 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
-    provided 'org.spigotmc.spigot-server:Spigot-Server:1.8.8'
-    provided 'org.bukkit.craftbukkit:CraftBukkit:1.8.3'
-    provided 'org.bukkit.craftbukkit:CraftBukkit_v1_8_R1:1.8'
-    provided 'net.glowstone:Glowstone:1.8'
+    provided 'org.spigotmc.1.8.8:spigot:1.8.8-R0.1-SNAPSHOT-latest:1.8.8'
+    provided 'org.spigotmc.1.8.3:spigot:1.8.3-R0.1-SNAPSHOT-latest:1.8.3'
+    provided 'org.spigotmc.1.8:spigot:1.8-R0.1-SNAPSHOT-latest:1.8'
+    provided 'net.glowstone:glowstone:0.0.1-SNAPSHOT'
     provided 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compile 'com.google.code.gson:gson:2.5'
     provided 'io.netty:netty-all:4.0.33.Final'
