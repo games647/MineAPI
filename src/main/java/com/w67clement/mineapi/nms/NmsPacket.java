@@ -9,9 +9,9 @@ public interface NmsPacket
 	 * Construct packet Object, it was sent to player.
 	 * @return Nms' Packet Object.
 	 */
-	public Object constructPacket();
+	Object constructPacket();
 
-	public PacketType getPacketType();
+	PacketType getPacketType();
 
 }
 

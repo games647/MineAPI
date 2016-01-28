@@ -6,8 +6,9 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 
 group = 'com.w67clement.mineapi'
-version = '2.2.0'
+version = '2.2.0-DevBuild#2'
 archivesBaseName = 'MineAPI'
+def authors = '[w67clement]'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -31,19 +32,21 @@ repositories {
     }
     ivy {
         url "http://www.tcpr.ca/files/"
-        layout 'pattern' , {
+        layout 'pattern', {
             artifact '[module]/[module]-[revision].[ext]'
         }
     }
     mavenCentral();
 }
 
-configurations {
+configurations
+{
     provided
     compile.extendsFrom provided
 }
 
-dependencies {
+dependencies
+{
     provided 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     provided 'org.spigotmc.1.8.8:spigot:1.8.8-R0.1-SNAPSHOT-latest:1.8.8'
     provided 'org.spigotmc.1.8.3:spigot:1.8.3-R0.1-SNAPSHOT-latest:1.8.3'
@@ -51,7 +54,21 @@ dependencies {
     provided 'net.glowstone:glowstone:0.0.1-SNAPSHOT'
     provided 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
     compile 'com.google.code.gson:gson:2.5'
+    compile 'org.ow2.asm:asm:5.0.4'
     provided 'io.netty:netty-all:4.0.33.Final'
+}
+
+processResources
+{
+    inputs.property "version", project.version
+
+    from(sourceSets.main.resources.srcDirs)
+    {
+        include "plugin.yml"
+        include "bungee.yml"
+
+        expand 'version': project.version.toString().replace("#", ""), 'authors': authors.toString()
+    }
 }
 
 jar {
