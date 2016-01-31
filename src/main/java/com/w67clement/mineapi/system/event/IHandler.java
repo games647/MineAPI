@@ -4,10 +4,12 @@ import org.bukkit.entity.Player;
 
 public interface IHandler {
 	
-	public void addChannel(Player player);
+	void addChannel(Player player);
 	
-	public void removeChannel(Player player);
+	void removeChannel(Player player);
 	
-	public void addServerConnectionChannel();
+	void addServerConnectionChannel();
+
+	void disable();
 
 }

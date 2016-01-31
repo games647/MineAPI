@@ -26,6 +26,7 @@ import com.w67clement.mineapi.system.messaging.defaults.MessagingDisconnect;
 import com.w67clement.mineapi.system.messaging.defaults.MessagingKeepAlivePacket;
 import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
+import com.w67clement.mineapi.utils.ForgeDetector;
 import com.w67clement.mineapi.utils.MineAPIUtils;
 import com.w67clement.mineapi.utils.PluginManagerUtils;
 import java.io.File;
@@ -37,6 +38,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import net.md_5.bungee.protocol.packet.Chat;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -315,6 +317,10 @@ public class MineAPI extends JavaPlugin
             // Failed to submit the stats :-(
         }
 
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Forge Detector system...");
+        ForgeDetector forgeDetector = new ForgeDetector();
+        Bukkit.getMessenger().registerIncomingPluginChannel(this, "FORGE", forgeDetector);
+        registerPacketListener(forgeDetector, this);
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Plugin Messaging system...");
         messagingManager = new MessagingManager();
         messagingManager.getPacketRegistry().registerPlugin("Default");

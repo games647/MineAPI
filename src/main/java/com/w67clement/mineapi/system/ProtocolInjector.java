@@ -10,58 +10,61 @@ import org.bukkit.entity.Player;
 public class ProtocolInjector
 {
 
-	private IHandler handler;
+    private IHandler handler;
 
-	public boolean createInjector(MineAPI mineapi)
-	{
-		if (MineAPI.isGlowstone())
-		{
-			try
-			{
-				MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN
-						+ "Using GlowHandler...");
-				this.handler = new GlowHandler(mineapi);
-				return true;
-			}
-			catch (Throwable throwable)
-			{
+    public boolean createInjector(MineAPI mineapi)
+    {
+        if (MineAPI.isGlowstone())
+        {
+            try
+            {
+                MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN + "Using GlowHandler...");
+                this.handler = new GlowHandler(mineapi);
+                return true;
+            }
+            catch (Throwable throwable)
+            {
 
-			}
-		}
-		else if (MineAPI.isRainbow())
-		{
+            }
+        }
+        else if (MineAPI.isRainbow())
+        {
 
-		}
-		else
-		{
-			try
-			{
-				MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN
-						+ "Using INCHandler...");
-				this.handler = new INCHandler(mineapi);
-				return true;
-			}
-			catch (Throwable throwable)
-			{
+        }
+        else
+        {
+            try
+            {
+                MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN + "Using INCHandler...");
+                this.handler = new INCHandler(mineapi);
+                return true;
+            }
+            catch (Throwable throwable)
+            {
 
-			}
-		}
-		return false;
-	}
+            }
+        }
+        return false;
+    }
 
-	public void addChannel(Player player)
-	{
-		this.handler.addChannel(player);
-	}
+    public void addChannel(Player player)
+    {
+        this.handler.addChannel(player);
+    }
 
-	public void removeChannel(Player player)
-	{
-		this.handler.removeChannel(player);
-	}
+    public void removeChannel(Player player)
+    {
+        this.handler.removeChannel(player);
+    }
 
-	public void addServerConnectionChannel()
-	{
-		this.handler.addServerConnectionChannel();
-	}
+    public void addServerConnectionChannel()
+    {
+        this.handler.addServerConnectionChannel();
+    }
+
+    public void disable()
+    {
+        this.handler.disable();
+    }
 
 }

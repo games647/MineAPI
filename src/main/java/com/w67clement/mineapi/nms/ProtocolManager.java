@@ -27,6 +27,7 @@ public class ProtocolManager implements Listener
 		{
 			this.injector.removeChannel(players);
 		}
+		this.injector.disable();
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR)
