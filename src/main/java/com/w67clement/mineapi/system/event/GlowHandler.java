@@ -42,21 +42,15 @@ public class GlowHandler implements IHandler
     public void addChannel(Player player)
     {
         final Channel channel = ((GlowPlayer) player).getSession().getChannel();
-        new Thread(new Runnable()
-        {
-
-            @Override
-            public void run()
+        new Thread(() -> {
+            try
             {
-                try
-                {
-                    ChannelHandler handler = new ChannelHandler(player);
-                    channel.pipeline().addBefore("handler", "MineAPI", handler);
-                    MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " added to " + player.getName() + ".", true);
-                }
-                catch (Exception e)
-                {
-                }
+                ChannelHandler handler = new ChannelHandler(player);
+                channel.pipeline().addBefore("handler", "MineAPI", handler);
+                MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " added to " + player.getName() + ".", true);
+            }
+            catch (Exception e)
+            {
             }
         }, "MineAPI channel adder (" + player.getName() + ")").start();
     }
@@ -65,21 +59,15 @@ public class GlowHandler implements IHandler
     public void removeChannel(Player player)
     {
         final Channel channel = ((GlowPlayer) player).getSession().getChannel();
-        new Thread(new Runnable()
-        {
-
-            @Override
-            public void run()
+        new Thread(() -> {
+            try
             {
-                try
-                {
-                    io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
-                    channel.pipeline().remove("MineAPI");
-                    MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
-                }
-                catch (Exception e)
-                {
-                }
+                io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
+                channel.pipeline().remove("MineAPI");
+                MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
+            }
+            catch (Exception e)
+            {
             }
         }, "MineAPI channel remover (" + player.getName() + ")").start();
     }

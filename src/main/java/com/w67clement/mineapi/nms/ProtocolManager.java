@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerLoginEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 
 public class ProtocolManager implements Listener
 {
@@ -37,21 +36,8 @@ public class ProtocolManager implements Listener
 		if ((!player.isBanned())
 				&& (e.getResult() == PlayerLoginEvent.Result.ALLOWED))
 		{
-			Bukkit.getScheduler().scheduleSyncDelayedTask(this.mineapi,
-					new Runnable() {
-						@Override
-						public void run()
-						{
-							ProtocolManager.this.injector.addChannel(player);
-						}
-					}, 2L);
+			Bukkit.getScheduler().scheduleSyncDelayedTask(this.mineapi, () -> ProtocolManager.this.injector.addChannel(player), 2L);
 		}
-	}
-
-	@EventHandler(priority = EventPriority.LOW)
-	public void onPlayerQuit(PlayerQuitEvent e)
-	{
-		this.injector.removeChannel(e.getPlayer());
 	}
 
 }

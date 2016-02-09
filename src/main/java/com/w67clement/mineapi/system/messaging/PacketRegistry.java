@@ -26,7 +26,7 @@ public class PacketRegistry
         Validate.notNull(plugin);
         if (this.packets.containsKey(plugin))
             throw new IllegalArgumentException("Plugin '" + plugin + "' is already register in the PacketRegistry.");
-        this.packets.put(plugin, new HashMap<Integer, Class<? extends MessagingPacket>>());
+        this.packets.put(plugin, new HashMap<>());
     }
 
     /**

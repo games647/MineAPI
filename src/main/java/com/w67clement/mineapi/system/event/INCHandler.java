@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.system.event;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.event.PacketCancellable;
@@ -15,8 +16,11 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import net.md_5.bungee.api.ChatColor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 
@@ -32,6 +36,8 @@ public class INCHandler implements IHandler
     private static Field network = ReflectionAPI.getField(playerConnection, "networkManager", true);
     private static NmsPacketReader reader;
 
+    private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(10 , new ThreadFactoryBuilder().setDaemon(true).build());
+
     public INCHandler(MineAPI mineapi)
     {
         INCHandler.mineapi = mineapi;
@@ -40,25 +46,7 @@ public class INCHandler implements IHandler
 
     private static Channel getChannel(Object networkManager)
     {
-        Channel channel = null;
-        if (MineAPI.getServerVersion().equals("v1_8_R1"))
-        {
-            channel = (Channel) ReflectionAPI.getValue(networkManager, ReflectionAPI.getField(networkManager.getClass(), "i", true));
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R2"))
-        {
-            channel = (Channel) ReflectionAPI.getValue(networkManager, ReflectionAPI.getField(networkManager.getClass(), "k", true));
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R3"))
-        {
-            channel = (Channel) ReflectionAPI.getValue(networkManager, ReflectionAPI.getField(networkManager.getClass(), "channel", true));
-        }
-        else
-        {
-            MineAPI.console.sendMessage(MineAPI.PREFIX + ChatColor.RED + "A unknown version used! Attempting use INCHandler...");
-            channel = (Channel) ReflectionAPI.getValue(networkManager, ReflectionAPI.getFirstFieldOfType(networkManager.getClass(), Channel.class));
-        }
-        return channel;
+        return (Channel) ReflectionAPI.getValue(networkManager, ReflectionAPI.getFirstFieldOfType(networkManager.getClass(), Channel.class));
     }
 
     @Override
@@ -69,21 +57,15 @@ public class INCHandler implements IHandler
         {
             final Object connection = INCHandler.connection.get(handle);
             final Channel channel = getChannel(network.get(connection));
-            new Thread(new Runnable()
-            {
-
-                @Override
-                public void run()
+            new Thread(() -> {
+                try
                 {
-                    try
-                    {
-                        ChannelHandler handler = new ChannelHandler(player);
-                        channel.pipeline().addBefore("packet_handler", "MineAPI", handler);
-                        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " added to " + player.getName() + ".", true);
-                    }
-                    catch (Exception e)
-                    {
-                    }
+                    ChannelHandler handler = new ChannelHandler(player);
+                    channel.pipeline().addBefore("packet_handler", "MineAPI", handler);
+                    MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " added to " + player.getName() + ".", true);
+                }
+                catch (Exception e)
+                {
                 }
             }, "MineAPI channel adder (" + player.getName() + ")").start();
         }
@@ -101,21 +83,15 @@ public class INCHandler implements IHandler
         {
             final Object connection = INCHandler.connection.get(handle);
             final Channel channel = getChannel(network.get(connection));
-            new Thread(new Runnable()
-            {
-
-                @Override
-                public void run()
+            new Thread(() -> {
+                try
                 {
-                    try
-                    {
-                        io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
-                        channel.pipeline().remove("MineAPI");
-                        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
-                    }
-                    catch (Exception e)
-                    {
-                    }
+                    io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
+                    channel.pipeline().remove("MineAPI");
+                    MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
+                }
+                catch (Exception e)
+                {
                 }
             }, "MineAPI channel remover (" + player.getName() + ")").start();
         }
@@ -140,10 +116,7 @@ public class INCHandler implements IHandler
         if (obj.getClass().equals(PacketPingListenerList.class))
             return;
         @SuppressWarnings({"rawtypes"}) List newList = Collections.synchronizedList(new PacketPingListenerList());
-        for (Object o : currentList)
-        {
-            newList.add(o);
-        }
+        newList.addAll(currentList.stream().collect(Collectors.toList()));
         ReflectionAPI.setValue(serverConnection, field, newList);
     }
 
@@ -160,10 +133,7 @@ public class INCHandler implements IHandler
         if (obj.getClass().equals(PacketPingListenerList.class))
         {
             @SuppressWarnings({"rawtypes"}) List newList = Collections.synchronizedList(new ArrayList<>());
-            for (Object o : currentList)
-            {
-                newList.add(o);
-            }
+            newList.addAll(currentList.stream().collect(Collectors.toList()));
             ReflectionAPI.setValue(serverConnection, field, newList);
         }
     }
@@ -182,25 +152,19 @@ public class INCHandler implements IHandler
         public boolean add(E paramE)
         {
             final E a = paramE;
-            new Thread(new Runnable()
-            {
-
-                @Override
-                public void run()
+            new Thread(() -> {
+                try
                 {
-                    try
+                    Channel channel = null;
+                    while (channel == null)
                     {
-                        Channel channel = null;
-                        while (channel == null)
-                        {
-                            channel = getChannel(a);
-                        }
-                        // if (channel.pipeline().get("MineAPI_Ping") == null)
-                        channel.pipeline().addBefore("packet_handler", "MineAPI_Ping", new INCChannelHandler());
+                        channel = getChannel(a);
                     }
-                    catch (Exception e)
-                    {
-                    }
+                    // if (channel.pipeline().get("MineAPI_Ping") == null)
+                    channel.pipeline().addBefore("packet_handler", "MineAPI_Ping", new INCChannelHandler());
+                }
+                catch (Exception e)
+                {
                 }
             }, "MineAPI channel adder (server)").start();
             return super.add(paramE);
@@ -210,24 +174,18 @@ public class INCHandler implements IHandler
         public boolean remove(Object paramE)
         {
             final Object a = paramE;
-            new Thread(new Runnable()
-            {
-
-                @Override
-                public void run()
+            new Thread(() -> {
+                try
                 {
-                    try
+                    Channel channel = null;
+                    while (channel == null)
                     {
-                        Channel channel = null;
-                        while (channel == null)
-                        {
-                            channel = getChannel(a);
-                        }
-                        channel.pipeline().remove("MineAPI_Ping");
+                        channel = getChannel(a);
                     }
-                    catch (Exception e)
-                    {
-                    }
+                    channel.pipeline().remove("MineAPI_Ping");
+                }
+                catch (Exception e)
+                {
                 }
             }, "MineAPI channel remover (server)").start();
             return super.remove(paramE);
