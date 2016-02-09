@@ -1,6 +1,7 @@
 package com.w67clement.mineapi.system.event;
 
 import com.flowpowered.networking.ConnectionManager;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.event.PacketCancellable;
@@ -15,6 +16,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.SocketChannel;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import net.glowstone.GlowServer;
 import net.glowstone.entity.GlowPlayer;
 import net.glowstone.net.GlowNetworkServer;
@@ -32,6 +35,8 @@ public class GlowHandler implements IHandler
     private static MineAPI mineapi;
     private static NmsPacketReader reader;
 
+    private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(15, new ThreadFactoryBuilder().setNameFormat("MineAPI GlowHandler #%d").build());
+
     public GlowHandler(MineAPI mineapi)
     {
         GlowHandler.mineapi = mineapi;
@@ -42,34 +47,34 @@ public class GlowHandler implements IHandler
     public void addChannel(Player player)
     {
         final Channel channel = ((GlowPlayer) player).getSession().getChannel();
-        new Thread(() -> {
+        this.threadPool.execute(() -> {
             try
             {
                 ChannelHandler handler = new ChannelHandler(player);
                 channel.pipeline().addBefore("handler", "MineAPI", handler);
                 MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " added to " + player.getName() + ".", true);
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-        }, "MineAPI channel adder (" + player.getName() + ")").start();
+        });
     }
 
     @Override
     public void removeChannel(Player player)
     {
         final Channel channel = ((GlowPlayer) player).getSession().getChannel();
-        new Thread(() -> {
+        this.threadPool.execute(() -> {
             try
             {
                 io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
                 channel.pipeline().remove("MineAPI");
                 MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-        }, "MineAPI channel remover (" + player.getName() + ")").start();
+        });
     }
 
     @Override
@@ -77,8 +82,15 @@ public class GlowHandler implements IHandler
     {
         GlowServer server = (GlowServer) Bukkit.getServer();
         GlowNetworkServer network = (GlowNetworkServer) ReflectionAPI.getValue(server, ReflectionAPI.getField(server.getClass(), "networkServer", true));
-        ServerBootstrap bootstrap = (ServerBootstrap) ReflectionAPI.getValue(network, ReflectionAPI.getField(network.getClass(), "bootstrap", true));
-        bootstrap.childHandler(new GlowChannelInitializer(network));
+        ServerBootstrap bootstrap = null;
+        if (network != null)
+        {
+            bootstrap = (ServerBootstrap) ReflectionAPI.getValue(network, ReflectionAPI.getField(network.getClass(), "bootstrap", true));
+        }
+        if (bootstrap != null)
+        {
+            bootstrap.childHandler(new GlowChannelInitializer(network));
+        }
     }
 
     @Override
@@ -99,13 +111,12 @@ public class GlowHandler implements IHandler
         public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
         {
             PacketCancellable cancel = new PacketCancellable();
-            Object packet = msg;
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByAliase(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByAliase(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -115,10 +126,10 @@ public class GlowHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.packetSend(packetWrapper, cancel, player);
             if (cancel.isCancelled())
             {
@@ -138,14 +149,13 @@ public class GlowHandler implements IHandler
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
         {
-            Object packet = msg;
             PacketCancellable cancel = new PacketCancellable();
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByAliase(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByAliase(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -155,10 +165,10 @@ public class GlowHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.packetReceive(packetWrapper, cancel, player);
             if (cancel.isCancelled())
             {
@@ -216,14 +226,13 @@ public class GlowHandler implements IHandler
                 return;
             }
             PacketCancellable cancel = new PacketCancellable();
-            Object packet = msg;
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByAliase(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByAliase(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
 
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -233,10 +242,10 @@ public class GlowHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.pingPacketSend(packetWrapper, cancel, ctx.channel().remoteAddress().toString());
             if (cancel.isCancelled())
             {
@@ -266,13 +275,12 @@ public class GlowHandler implements IHandler
                 return;
             }
             PacketCancellable cancel = new PacketCancellable();
-            Object packet = msg;
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByAliase(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByAliase(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -282,10 +290,10 @@ public class GlowHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.pingPacketReceive(packetWrapper, cancel, ctx.channel().remoteAddress().toString());
             if (cancel.isCancelled())
             {

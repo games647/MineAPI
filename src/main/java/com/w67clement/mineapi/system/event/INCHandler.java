@@ -36,7 +36,7 @@ public class INCHandler implements IHandler
     private static Field network = ReflectionAPI.getField(playerConnection, "networkManager", true);
     private static NmsPacketReader reader;
 
-    private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(10 , new ThreadFactoryBuilder().setDaemon(true).build());
+    private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(10, new ThreadFactoryBuilder().setNameFormat("MineAPI INCHandler #%d").build());
 
     public INCHandler(MineAPI mineapi)
     {
@@ -57,17 +57,17 @@ public class INCHandler implements IHandler
         {
             final Object connection = INCHandler.connection.get(handle);
             final Channel channel = getChannel(network.get(connection));
-            new Thread(() -> {
+            this.threadPool.execute(() -> {
                 try
                 {
                     ChannelHandler handler = new ChannelHandler(player);
                     channel.pipeline().addBefore("packet_handler", "MineAPI", handler);
                     MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " added to " + player.getName() + ".", true);
                 }
-                catch (Exception e)
+                catch (Exception ignored)
                 {
                 }
-            }, "MineAPI channel adder (" + player.getName() + ")").start();
+            });
         }
         catch (IllegalArgumentException | IllegalAccessException e)
         {
@@ -83,17 +83,23 @@ public class INCHandler implements IHandler
         {
             final Object connection = INCHandler.connection.get(handle);
             final Channel channel = getChannel(network.get(connection));
-            new Thread(() -> {
+            this.threadPool.execute(() -> {
                 try
                 {
-                    io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
-                    channel.pipeline().remove("MineAPI");
-                    MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
+                    try
+                    {
+                        io.netty.channel.ChannelHandler handler = channel.pipeline().get("MineAPI");
+                        channel.pipeline().remove("MineAPI");
+                        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + handler.getClass().getName() + " removed to " + player.getName() + ".", true);
+                    }
+                    catch (Exception ignored)
+                    {
+                    }
                 }
-                catch (Exception e)
+                catch (Exception ignored)
                 {
                 }
-            }, "MineAPI channel remover (" + player.getName() + ")").start();
+            });
         }
         catch (IllegalArgumentException | IllegalAccessException e)
         {
@@ -101,39 +107,52 @@ public class INCHandler implements IHandler
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void addServerConnectionChannel()
     {
         Server server = Bukkit.getServer();
-        Object mc_Server = ReflectionAPI.invokeMethod(server, ReflectionAPI.getMethod(server, "getServer", new Class<?>[]{}), new Object[]{});
+        Object mc_Server = ReflectionAPI.invokeMethod(server, ReflectionAPI.getMethod(server, "getServer"));
         Class<?> serverConnectionClass = ReflectionAPI.getNmsClass("ServerConnection");
         Object serverConnection = ReflectionAPI.getValue(mc_Server, ReflectionAPI.getFirstFieldOfType(ReflectionAPI.getNmsClass("MinecraftServer"), serverConnectionClass));
         Field field = ReflectionAPI.getLastFieldOfType(serverConnectionClass, List.class);
         List<?> currentList = (List<?>) ReflectionAPI.getValue(serverConnection, field);
-        Field field1 = ReflectionAPI.getField(currentList.getClass().getSuperclass(), "list", true);
+        Field field1 = null;
+        if (currentList != null)
+        {
+            field1 = ReflectionAPI.getField(currentList.getClass().getSuperclass(), "list", true);
+        }
         Object obj = ReflectionAPI.getValue(currentList, field1);
-        if (obj.getClass().equals(PacketPingListenerList.class))
+        if (obj != null && obj.getClass().equals(PacketPingListenerList.class))
             return;
-        @SuppressWarnings({"rawtypes"}) List newList = Collections.synchronizedList(new PacketPingListenerList());
-        newList.addAll(currentList.stream().collect(Collectors.toList()));
+        List newList = Collections.synchronizedList(new PacketPingListenerList());
+        if (currentList != null)
+        {
+            newList.addAll(currentList.stream().collect(Collectors.toList()));
+        }
         ReflectionAPI.setValue(serverConnection, field, newList);
     }
 
     private void removeServerConnectionChannel()
     {
         Server server = Bukkit.getServer();
-        Object mc_Server = ReflectionAPI.invokeMethod(server, ReflectionAPI.getMethod(server, "getServer", new Class<?>[]{}), new Object[]{});
+        Object mc_Server = ReflectionAPI.invokeMethod(server, ReflectionAPI.getMethod(server, "getServer"));
         Class<?> serverConnectionClass = ReflectionAPI.getNmsClass("ServerConnection");
         Object serverConnection = ReflectionAPI.getValue(mc_Server, ReflectionAPI.getFirstFieldOfType(ReflectionAPI.getNmsClass("MinecraftServer"), serverConnectionClass));
         Field field = ReflectionAPI.getLastFieldOfType(serverConnectionClass, List.class);
         List<?> currentList = (List<?>) ReflectionAPI.getValue(serverConnection, field);
-        Field field1 = ReflectionAPI.getField(currentList.getClass().getSuperclass(), "list", true);
-        Object obj = ReflectionAPI.getValue(currentList, field1);
-        if (obj.getClass().equals(PacketPingListenerList.class))
+        Field field1 = null;
+        if (currentList != null)
         {
-            @SuppressWarnings({"rawtypes"}) List newList = Collections.synchronizedList(new ArrayList<>());
-            newList.addAll(currentList.stream().collect(Collectors.toList()));
+            field1 = ReflectionAPI.getField(currentList.getClass().getSuperclass(), "list", true);
+        }
+        Object obj = ReflectionAPI.getValue(currentList, field1);
+        if (obj != null && obj.getClass().equals(PacketPingListenerList.class))
+        {
+            List newList = Collections.synchronizedList(new ArrayList<>());
+            if (currentList != null)
+            {
+                newList.addAll(currentList.stream().collect(Collectors.toList()));
+            }
             ReflectionAPI.setValue(serverConnection, field, newList);
         }
     }
@@ -144,15 +163,15 @@ public class INCHandler implements IHandler
         this.removeServerConnectionChannel();
     }
 
-    @SuppressWarnings("serial")
     private class PacketPingListenerList<E> extends ArrayList<E>
     {
+        private ScheduledExecutorService threadPool = Executors.newScheduledThreadPool(15, new ThreadFactoryBuilder().setNameFormat("MineAPI Ping Listener #%d").build());
 
         @Override
         public boolean add(E paramE)
         {
             final E a = paramE;
-            new Thread(() -> {
+            this.threadPool.execute(() -> {
                 try
                 {
                     Channel channel = null;
@@ -160,13 +179,12 @@ public class INCHandler implements IHandler
                     {
                         channel = getChannel(a);
                     }
-                    // if (channel.pipeline().get("MineAPI_Ping") == null)
                     channel.pipeline().addBefore("packet_handler", "MineAPI_Ping", new INCChannelHandler());
                 }
-                catch (Exception e)
+                catch (Exception ignored)
                 {
                 }
-            }, "MineAPI channel adder (server)").start();
+            });
             return super.add(paramE);
         }
 
@@ -174,7 +192,7 @@ public class INCHandler implements IHandler
         public boolean remove(Object paramE)
         {
             final Object a = paramE;
-            new Thread(() -> {
+            this.threadPool.execute(() -> {
                 try
                 {
                     Channel channel = null;
@@ -184,10 +202,10 @@ public class INCHandler implements IHandler
                     }
                     channel.pipeline().remove("MineAPI_Ping");
                 }
-                catch (Exception e)
+                catch (Exception ignored)
                 {
                 }
-            }, "MineAPI channel remover (server)").start();
+            });
             return super.remove(paramE);
         }
 
@@ -206,13 +224,12 @@ public class INCHandler implements IHandler
         public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception
         {
             PacketCancellable cancel = new PacketCancellable();
-            Object packet = msg;
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByName(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -222,10 +239,10 @@ public class INCHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.packetSend(packetWrapper, cancel, player);
             if (cancel.isCancelled())
             {
@@ -245,14 +262,13 @@ public class INCHandler implements IHandler
         @Override
         public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception
         {
-            Object packet = msg;
             PacketCancellable cancel = new PacketCancellable();
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByName(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -262,10 +278,10 @@ public class INCHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.packetReceive(packetWrapper, cancel, player);
             if (cancel.isCancelled())
             {
@@ -301,13 +317,12 @@ public class INCHandler implements IHandler
                 return;
             }
             PacketCancellable cancel = new PacketCancellable();
-            Object packet = msg;
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByName(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -317,10 +332,10 @@ public class INCHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.pingPacketSend(packetWrapper, cancel, ctx.channel().remoteAddress().toString());
             if (cancel.isCancelled())
             {
@@ -350,13 +365,12 @@ public class INCHandler implements IHandler
                 return;
             }
             PacketCancellable cancel = new PacketCancellable();
-            Object packet = msg;
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(packet, PacketList.getPacketByName(packet.getClass().getSimpleName()).getMineAPIPacket());
+                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
             }
-            catch (NullPointerException e)
+            catch (NullPointerException ignored)
             {
             }
             catch (RuntimeException e)
@@ -366,10 +380,10 @@ public class INCHandler implements IHandler
                 if (MineAPI.debug)
                     e.printStackTrace();
             }
-            catch (Exception e)
+            catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, packet);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapi_packet, msg);
             mineapi.pingPacketReceive(packetWrapper, cancel, ctx.channel().remoteAddress().toString());
             if (cancel.isCancelled())
             {
