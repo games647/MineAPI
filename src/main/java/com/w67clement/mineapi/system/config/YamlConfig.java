@@ -9,31 +9,31 @@ import org.bukkit.plugin.Plugin;
 public abstract class YamlConfig extends Config
 {
 
-	protected FileConfiguration configuration;
+    protected FileConfiguration configuration;
 
-	public YamlConfig(Plugin plugin, File file) {
-		super(plugin, file);
-	}
+    public YamlConfig(Plugin plugin, File file)
+    {
+        super(plugin, file);
+    }
 
-	@Override
-	public void load()
-	{
-		super.load();
-		this.configuration = YamlConfiguration
-				.loadConfiguration(this.getFile());
-	}
+    @Override
+    public void load()
+    {
+        super.load();
+        this.configuration = YamlConfiguration.loadConfiguration(this.getFile());
+    }
 
-	@Override
-	public void save()
-	{
-		try
-		{
-			this.configuration.save(this.getFile());
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+    @Override
+    public void save()
+    {
+        try
+        {
+            this.configuration.save(this.getFile());
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 }

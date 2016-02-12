@@ -70,6 +70,15 @@ public abstract class PacketPlayerInfo extends PacketSender
         return PacketType.PACKETPLAYOUT;
     }
 
+    public enum MC_EnumPlayerInfoAction
+    {
+        ADD_PLAYER(),
+        REMOVE_PLAYER(),
+        UPDATE_DISPLAY_NAME(),
+        UPDATE_GAME_MODE(),
+        UPDATE_LATENCY()
+    }
+
     public static final class PacketPlayerInfoData
     {
 
@@ -168,14 +177,5 @@ public abstract class PacketPlayerInfo extends PacketSender
             this.playerListName = playerListName;
         }
 
-    }
-
-    public static enum MC_EnumPlayerInfoAction
-    {
-        ADD_PLAYER(),
-        REMOVE_PLAYER(),
-        UPDATE_DISPLAY_NAME(),
-        UPDATE_GAME_MODE(),
-        UPDATE_LATENCY();
     }
 }

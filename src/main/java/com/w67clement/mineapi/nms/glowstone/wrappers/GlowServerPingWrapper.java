@@ -32,11 +32,9 @@ public class GlowServerPingWrapper implements ServerPingWrapper
 		this.protocol = GlowServer.PROTOCOL_VERSION;
 		this.onlinePlayers = Bukkit.getOnlinePlayers().size();
 		this.maxplayers = Bukkit.getMaxPlayers();
-		List<MC_GameProfile> players = new ArrayList<MC_GameProfile>();
-		Bukkit.getOnlinePlayers().forEach(player -> {
-			players.add(
-					new MC_GameProfile(player.getUniqueId(), player.getName()));
-		});
+		List<MC_GameProfile> players = new ArrayList<>();
+		Bukkit.getOnlinePlayers().forEach(player -> players.add(
+                new MC_GameProfile(player.getUniqueId(), player.getName())));
 		this.players = players;
 		this.favicon = ((GlowServerIcon) Bukkit.getServerIcon()).getData();
 	}
@@ -45,12 +43,6 @@ public class GlowServerPingWrapper implements ServerPingWrapper
 	public String getMotd()
 	{
 		return this.motd;
-	}
-
-	@Override
-	public Object getChatComponentMotd()
-	{
-		return null;
 	}
 
 	@Override
@@ -80,6 +72,12 @@ public class GlowServerPingWrapper implements ServerPingWrapper
 			}
 		}
 		this.motd = newMotd;
+	}
+
+	@Override
+	public Object getChatComponentMotd()
+	{
+		return null;
 	}
 
 	@Override
@@ -134,11 +132,18 @@ public class GlowServerPingWrapper implements ServerPingWrapper
 	@Override
 	public List<OfflinePlayer> getPlayerList()
 	{
-		List<OfflinePlayer> players = new ArrayList<OfflinePlayer>();
-		this.players.forEach(profile -> {
-			players.add(Bukkit.getOfflinePlayer(profile.getName()));
-		});
+		List<OfflinePlayer> players = new ArrayList<>();
+		this.players.forEach(profile -> players.add(Bukkit.getOfflinePlayer(profile.getName())));
 		return players;
+	}
+
+	@Override
+	public void setPlayerList(List<OfflinePlayer> players)
+	{
+		List<MC_GameProfile> profiles = new ArrayList<>();
+		players.forEach(player -> profiles.add(
+                new MC_GameProfile(player.getUniqueId(), player.getName())));
+		this.setPlayerListWithGameProfile(profiles);
 	}
 
 	@Override
@@ -148,23 +153,10 @@ public class GlowServerPingWrapper implements ServerPingWrapper
 	}
 
 	@Override
-	public void setPlayerList(List<OfflinePlayer> players)
-	{
-		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
-		players.forEach(player -> {
-			profiles.add(
-					new MC_GameProfile(player.getUniqueId(), player.getName()));
-		});
-		this.setPlayerListWithGameProfile(profiles);
-	}
-
-	@Override
 	public void setPlayerListWithName(List<String> players)
 	{
-		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
-		players.forEach(name -> {
-			profiles.add(new MC_GameProfile(UUID.randomUUID(), name));
-		});
+		List<MC_GameProfile> profiles = new ArrayList<>();
+		players.forEach(name -> profiles.add(new MC_GameProfile(UUID.randomUUID(), name)));
 		this.setPlayerListWithGameProfile(profiles);
 	}
 

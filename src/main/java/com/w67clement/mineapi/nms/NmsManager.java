@@ -13,6 +13,8 @@ import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
+import com.w67clement.mineapi.inventory.packets.WindowOpen;
+import com.w67clement.mineapi.inventory.packets.WindowType;
 import com.w67clement.mineapi.message.ActionBarMessage;
 import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.message.PacketChat;
@@ -21,6 +23,7 @@ import com.w67clement.mineapi.nms.none.packets.handshake.CraftPacketHandshake;
 import com.w67clement.mineapi.nms.none.packets.play.in.CraftPacketPlayInChat;
 import com.w67clement.mineapi.nms.none.packets.status.CraftPacketStatusOutPong;
 import com.w67clement.mineapi.nms.none.packets.status.CraftPacketStatusOutServerInfo;
+import com.w67clement.mineapi.nms.none.play_out.inventory.CraftWindowOpen;
 import com.w67clement.mineapi.packets.ProtocolState;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
@@ -42,6 +45,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Pig;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Villager;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 /**
@@ -121,6 +125,21 @@ public abstract class NmsManager
     public abstract PacketPlayerInfo getPacketPlayerInfo(PacketPlayerInfo.MC_EnumPlayerInfoAction action, PacketPlayerInfoData... data);
 
     public abstract WindowItems getWindowItemsPacket(int windowId, List<ItemStack> items);
+
+    public WindowOpen getWindowOpenPacket(int windowId, WindowType type, String title, int size)
+    {
+        return new CraftWindowOpen(windowId, type, title, size);
+    }
+
+    public WindowOpen getWindowOpenPacket(int windowId, WindowType type, String title, int size, int horseId)
+    {
+        return new CraftWindowOpen(windowId, type, title, size, horseId);
+    }
+
+    public WindowOpen getWindowOpenPacket(int windowId, Inventory inventory)
+    {
+        return new CraftWindowOpen(windowId, inventory);
+    }
 
 	/* Packet play out - World */
 

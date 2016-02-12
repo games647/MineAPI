@@ -17,11 +17,6 @@ public abstract class TabTitle extends PacketSender
 		return this.header;
 	}
 
-	public String getFooter()
-	{
-		return this.footer;
-	}
-
 	public TabTitle setHeader(String header)
 	{
 		if (header == null)
@@ -33,11 +28,16 @@ public abstract class TabTitle extends PacketSender
 		return this;
 	}
 
+	public String getFooter()
+	{
+		return this.footer;
+	}
+
 	public TabTitle setFooter(String footer)
 	{
 		if (footer == null)
 		{
-			footer = "";
+			this.footer = "";
 		}
 		else
 			this.footer = footer;

@@ -25,29 +25,23 @@ public enum MinecraftVersion
     v1_8_R2("1.8.3", 47),
     v1_8_R3("1.8.8", 47);
 
-    private String version = "1.0.0";
-    private int protocol = 0;
     private final static Map<String, MinecraftVersion> BY_Version = Maps.newHashMap();
 
-    private MinecraftVersion(String version, int protocol)
+    static
+    {
+        for (MinecraftVersion mcVersion : values())
+        {
+            BY_Version.put(mcVersion.version, mcVersion);
+        }
+    }
+
+    private String version = "1.0.0";
+    private int protocol = 0;
+
+    MinecraftVersion(String version, int protocol)
     {
         this.version = version;
         this.protocol = protocol;
-    }
-
-    public String getVersion()
-    {
-        return this.version;
-    }
-
-    public int getProtocolVersion()
-    {
-        return this.protocol;
-    }
-
-    public String toString()
-    {
-        return this.version;
     }
 
     public static MinecraftVersion getServerVersion()
@@ -92,11 +86,18 @@ public enum MinecraftVersion
         return BY_Version.get(version);
     }
 
-    static
+    public String getVersion()
     {
-        for (MinecraftVersion mcVersion : values())
-        {
-            BY_Version.put(mcVersion.version, mcVersion);
-        }
+        return this.version;
+    }
+
+    public int getProtocolVersion()
+    {
+        return this.protocol;
+    }
+
+    public String toString()
+    {
+        return this.version;
     }
 }

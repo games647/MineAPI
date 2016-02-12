@@ -273,7 +273,7 @@ public class MineAPI extends JavaPlugin
                     serverType = ServerType.GLOWSTONE;
                 }
             }
-            catch (Throwable e)
+            catch (Throwable ignored)
             {
             }
         if (serverType == null)

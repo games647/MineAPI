@@ -66,13 +66,6 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
         return this.entityId;
     }
 
-    @Deprecated
-    public PacketBlockBreakAnimation setEntityId(int id)
-    {
-        this.entityId = id;
-        return this;
-    }
-
     public PacketBlockBreakAnimation setEntityId(Player player)
     {
         Object nmsPlayer = ReflectionAPI.invokeMethod(player, ReflectionAPI.getMethod(player, "getHandle"));
@@ -82,6 +75,13 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
     public PacketBlockBreakAnimation setEntityId(MC_Player player)
     {
         return this.setEntityId(player.getEntityId());
+    }
+
+    @Deprecated
+    public PacketBlockBreakAnimation setEntityId(int id)
+    {
+        this.entityId = id;
+        return this;
     }
 
     /**

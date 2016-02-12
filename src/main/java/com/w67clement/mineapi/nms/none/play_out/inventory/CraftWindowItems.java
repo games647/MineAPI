@@ -14,14 +14,6 @@ public class CraftWindowItems extends WindowItems
 
 	private static Class<?> packetClass;
 
-	public CraftWindowItems(int windowId, List<ItemStack> items) {
-		super(windowId, items);
-	}
-
-	public CraftWindowItems(int windowId, Inventory inventory) {
-		super(windowId, inventory);
-	}
-
 	static
 	{
 		if (MineAPI.isGlowstone())
@@ -31,6 +23,14 @@ public class CraftWindowItems extends WindowItems
 		}
 		else
 			packetClass = ReflectionAPI.getNmsClass("PacketPlayOutWindowItems");
+	}
+
+	public CraftWindowItems(int windowId, List<ItemStack> items) {
+		super(windowId, items);
+	}
+
+	public CraftWindowItems(int windowId, Inventory inventory) {
+		super(windowId, inventory);
 	}
 
 	@Override
@@ -44,15 +44,15 @@ public class CraftWindowItems extends WindowItems
 	{
 		if (MineAPI.isSpigot())
 		{
-			return this.constructPacket_Bukkit();
+			return this.constructPacketBukkit();
 		}
-		else if (MineAPI.isGlowstone()) return this.constructPacket_Glowstone();
-		return this.constructPacket_Bukkit();
+		else if (MineAPI.isGlowstone()) return this.constructPacketGlowstone();
+		return this.constructPacketBukkit();
 	}
 
-	private Object constructPacket_Bukkit()
+	private Object constructPacketBukkit()
 	{
-		List<Object> items = new ArrayList<Object>();
+		List<Object> items = new ArrayList<>();
 		this.items.forEach(item -> {
 			if (item != null)
 				items.add(ReflectionAPI.ItemStackConverter.toNms(item));
@@ -63,7 +63,7 @@ public class CraftWindowItems extends WindowItems
 				packetClass, int.class, List.class), this.windowId, items);
 	}
 
-	private Object constructPacket_Glowstone()
+	private Object constructPacketGlowstone()
 	{
 		ItemStack[] items = new ItemStack[this.items.size()];
 		items = this.items.toArray(items);

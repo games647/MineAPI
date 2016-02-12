@@ -15,17 +15,6 @@ public class BungeeMineAPI extends Plugin
     public static final CommandSender console = ProxyServer.getInstance().getConsole();
     private static boolean debug = false;
 
-    @Override
-    public void onEnable()
-    {
-        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Enabling MineAPI");
-        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + ProxyServer.getInstance().getVersion());
-        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Server type: " + ChatColor.DARK_GREEN + "BungeeCord");
-        sendMessageToConsole(PREFIX + ChatColor.GREEN + "OS used: " + ChatColor.DARK_GREEN + System.getProperty("os.name"));
-        sendMessageToConsole(PREFIX + ChatColor.GREEN + "OS version: " + ChatColor.DARK_GREEN + System.getProperty("os.version"));
-        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
-    }
-
     /**
      * Sends a message to the console.
      *
@@ -50,6 +39,17 @@ public class BungeeMineAPI extends Plugin
                 return;
         }
         console.sendMessage(msg);
+    }
+
+    @Override
+    public void onEnable()
+    {
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Enabling MineAPI");
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Server version: " + ChatColor.DARK_GREEN + ProxyServer.getInstance().getVersion());
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Server type: " + ChatColor.DARK_GREEN + "BungeeCord");
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "OS used: " + ChatColor.DARK_GREEN + System.getProperty("os.name"));
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "OS version: " + ChatColor.DARK_GREEN + System.getProperty("os.version"));
+        sendMessageToConsole(PREFIX + ChatColor.GREEN + "Java version: " + ChatColor.DARK_GREEN + System.getProperty("java.version"));
     }
 
 }

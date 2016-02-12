@@ -44,19 +44,6 @@ public abstract class PacketBlockAction extends PacketSender
     /**
      * Sets the location of the block who have the action.
      *
-     * @param location Location of the block.
-     *
-     * @return Instance.
-     */
-    public PacketBlockAction setLocation(Location location)
-    {
-        this.location = location;
-        return this;
-    }
-
-    /**
-     * Sets the location of the block who have the action.
-     *
      * @param x X axis of the location.
      * @param y Y axis of the location.
      * @param z Z axis of the location.
@@ -81,6 +68,29 @@ public abstract class PacketBlockAction extends PacketSender
     }
 
     /**
+     * Sets the location of the block who have the action.
+     *
+     * @param location Location of the block.
+     *
+     * @return Instance.
+     */
+    public PacketBlockAction setLocation(Location location)
+    {
+        this.location = location;
+        return this;
+    }
+
+    /**
+     * Gets the action of the block.
+     *
+     * @return BlockAction enum constant.
+     */
+    public BlockAction getAction()
+    {
+        return this.action;
+    }
+
+    /**
      * Sets the action of the block.<br>
      * It's redefine the data if the action isn't for NoteBlocks.
      *
@@ -99,13 +109,13 @@ public abstract class PacketBlockAction extends PacketSender
     }
 
     /**
-     * Gets the action of the block.
+     * Gets the data of the action for the block.
      *
-     * @return BlockAction enum constant.
+     * @return Data of the action.
      */
-    public BlockAction getAction()
+    public int getData()
     {
-        return this.action;
+        return this.data;
     }
 
     /**
@@ -119,16 +129,6 @@ public abstract class PacketBlockAction extends PacketSender
     {
         this.data = data;
         return this;
-    }
-
-    /**
-     * Gets the data of the action for the block.
-     *
-     * @return Data of the action.
-     */
-    public int getData()
-    {
-        return this.data;
     }
 
     @Override

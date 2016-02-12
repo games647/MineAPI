@@ -16,7 +16,7 @@ public class FancyMessage
 
     public FancyMessage(String string)
     {
-        messageParts = new ArrayList<MessagePart>();
+        messageParts = new ArrayList<>();
         messageParts.add(new MessagePart(string));
     }
 
@@ -200,13 +200,13 @@ public class FancyMessage
     static class MessagePart
     {
 
+        public final String text;
         public ChatColor color = null;
         public ChatColor[] styles = null;
         public String clickActionName = null;
         public String clickActionData = null;
         public String hoverActionName = null;
         public String hoverActionData = null;
-        public final String text;
 
         public MessagePart(final String text)
         {

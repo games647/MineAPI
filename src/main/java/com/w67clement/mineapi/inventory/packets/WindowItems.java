@@ -9,44 +9,46 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class WindowItems extends PacketSender
 {
-	protected int windowId;
-	protected List<ItemStack> items;
+    protected int windowId;
+    protected List<ItemStack> items;
 
-	public WindowItems(int windowId, List<ItemStack> items) {
-		this.windowId = windowId;
-		this.items = items;
-	}
+    public WindowItems(int windowId, List<ItemStack> items)
+    {
+        this.windowId = windowId;
+        this.items = items;
+    }
 
-	public WindowItems(int windowId, Inventory inventory) {
-		this(windowId, Arrays.asList(inventory.getContents()));
-	}
+    public WindowItems(int windowId, Inventory inventory)
+    {
+        this(windowId, Arrays.asList(inventory.getContents()));
+    }
 
-	public int getWindowId()
-	{
-		return this.windowId;
-	}
+    public int getWindowId()
+    {
+        return this.windowId;
+    }
 
-	public WindowItems setWindowId(int windowId)
-	{
-		this.windowId = windowId;
-		return this;
-	}
+    public WindowItems setWindowId(int windowId)
+    {
+        this.windowId = windowId;
+        return this;
+    }
 
-	public List<ItemStack> getItems()
-	{
-		return this.items;
-	}
+    public List<ItemStack> getItems()
+    {
+        return this.items;
+    }
 
-	public WindowItems setItems(List<ItemStack> items)
-	{
-		this.items = items;
-		return this;
-	}
+    public WindowItems setItems(List<ItemStack> items)
+    {
+        this.items = items;
+        return this;
+    }
 
-	@Override
-	public PacketType getPacketType()
-	{
-		return PacketType.PACKETPLAYOUT;
-	}
+    @Override
+    public PacketType getPacketType()
+    {
+        return PacketType.PACKETPLAYOUT;
+    }
 
 }

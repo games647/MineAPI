@@ -22,7 +22,7 @@ public class ProtocolInjector
                 this.handler = new GlowHandler(mineapi);
                 return true;
             }
-            catch (Throwable throwable)
+            catch (Throwable ignored)
             {
 
             }
@@ -39,7 +39,7 @@ public class ProtocolInjector
                 this.handler = new INCHandler(mineapi);
                 return true;
             }
-            catch (Throwable throwable)
+            catch (Throwable ignored)
             {
 
             }

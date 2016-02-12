@@ -20,6 +20,11 @@ public abstract class Config
         this.file = file;
     }
 
+    public static File getPluginsFolder()
+    {
+        return new File("plugins/");
+    }
+
     public abstract void init();
 
     /**
@@ -40,6 +45,7 @@ public abstract class Config
 
     /**
      * Gets the file of the configuration.
+     *
      * @return Configuration's file.
      */
     public File getFile()
@@ -109,11 +115,6 @@ public abstract class Config
             }
 
         }
-    }
-
-    public static File getPluginsFolder()
-    {
-        return new File("plugins/");
     }
 
 }

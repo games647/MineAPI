@@ -11,6 +11,8 @@ import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
+import com.w67clement.mineapi.inventory.packets.WindowOpen;
+import com.w67clement.mineapi.inventory.packets.WindowType;
 import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.nms.NmsPacket;
 import com.w67clement.mineapi.packets.ProtocolState;
@@ -70,7 +72,7 @@ public class NmsPacketReader
     {
         if (packet.getClass().getSimpleName().equals(PacketList.Handshake.getPacketName()) || PacketList.Handshake.getPacketAliases().contains(packet.getClass().getSimpleName()))
         {
-            PacketHandshake minePacket = null;
+            PacketHandshake minePacket;
             if (MineAPI.isGlowstone())
             {
                 int protocol = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "version", true));
@@ -176,7 +178,7 @@ public class NmsPacketReader
     {
         if (packet.getClass().getSimpleName().equals(PacketList.PacketPlayOutExplosion.getPacketName()) || PacketList.PacketPlayOutExplosion.getPacketAliases().contains(packet.getClass().getSimpleName()))
         {
-            PacketExplosion minePacket = null;
+            PacketExplosion minePacket;
             if (MineAPI.isGlowstone())
             {
                 double x = ReflectionAPI.getValueWithType(packet, ReflectionAPI.getField(packet.getClass(), "x", true), double.class);
@@ -238,11 +240,40 @@ public class NmsPacketReader
      * Inventories
 	 */
 
+    public WindowOpen readPacket_WindowOpen(Object packet)
+    {
+        if (packet.getClass().getSimpleName().equals(PacketList.PacketPlayOutOpenWindow.getPacketName()) || PacketList.PacketPlayOutOpenWindow.getPacketAliases().contains(packet.getClass().getSimpleName()))
+        {
+            WindowOpen minePacket;
+            if (MineAPI.isGlowstone())
+            {
+                int windowId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "id", true));
+                String type = ReflectionAPI.getStringValue(packet, ReflectionAPI.getField(packet.getClass(), "type", true));
+                Object title = ReflectionAPI.getValue(packet, ReflectionAPI.getField(packet.getClass(), "title", true));
+                int size = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "slots", true));
+                int horseId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "entityId", true));
+                minePacket = MineAPI.getNmsManager().getWindowOpenPacket(windowId, WindowType.getByMCValue(type), ReflectionAPI.invokeMethodWithType(title, ReflectionAPI.getMethod(title, "encode"), String.class), size, horseId);
+            }
+            else
+            {
+                int windowId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "a", true));
+                String type = ReflectionAPI.getStringValue(packet, ReflectionAPI.getField(packet.getClass(), "b", true));
+                String jsonTitle = ChatComponentWrapper.makeJsonByChatComponent(ReflectionAPI.getValue(packet, ReflectionAPI.getField(packet.getClass(), "c", true)));
+                int size = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "d", true));
+                int horseId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "e", true));
+                minePacket = MineAPI.getNmsManager().getWindowOpenPacket(windowId, WindowType.getByMCValue(type), jsonTitle, size, horseId);
+            }
+            return minePacket;
+        }
+        else
+            throw new RuntimeException("Invalid packet given.");
+    }
+
     public WindowItems readPacket_WindowItems(Object packet)
     {
         if (packet.getClass().getSimpleName().equals(PacketList.PacketPlayOutWindowItems.getPacketName()) || PacketList.PacketPlayOutWindowItems.getPacketAliases().contains(packet.getClass().getSimpleName()))
         {
-            WindowItems minePacket = null;
+            WindowItems minePacket;
             if (MineAPI.isGlowstone())
             {
                 int windowId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "id", true));
@@ -293,7 +324,7 @@ public class NmsPacketReader
     {
         if (packet.getClass().getSimpleName().equals(PacketList.PacketStatusOutPong.getPacketName()) || PacketList.PacketStatusOutPong.getPacketAliases().contains(packet.getClass().getSimpleName()))
         {
-            PacketStatusOutPong minePacket = null;
+            PacketStatusOutPong minePacket;
             if (MineAPI.isGlowstone())
             {
                 long pong = ReflectionAPI.getValueWithType(packet, ReflectionAPI.getField(packet.getClass(), "time", true), long.class);

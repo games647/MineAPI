@@ -13,47 +13,50 @@ import org.bukkit.plugin.Plugin;
 public abstract class JsonConfig extends Config
 {
 
-	protected JsonParser parser;
-	protected JsonElement json;
-	protected Gson gson;
+    protected JsonParser parser;
+    protected JsonElement json;
+    protected Gson gson;
 
-	public JsonConfig(Plugin plugin, File file) {
-		super(plugin, file);
-		this.parser = new JsonParser();
-		this.gson = new Gson();
-	}
-	
-	@Override
-	public void load() {
-		super.load();
-		try
-		{
-			FileReader reader = new FileReader(this.getFile());
-			json = parser.parse(reader);
-			reader.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void save() {
-		try
-		{
-			FileWriter writer = new FileWriter(this.getFile());
-			writer.write(this.gson.toJson(this.json));
-			writer.close();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-	}
+    public JsonConfig(Plugin plugin, File file)
+    {
+        super(plugin, file);
+        this.parser = new JsonParser();
+        this.gson = new Gson();
+    }
+
+    @Override
+    public void load()
+    {
+        super.load();
+        try
+        {
+            FileReader reader = new FileReader(this.getFile());
+            json = parser.parse(reader);
+            reader.close();
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void save()
+    {
+        try
+        {
+            FileWriter writer = new FileWriter(this.getFile());
+            writer.write(this.gson.toJson(this.json));
+            writer.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 }

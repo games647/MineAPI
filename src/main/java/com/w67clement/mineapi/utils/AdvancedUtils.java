@@ -20,7 +20,7 @@ public class AdvancedUtils
      */
     public static String[] getServerData(String ip, int port)
     {
-        String[] data = null;
+        String[] data;
         try
         {
             Socket socket = new Socket();
@@ -52,7 +52,7 @@ public class AdvancedUtils
 
     public static String getServerStatus(String ip, int port)
     {
-        String c = null;
+        String c;
         String[] data = getServerData(ip, port);
         if (data[1].equals("Down.") && data[2].equals("Down."))
         {

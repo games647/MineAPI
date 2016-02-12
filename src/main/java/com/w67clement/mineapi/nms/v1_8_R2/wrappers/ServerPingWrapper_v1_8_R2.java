@@ -30,24 +30,23 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 			else
 			{
 				MinecraftServer server = (MinecraftServer) ReflectionAPI
-						.getValue(((CraftServer) Bukkit.getServer()),
-								ReflectionAPI
+						.getValue(Bukkit.getServer(),
+								  ReflectionAPI
 										.getField(
 												((CraftServer) Bukkit
 														.getServer())
 																.getClass(),
 												"console", true));
-				this.ping = server.aF();
+				this.ping = server != null ? server.aF() : null;
 			}
 		}
 		else
 		{
-			MinecraftServer server = (MinecraftServer) ReflectionAPI.getValue(
-					((CraftServer) Bukkit.getServer()),
+			MinecraftServer server = (MinecraftServer) ReflectionAPI.getValue(Bukkit.getServer(),
 					ReflectionAPI.getField(
 							((CraftServer) Bukkit.getServer()).getClass(),
 							"console", true));
-			this.ping = server.aF();
+			this.ping = server != null ? server.aF() : null;
 		}
 	}
 
@@ -55,12 +54,6 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 	public String getMotd()
 	{
 		return ChatComponentWrapper.makeJsonByChatComponent(this.ping.a());
-	}
-
-	@Override
-	public Object getChatComponentMotd()
-	{
-		return this.ping.a();
 	}
 
 	@Override
@@ -73,6 +66,12 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 		}
 		else
 			this.ping.setMOTD((IChatBaseComponent) obj);
+	}
+
+	@Override
+	public Object getChatComponentMotd()
+	{
+		return this.ping.a();
 	}
 
 	@Override
@@ -151,7 +150,7 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 	@Override
 	public List<OfflinePlayer> getPlayerList()
 	{
-		List<OfflinePlayer> playerList = new ArrayList<OfflinePlayer>();
+		List<OfflinePlayer> playerList = new ArrayList<>();
 		// ServerData
 		ServerPing.ServerPingPlayerSample data = this.ping.b();
 		for (GameProfile player : data.c())
@@ -159,19 +158,6 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 			playerList.add(Bukkit.getOfflinePlayer(player.getName()));
 		}
 		return playerList;
-	}
-
-	@Override
-	public List<MC_GameProfile> getProfilesList()
-	{
-		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
-		// ServerData
-		ServerPing.ServerPingPlayerSample data = this.ping.b();
-		for (GameProfile player : data.c())
-		{
-			profiles.add(MC_GameProfile.getByMojangObject(player));
-		}
-		return profiles;
 	}
 
 	@Override
@@ -193,12 +179,23 @@ public class ServerPingWrapper_v1_8_R2 implements ServerPingWrapper
 	}
 
 	@Override
+	public List<MC_GameProfile> getProfilesList()
+	{
+		List<MC_GameProfile> profiles = new ArrayList<>();
+		// ServerData
+		ServerPing.ServerPingPlayerSample data = this.ping.b();
+		for (GameProfile player : data.c())
+		{
+			profiles.add(MC_GameProfile.getByMojangObject(player));
+		}
+		return profiles;
+	}
+
+	@Override
 	public void setPlayerListWithName(List<String> players)
 	{
-		List<MC_GameProfile> profiles = new ArrayList<MC_GameProfile>();
-		players.forEach(player -> {
-			profiles.add(new MC_GameProfile(UUID.randomUUID(), player));
-		});
+		List<MC_GameProfile> profiles = new ArrayList<>();
+		players.forEach(player -> profiles.add(new MC_GameProfile(UUID.randomUUID(), player)));
 		this.setPlayerListWithGameProfile(profiles);
 	}
 

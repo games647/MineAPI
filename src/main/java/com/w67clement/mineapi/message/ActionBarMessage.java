@@ -21,6 +21,16 @@ public class ActionBarMessage extends PacketSender
     }
 
     /**
+     * Gets the message will be displayed in the action bar.
+     *
+     * @return The message.
+     */
+    public String getMessage()
+    {
+        return this.message;
+    }
+
+    /**
      * Define the message will be displayed in the action bar.
      *
      * @param actionBarMessage An sample text.
@@ -34,16 +44,6 @@ public class ActionBarMessage extends PacketSender
         else
             this.message = "";
         return this;
-    }
-
-    /**
-     * Gets the message will be displayed in the action bar.
-     *
-     * @return The message.
-     */
-    public String getMessage()
-    {
-        return this.message;
     }
 
     @Override
