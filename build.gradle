@@ -4,6 +4,19 @@
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'idea'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
+    }
+}
+
+apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
 version = '2.2.0-DevBuild#3'
@@ -37,16 +50,47 @@ repositories {
         }
     }
     mavenCentral();
+    jcenter();
 }
 
-configurations
-{
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            groupId project.group
+            artifactId 'mineapi'
+            version project.version
+
+            artifact sourcesJar
+        }
+    }
+}
+
+// You can't publish to bintray :o
+bintray {
+    user = 'w67clement'
+    key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    pkg {
+        repo = 'maven'
+        name = 'MineAPI'
+        userOrg = user
+        licenses = ['GPL-3.0']
+        vcsUrl = 'https://github.com/w67clement/MineAPI.git'
+        publicDownloadNumbers = true
+        version {
+            name = project.version
+            desc = project.version.toString().contains('DevBuild') ? 'MineAPI development build v' + project.version : 'MineAPI v' + project.version
+            attributes = ['gradle-plugin': project.group + ':mineapi:' + project.version]
+        }
+    }
+}
+
+configurations {
     provided
     compile.extendsFrom provided
 }
 
-dependencies
-{
+dependencies {
     provided 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     provided 'org.spigotmc.1.8.8:spigot:1.8.8-R0.1-SNAPSHOT-latest:1.8.8'
     provided 'org.spigotmc.1.8.3:spigot:1.8.3-R0.1-SNAPSHOT-latest:1.8.3'
@@ -58,12 +102,10 @@ dependencies
     provided 'io.netty:netty-all:4.0.33.Final'
 }
 
-processResources
-{
+processResources {
     inputs.property "version", project.version
 
-    from(sourceSets.main.resources.srcDirs)
-    {
+    from(sourceSets.main.resources.srcDirs) {
         include "plugin.yml"
         include "bungee.yml"
 
@@ -78,4 +120,13 @@ jar {
             it.isDirectory() ? it : zipTree(it)
         }
     }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives sourcesJar
 }
