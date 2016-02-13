@@ -70,6 +70,7 @@ publishing {
 bintray {
     user = 'w67clement'
     key = project.hasProperty('bintrayApiKey') ? project.property('bintrayApiKey') : System.getenv('BINTRAY_API_KEY')
+    publications = ['MyPublication']
     pkg {
         repo = 'maven'
         name = 'MineAPI'
