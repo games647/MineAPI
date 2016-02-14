@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
+import com.w67clement.mineapi.api.wrappers.BlockPositionWrapper;
 import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.entity.player.ClientCommand;
@@ -18,6 +19,7 @@ import com.w67clement.mineapi.nms.NmsPacket;
 import com.w67clement.mineapi.packets.ProtocolState;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
+import com.w67clement.mineapi.packets.play.out.PacketUpdateSign;
 import com.w67clement.mineapi.packets.status.PacketStatusOutPong;
 import com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo;
 import com.w67clement.mineapi.tab.TabTitle;
@@ -27,7 +29,11 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import org.bukkit.Location;
 import org.bukkit.inventory.ItemStack;
+
+
+import static com.w67clement.mineapi.api.ReflectionAPI.*;
 
 public class NmsPacketReader
 {
@@ -158,15 +164,14 @@ public class NmsPacketReader
             PacketChat minePacket = MineAPI.getNmsManager().getPacketChat("");
             if (MineAPI.isGlowstone())
             {
-                Object txtMsg = ReflectionAPI.getValue(packet, ReflectionAPI.getField(packet.getClass(), "text", true));
-                minePacket.setContent(ReflectionAPI.invokeMethodWithType(txtMsg, ReflectionAPI.getMethod(txtMsg, "encode"), String.class));
-                minePacket.setData(Byte.valueOf(String.valueOf(ReflectionAPI.getValueWithType(packet, ReflectionAPI.getField(packet.getClass(), "mode", true), int.class))));
+                minePacket.setContent(this.decodeGlowstoneTextMessage(getValue(packet, getField(packet.getClass(), "text", true))));
+                minePacket.setData(getValueWithType(packet, getField(packet.getClass(), "mode", true), byte.class));
             }
             else
             {
-                String json = ChatComponentWrapper.makeJsonByChatComponent(ReflectionAPI.getValue(packet, ReflectionAPI.getField(packet.getClass(), "a", true)));
+                String json = ChatComponentWrapper.makeJsonByChatComponent(getValue(packet, getField(packet.getClass(), "a", true)));
                 minePacket.setContent(json);
-                minePacket.setData(ReflectionAPI.getValueWithType(packet, ReflectionAPI.getField(packet.getClass(), "b", true), byte.class));
+                minePacket.setData(getValueWithType(packet, getField(packet.getClass(), "b", true), byte.class));
             }
             return minePacket;
         }
@@ -299,6 +304,44 @@ public class NmsPacketReader
             throw new RuntimeException("Invalid packet given.");
     }
 
+    /* Blocks */
+
+    public PacketUpdateSign readPacket_PacketUpdateSign(Object packet)
+    {
+        if (packet.getClass().getSimpleName().equals(PacketList.PacketPlayOutUpdateSign.getPacketName()) || PacketList.PacketPlayOutUpdateSign.getPacketAliases().contains(packet.getClass().getSimpleName()))
+        {
+            PacketUpdateSign minePacket;
+            if (MineAPI.isGlowstone())
+            {
+                int x = getIntValue(packet, getField(packet.getClass(), "x", true));
+                int y = getIntValue(packet, getField(packet.getClass(), "y", true));
+                int z = getIntValue(packet, getField(packet.getClass(), "z", true));
+                Location location = new Location(null, x, y, z);
+                Object lines = getValue(packet, getField(packet.getClass(), "message", true));
+                String[] contents = new String[4];
+                contents[0] = this.decodeGlowstoneTextMessage(Array.get(lines, 0));
+                contents[1] = this.decodeGlowstoneTextMessage(Array.get(lines, 1));
+                contents[2] = this.decodeGlowstoneTextMessage(Array.get(lines, 2));
+                contents[3] = this.decodeGlowstoneTextMessage(Array.get(lines, 3));
+                minePacket = MineAPI.getNmsManager().getPacketUpdateSign(location, contents);
+            }
+            else
+            {
+                Location location = new BlockPositionWrapper(getValue(packet, getField(packet.getClass(), "b", true))).toLocation(null);
+                Object lines = getValue(packet, getField(packet.getClass(), "c", true));
+                String[] contents = new String[4];
+                contents[0] = ChatComponentWrapper.makeJsonByChatComponent(Array.get(lines, 0));
+                contents[1] = ChatComponentWrapper.makeJsonByChatComponent(Array.get(lines, 1));
+                contents[2] = ChatComponentWrapper.makeJsonByChatComponent(Array.get(lines, 2));
+                contents[3] = ChatComponentWrapper.makeJsonByChatComponent(Array.get(lines, 3));
+                minePacket = MineAPI.getNmsManager().getPacketUpdateSign(location, contents);
+            }
+            return minePacket;
+        }
+        else
+            throw new RuntimeException("Invalid packet given.");
+    }
+
 	/* STATUS */
 
     public PacketStatusOutServerInfo readPacket_PacketStatusOutServerInfo(Object packet)
@@ -339,6 +382,11 @@ public class NmsPacketReader
         }
         else
             throw new RuntimeException("Invalid packet given.");
+    }
+
+    protected String decodeGlowstoneTextMessage(Object obj)
+    {
+        return ReflectionAPI.invokeMethodWithType(obj, ReflectionAPI.getMethod(obj, "encode"), String.class);
     }
 
 }

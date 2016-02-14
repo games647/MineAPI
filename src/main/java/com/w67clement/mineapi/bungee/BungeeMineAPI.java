@@ -6,7 +6,9 @@ import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 /**
- * Created by w67clement on 20/01/2016.
+ * Created by w67clement on 20/01/2016. <br><br/>
+ *
+ * Class of project: MineAPI
  */
 public class BungeeMineAPI extends Plugin
 {

@@ -32,7 +32,7 @@ public class BlockPositionWrapper
 
     public static Object defineDefaultBlockPosition()
     {
-        return ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.getNmsClass("BlockPosition"), Integer.class, Integer.class, Integer.class), 0, 0, 0);
+        return ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.getNmsClass("BlockPosition"), int.class, int.class, int.class), 0, 0, 0);
     }
 
     public static BlockPositionWrapper fromLocation(Location loc)
@@ -81,6 +81,6 @@ public class BlockPositionWrapper
 
     public Object toBlockPosition()
     {
-        return ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.getNmsClass("BlockPosition"), Integer.class, Integer.class, Integer.class), this.x, this.y, this.z);
+        return ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.getNmsClass("BlockPosition"), int.class, int.class, int.class), this.x, this.y, this.z);
     }
 }

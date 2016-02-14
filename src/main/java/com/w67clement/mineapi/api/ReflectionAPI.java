@@ -517,12 +517,12 @@ public class ReflectionAPI
         private static Object getPlayerConnectionByPlayer_Bukkit(Player player)
         {
             Object nmsPlayer = getEntityPlayerByPlayer(player);
-            return ReflectionAPI.getValue(nmsPlayer, ReflectionAPI.getField(nmsPlayer.getClass(), "playerConnection", false));
+            return getValue(nmsPlayer, getField(nmsPlayer.getClass(), "playerConnection", false));
         }
 
         private static Object getPlayerConnectionByPlayer_Glowstone(Player player)
         {
-            return ReflectionAPI.invokeMethod(player, ReflectionAPI.getMethod(player, "getSession"));
+            return invokeMethod(player, getMethod(player, "getSession"));
         }
 
         public static Object getPlayerConnectionByEntityPlayer(Object player)
@@ -568,13 +568,13 @@ public class ReflectionAPI
         private static void sendPacket_Bukkit(Player player, Object obj)
         {
             Object playerConnection = getPlayerConnectionByPlayer(player);
-            ReflectionAPI.invokeMethod(playerConnection, ReflectionAPI.getMethod(playerConnection, "sendPacket", new Class<?>[]{getNmsClass("Packet")}), new Object[]{obj});
+            invokeMethod(playerConnection, getMethod(playerConnection, "sendPacket", getNmsClass("Packet")), obj);
         }
 
         private static void sendPacket_Glowstone(Player player, Object obj)
         {
             Object session = getPlayerConnectionByPlayer(player);
-            ReflectionAPI.invokeMethod(session, ReflectionAPI.getMethod(session, "send", ReflectionAPI.getClass("com.flowpowered.networking.Message")), obj);
+            invokeMethod(session, getMethod(session, "send", ReflectionAPI.getClass("com.flowpowered.networking.Message")), obj);
         }
     }
 

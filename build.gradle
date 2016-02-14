@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
-version = '2.2.0-DevBuild#3'
+version = '2.2.0-dev4'
 archivesBaseName = 'MineAPI'
 def authors = '[w67clement]'
 

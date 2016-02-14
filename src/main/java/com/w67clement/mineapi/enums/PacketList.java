@@ -7,6 +7,7 @@ import com.w67clement.mineapi.inventory.packets.WindowOpen;
 import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.nms.NmsPacket;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
+import com.w67clement.mineapi.packets.play.out.PacketUpdateSign;
 import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.PacketExplosion;
 
@@ -82,7 +83,7 @@ public enum PacketList
     PacketPlayOutUpdateAttributes("PacketPlayOutUpdateAttributes", "", PacketType.PACKETPLAYOUT),
     PacketPlayOutUpdateEntityNBT("PacketPlayOutUpdateEntityNBT", "UpdateEntityNBTMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutUpdateHealth("PacketPlayOutUpdateHealth", "HealthMessage", PacketType.PACKETPLAYOUT),
-    PacketPlayOutUpdateSign("PacketPlayOutUpdateSign", "UpdateSignMessage", PacketType.PACKETPLAYOUT),
+    PacketPlayOutUpdateSign("PacketPlayOutUpdateSign", "UpdateSignMessage", PacketType.PACKETPLAYOUT, PacketUpdateSign.class),
     PacketPlayOutUpdateTime("PacketPlayOutUpdateTime", "TimeMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutWindowData("PacketPlayOutWindowData", "WindowPropertyMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutWindowItems("PacketPlayOutWindowItems", "SetWindowContentsMessage", PacketType.PACKETPLAYOUT, WindowItems.class),

@@ -21,12 +21,14 @@ import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
 import com.w67clement.mineapi.nms.none.packets.handshake.CraftPacketHandshake;
 import com.w67clement.mineapi.nms.none.packets.play.in.CraftPacketPlayInChat;
+import com.w67clement.mineapi.nms.none.packets.play.out.CraftPacketUpdateSign;
 import com.w67clement.mineapi.nms.none.packets.status.CraftPacketStatusOutPong;
 import com.w67clement.mineapi.nms.none.packets.status.CraftPacketStatusOutServerInfo;
 import com.w67clement.mineapi.nms.none.play_out.inventory.CraftWindowOpen;
 import com.w67clement.mineapi.packets.ProtocolState;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
+import com.w67clement.mineapi.packets.play.out.PacketUpdateSign;
 import com.w67clement.mineapi.packets.status.PacketStatusOutPong;
 import com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo;
 import com.w67clement.mineapi.tab.PacketPlayerInfo;
@@ -39,6 +41,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Entity;
@@ -174,6 +177,21 @@ public abstract class NmsManager
     public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z, BlockAction action);
 
     public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z, BlockAction action, int data);
+
+    public PacketUpdateSign getPacketUpdateSign(Sign sign)
+    {
+        return new CraftPacketUpdateSign(sign);
+    }
+
+    public PacketUpdateSign getPacketUpdateSign(Location location, String[] contents)
+    {
+        return new CraftPacketUpdateSign(location, contents);
+    }
+
+    public PacketUpdateSign getPacketUpdateSign(int x, int y, int z, String[] contents)
+    {
+        return new CraftPacketUpdateSign(x, y, z, contents);
+    }
 
 	/* PACKET PLAY IN */
 
