@@ -101,5 +101,19 @@ public abstract class YamlConfig extends Config
         return defaultValue;
     }
 
+    public void setLocation(String path, Location location)
+    {
+        JsonObject json = new JsonObject();
+        if (location.getWorld() != null)
+            json.addProperty("world", location.getWorld().getName());
+        else
+            json.addProperty("world", "world");
+        json.addProperty("x", location.getX());
+        json.addProperty("y", location.getY());
+        json.addProperty("z", location.getZ());
+        json.addProperty("yaw", location.getYaw());
+        json.addProperty("pitch", location.getPitch());
+        this.configuration.set(path, json.toString());
+    }
 
 }
