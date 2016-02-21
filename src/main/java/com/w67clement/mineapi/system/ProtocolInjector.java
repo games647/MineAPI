@@ -47,6 +47,11 @@ public class ProtocolInjector
         return false;
     }
 
+    public void injectModuleInjector(IHandler handler)
+    {
+        this.handler = handler;
+    }
+
     public void addChannel(Player player)
     {
         this.handler.addChannel(player);

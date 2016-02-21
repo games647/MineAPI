@@ -22,8 +22,6 @@ import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
 import com.w67clement.mineapi.system.ServerType;
 import com.w67clement.mineapi.system.messaging.MessagingManager;
-import com.w67clement.mineapi.system.messaging.defaults.MessagingDisconnect;
-import com.w67clement.mineapi.system.messaging.defaults.MessagingKeepAlivePacket;
 import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
 import com.w67clement.mineapi.utils.MineAPIUtils;
@@ -491,8 +489,6 @@ public class MineAPI extends JavaPlugin
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Plugin Messaging system...");
         messagingManager = new MessagingManager();
         messagingManager.getPacketRegistry().registerPlugin("Default");
-        messagingManager.getPacketRegistry().registerPacket("Default", 1, MessagingDisconnect.class);
-        messagingManager.getPacketRegistry().registerPacket("Default", 2, MessagingKeepAlivePacket.class);
 
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");
         autoUpdater = new MineAPIAutoUpdater(true, this);

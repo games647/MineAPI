@@ -1,5 +1,7 @@
-package com.w67clement.mineapi.bungee;
+package com.w67clement.mineapi;
 
+import com.w67clement.mineapi.nms.NmsManager;
+import com.w67clement.mineapi.system.ServerType;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
 import net.md_5.bungee.api.ProxyServer;
@@ -10,7 +12,7 @@ import net.md_5.bungee.api.plugin.Plugin;
  *
  * Class of project: MineAPI
  */
-public class BungeeMineAPI extends Plugin
+public class BungeeMineAPI extends Plugin implements MinePlugin
 {
 
     public static final String PREFIX = ChatColor.GRAY + "[" + ChatColor.DARK_AQUA + "MineAPI" + ChatColor.GRAY + "]" + ChatColor.RESET + " ";
@@ -22,7 +24,7 @@ public class BungeeMineAPI extends Plugin
      *
      * @param msg Message for the console.
      */
-    public static void sendMessageToConsole(String msg)
+    public void sendMessageToConsole(String msg)
     {
         sendMessageToConsole(msg, false);
     }
@@ -33,7 +35,7 @@ public class BungeeMineAPI extends Plugin
      * @param msg   Message for the console.
      * @param debug Message is a debug message.
      */
-    public static void sendMessageToConsole(String msg, boolean debug)
+    public void sendMessageToConsole(String msg, boolean debug)
     {
         if (debug)
         {
@@ -41,6 +43,18 @@ public class BungeeMineAPI extends Plugin
                 return;
         }
         console.sendMessage(msg);
+    }
+
+    @Override
+    public NmsManager getNmsManager()
+    {
+        return null;
+    }
+
+    @Override
+    public ServerType getServerType()
+    {
+        return null;
     }
 
     @Override

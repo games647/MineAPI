@@ -24,10 +24,7 @@ public class ProtocolManager implements Listener
 
     public void disable()
     {
-        for (Player players : Bukkit.getOnlinePlayers())
-        {
-            this.injector.removeChannel(players);
-        }
+        Bukkit.getOnlinePlayers().forEach(this.injector::removeChannel);
         this.injector.disable();
     }
 

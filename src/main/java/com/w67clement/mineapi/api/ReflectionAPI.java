@@ -249,7 +249,7 @@ public class ReflectionAPI
     }
 
 	/*
-	 * UTILS
+     * UTILS
 	 */
 
     public static Field getFirstFieldOfType(Class<?> clazz, Class<?> type)
@@ -290,7 +290,7 @@ public class ReflectionAPI
     }
 
 	/*
-	 * NMS CLASS
+     * NMS CLASS
 	 */
 
     /**
@@ -537,6 +537,30 @@ public class ReflectionAPI
                     return getValue(player, getField(player.getClass(), "playerConnection", false));
             }
             return null;
+        }
+
+        public static Class<?> getPlayerPropertyMapClass()
+        {
+            if (getServerVersion().equals("v1_7_R4"))
+            {
+                return ReflectionAPI.getClass("net.minecraft.util.com.mojang.authlib.properties.PropertyMap");
+            }
+            else
+            {
+                return ReflectionAPI.getClass("com.mojang.authlib.properties.PropertyMap");
+            }
+        }
+
+        public static Class<?> getPlayerPropertyMapSerializerClass()
+        {
+            if (getServerVersion().equals("v1_7_R4"))
+            {
+                return ReflectionAPI.getClass("net.minecraft.util.com.mojang.authlib.properties.PropertyMap$Serializer");
+            }
+            else
+            {
+                return ReflectionAPI.getClass("com.mojang.authlib.properties.PropertyMap$Serializer");
+            }
         }
 
         public static void sendPacket(Player player, Object obj)

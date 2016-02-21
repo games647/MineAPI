@@ -3,6 +3,7 @@ package com.w67clement.mineapi.system;
 public enum ServerType
 {
 
+	BUNGEECORD("BungeeCord"),
 	CRAFTBUKKIT("CraftBukkit"),
 	GLOWSTONE("Glowstone"),
 	GLOWSTONEPLUSPLUS("Glowstone++"),

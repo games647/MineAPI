@@ -1,4 +1,4 @@
 name: MineAPI
-main: com.w67clement.mineapi.bungee.BungeeMineAPI
+main: com.w67clement.mineapi.BungeeMineAPI
 version: $version
 authors: $authors

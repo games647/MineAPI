@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
-version = '2.2.0-dev5'
+version = '2.2.0-dev6'
 archivesBaseName = 'MineAPI'
 def authors = '[w67clement]'
 
@@ -30,18 +30,17 @@ compileJava.options.encoding = 'UTF-8'
 
 // In this section you declare where to find the dependencies of your project
 repositories {
-    repositories {
-        maven {
-            url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
-        }
+    maven {
+        url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
     }
-    repositories {
-        maven {
-            url "http://repo.glowstone.net/content/repositories/snapshots/"
-        }
+    maven {
+        url "http://repo.glowstone.net/content/repositories/snapshots/"
     }
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
+    }
+    maven {
+        url "bukkit/"
     }
     ivy {
         url "http://www.tcpr.ca/files/"
@@ -80,7 +79,7 @@ bintray {
         publicDownloadNumbers = true
         version {
             name = project.version
-            desc = project.version.toString().contains('DevBuild') ? 'MineAPI development build v' + project.version : 'MineAPI v' + project.version
+            desc = project.version.toString().contains('dev') ? 'MineAPI development build v' + project.version : 'MineAPI v' + project.version
             attributes = ['gradle-plugin': project.group + ':mineapi:' + project.version]
         }
     }
@@ -92,7 +91,6 @@ configurations {
 }
 
 dependencies {
-    provided 'org.bukkit:bukkit:1.8.8-R0.1-SNAPSHOT'
     provided 'org.spigotmc.1.8.8:spigot:1.8.8-R0.1-SNAPSHOT-latest:1.8.8'
     provided 'org.spigotmc.1.8.3:spigot:1.8.3-R0.1-SNAPSHOT-latest:1.8.3'
     provided 'org.spigotmc.1.8:spigot:1.8-R0.1-SNAPSHOT-latest:1.8'

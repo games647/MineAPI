@@ -46,9 +46,8 @@ public class SymbolsConfig extends YamlConfig
         for (String keys : section.getKeys(false))
         {
             String value = section.getString(keys);
-            if (!value.startsWith("\\u"))
-                value = "\\u" + value;
-            this.symbols.put(keys, value);
+            char c = (char) Integer.parseInt(value.substring(2), 16);
+            this.symbols.put(keys, "" + c);
         }
     }
 

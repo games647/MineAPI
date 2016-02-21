@@ -152,13 +152,13 @@ public class MC_GameProfile
         }
         else
         {
-            if (gameprofile.getClass().getSimpleName().equals("GameProfile") && gameprofile.getClass().getPackage().getName().equals("com.mojang.authlib"))
+            if (gameprofile.getClass().getSimpleName().equals("GameProfile") && (gameprofile.getClass().getPackage().getName().equals("com.mojang.authlib") || gameprofile.getClass().getPackage().getName().equals("net.minecraft.util.com.mojang.authlib")))
             {
                 Method methodId = ReflectionAPI.getMethod(gameprofile, "getId");
                 Method methodName = ReflectionAPI.getMethod(gameprofile, "getName");
                 MC_GameProfile profile = new MC_GameProfile((UUID) ReflectionAPI.invokeMethod(gameprofile, methodId), (String) ReflectionAPI.invokeMethod(gameprofile, methodName));
-                Object serializer = ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.getClass("com.mojang.authlib.properties.PropertyMap$Serializer")));
-                JsonElement json = (JsonElement) ReflectionAPI.invokeMethod(serializer, ReflectionAPI.getMethod(serializer, "serialize", ReflectionAPI.getClass("com.mojang.authlib.properties.PropertyMap"), Type.class, JsonSerializationContext.class), ReflectionAPI.getValue(gameprofile, ReflectionAPI.getField(gameprofile.getClass(), "properties", true)), null, null);
+                Object serializer = ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.NmsClass.getPlayerPropertyMapSerializerClass()));
+                JsonElement json = (JsonElement) ReflectionAPI.invokeMethod(serializer, ReflectionAPI.getMethod(serializer, "serialize", ReflectionAPI.NmsClass.getPlayerPropertyMapClass(), Type.class, JsonSerializationContext.class), ReflectionAPI.getValue(gameprofile, ReflectionAPI.getField(gameprofile.getClass(), "properties", true)), null, null);
                 profile.properties = deserializeProperties(json);
                 return profile;
             }
@@ -252,7 +252,7 @@ public class MC_GameProfile
         {
             Constructor<?> constructor = ReflectionAPI.getConstructor(ReflectionAPI.getClass("com.mojang.authlib.GameProfile"), UUID.class, String.class);
             Object profile = ReflectionAPI.newInstance(constructor, this.uuid, this.name);
-            Object serializer = ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.getClass("com.mojang.authlib.properties.PropertyMap$Serializer")));
+            Object serializer = ReflectionAPI.newInstance(ReflectionAPI.getConstructor(ReflectionAPI.NmsClass.getPlayerPropertyMapSerializerClass()));
             Object properties = ReflectionAPI.invokeMethod(serializer, ReflectionAPI.getMethod(serializer, "deserialize", JsonElement.class, Type.class, JsonDeserializationContext.class), serializeProperties(this.properties), null, null);
             ReflectionAPI.setValue(profile, ReflectionAPI.getField(profile != null ? profile.getClass() : null, "properties", true), properties);
             return profile;
