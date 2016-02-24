@@ -1,5 +1,7 @@
 package com.w67clement.mineapi.api;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.w67clement.mineapi.MineAPI;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -40,19 +42,7 @@ public class ReflectionAPI
             modifiers &= ~Modifier.FINAL;
             modifiersField.setInt(field, modifiers);
         }
-        catch (NoSuchFieldException e)
-        {
-            e.printStackTrace();
-        }
-        catch (SecurityException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalArgumentException e)
-        {
-            e.printStackTrace();
-        }
-        catch (IllegalAccessException e)
+        catch (NoSuchFieldException | IllegalAccessException | IllegalArgumentException | SecurityException e)
         {
             e.printStackTrace();
         }
@@ -76,11 +66,7 @@ public class ReflectionAPI
             {
                 field.set(obj, value);
             }
-            catch (IllegalArgumentException e)
-            {
-                e.printStackTrace();
-            }
-            catch (IllegalAccessException e)
+            catch (IllegalArgumentException | IllegalAccessException e)
             {
                 e.printStackTrace();
             }
@@ -116,8 +102,7 @@ public class ReflectionAPI
     public static String getStringValue(Object obj, String field, boolean declared) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException
     {
         Field f = getField(obj.getClass(), field, declared);
-        String str = (String) f.get(obj);
-        return str;
+        return (String) f.get(obj);
     }
 
     public static int getIntValue(Object obj, Field field)
@@ -223,11 +208,7 @@ public class ReflectionAPI
         {
             return clazz.getConstructor(arguments);
         }
-        catch (NoSuchMethodException e)
-        {
-            e.printStackTrace();
-        }
-        catch (SecurityException e)
+        catch (NoSuchMethodException | SecurityException e)
         {
             e.printStackTrace();
         }
@@ -313,6 +294,11 @@ public class ReflectionAPI
         }
     }
 
+    public static boolean isNmsClassExist(String name)
+    {
+        return isClassExist("net.minecraft.server." + getServerVersion() + "." + name);
+    }
+
     public static Class<?> getCraftClass(String name, CraftPackage packageDirectory)
     {
         try
@@ -336,6 +322,19 @@ public class ReflectionAPI
         {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static boolean isClassExist(String nameWithPackage)
+    {
+        try
+        {
+            Class.forName(nameWithPackage);
+            return true;
+        }
+        catch (ClassNotFoundException e)
+        {
+            return false;
         }
     }
 
@@ -367,7 +366,12 @@ public class ReflectionAPI
 
     }
 
-    public static enum CraftPackage
+    public static boolean useNMU()
+    {
+        return getServerVersion().equals("v1_7_R4");
+    }
+
+    public enum CraftPackage
     {
 
         ORG_BUKKIT("org.bukkit"),
@@ -435,7 +439,7 @@ public class ReflectionAPI
 
         private String packageDirectory;
 
-        private CraftPackage(String packageDirectory)
+        CraftPackage(String packageDirectory)
         {
             this.packageDirectory = packageDirectory;
         }
@@ -457,22 +461,30 @@ public class ReflectionAPI
 
         public static Class<?> getChatSerializerClass()
         {
-            return getServerVersion().equals("v1_8_R1") ? getNmsClass("ChatSerializer") : getNmsClass("IChatBaseComponent$ChatSerializer");
+            if (isNmsClassExist("IChatBaseComponent$ChatSerializer"))
+                return getNmsClass("IChatBaseComponent$ChatSerializer");
+            return getNmsClass("ChatSerializer");
         }
 
         public static Class<?> getEnumChatVisibilityClass()
         {
-            return getServerVersion().equals("v1_8_R1") ? getNmsClass("EnumChatVisibility") : getNmsClass("EntityHuman$EnumChatVisibility");
+            if (isNmsClassExist("EntityHuman$EnumChatVisibility"))
+                return getNmsClass("EntityHuman$EnumChatVisibility");
+            return getNmsClass("EnumChatVisibility");
         }
 
         public static Class<?> getEnumClientCommandClass()
         {
-            return getServerVersion().equals("v1_8_R1") ? getNmsClass("EnumClientCommand") : getNmsClass("PacketPlayInClientCommand$EnumClientCommand");
+            if (isNmsClassExist("PacketPlayInClientCommand$EnumClientCommand"))
+                return getNmsClass("PacketPlayInClientCommand$EnumClientCommand");
+            return getNmsClass("EnumClientCommand");
         }
 
         public static Class<?> getEnumWorldBorderActionClass()
         {
-            return getServerVersion().equals("v1_8_R1") ? getNmsClass("EnumWorldBorderAction") : getNmsClass("PacketPlayOutWorldBorder$EnumWorldBorderAction");
+            if (isNmsClassExist("PacketPlayOutWorldBorder$EnumWorldBorderAction"))
+                return getNmsClass("PacketPlayOutWorldBorder$EnumWorldBorderAction");
+            return getNmsClass("EnumWorldBorderAction");
         }
 
         public static Class<?> getIChatBaseComponentClass()
@@ -539,9 +551,21 @@ public class ReflectionAPI
             return null;
         }
 
+        public static Class<?> getGameProfileClass()
+        {
+            if (useNMU())
+            {
+                return ReflectionAPI.getClass("net.minecraft.util.com.mojang.authlib.GameProfile");
+            }
+            else
+            {
+                return ReflectionAPI.getClass("com.mojang.authlib.GameProfile");
+            }
+        }
+
         public static Class<?> getPlayerPropertyMapClass()
         {
-            if (getServerVersion().equals("v1_7_R4"))
+            if (useNMU())
             {
                 return ReflectionAPI.getClass("net.minecraft.util.com.mojang.authlib.properties.PropertyMap");
             }
@@ -553,7 +577,7 @@ public class ReflectionAPI
 
         public static Class<?> getPlayerPropertyMapSerializerClass()
         {
-            if (getServerVersion().equals("v1_7_R4"))
+            if (useNMU())
             {
                 return ReflectionAPI.getClass("net.minecraft.util.com.mojang.authlib.properties.PropertyMap$Serializer");
             }
@@ -599,6 +623,89 @@ public class ReflectionAPI
         {
             Object session = getPlayerConnectionByPlayer(player);
             invokeMethod(session, getMethod(session, "send", ReflectionAPI.getClass("com.flowpowered.networking.Message")), obj);
+        }
+    }
+
+    public static class GsonClass
+    {
+        private static final JsonParser parser = new JsonParser();
+        private static final Object nmuParser = newJsonParser();
+
+        public static Class<?> getJsonArrayClass()
+        {
+            if (useNMU())
+                return ReflectionAPI.getClass("net.minecraft.util.com.google.gson.JsonArray");
+            else
+                return ReflectionAPI.getClass("com.google.gson.JsonArray");
+        }
+
+        public static Class<?> getJsonDeserializationContextClass()
+        {
+            if (useNMU())
+                return ReflectionAPI.getClass("net.minecraft.util.com.google.gson.JsonDeserializationContext");
+            else
+                return ReflectionAPI.getClass("com.google.gson.JsonDeserializationContext");
+
+        }
+
+        public static Class<?> getJsonElementClass()
+        {
+            if (useNMU())
+                return ReflectionAPI.getClass("net.minecraft.util.com.google.gson.JsonElement");
+            else
+                return ReflectionAPI.getClass("com.google.gson.JsonElement");
+        }
+
+        public static Class<?> getJsonObjectClass()
+        {
+            if (useNMU())
+                return ReflectionAPI.getClass("net.minecraft.util.com.google.gson.JsonObject");
+            else
+                return ReflectionAPI.getClass("com.google.gson.JsonObject");
+        }
+
+        public static Class<?> getJsonParserClass()
+        {
+            if (useNMU())
+                return ReflectionAPI.getClass("net.minecraft.util.com.google.gson.JsonParser");
+            else
+                return ReflectionAPI.getClass("com.google.gson.JsonParser");
+        }
+
+        public static Class<?> getJsonSerializationContextClass()
+        {
+            if (useNMU())
+                return ReflectionAPI.getClass("net.minecraft.util.com.google.gson.JsonSerializationContext");
+            else
+                return ReflectionAPI.getClass("com.google.gson.JsonSerializationContext");
+
+        }
+
+        public static Object newJsonArray()
+        {
+            return newInstance(getConstructor(getJsonArrayClass()));
+        }
+
+        public static Object newJsonObject()
+        {
+            return newInstance(getConstructor(getJsonObjectClass()));
+        }
+
+        public static Object newJsonParser()
+        {
+            return newInstance(getConstructor(getJsonParserClass()));
+        }
+
+        public static Object convertJsonElementToNMU(JsonElement jsonElement)
+        {
+            String json = jsonElement.toString();
+            return invokeMethod(nmuParser, getMethod(nmuParser.getClass(), "parse", false, String.class), json);
+        }
+
+        public static JsonElement convertNMUToJsonElement(Object nmu)
+        {
+            String json = nmu.toString();
+            return parser.parse(json);
         }
     }
 

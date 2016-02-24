@@ -9,6 +9,7 @@ import com.w67clement.mineapi.api.event.SendPacketEvent;
 import com.w67clement.mineapi.api.event.ping.PacketPingReceiveEvent;
 import com.w67clement.mineapi.api.event.ping.PacketPingSendEvent;
 import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
+import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.ProtocolManager;
@@ -72,6 +73,7 @@ public class MineAPI extends JavaPlugin
     private static boolean useColor = true;
     private static boolean debugConnection = false;
     public boolean useModuleNmsManager;
+    private HashMap<Player, MC_Player> playerCache = new HashMap<>();
 
     public static void registerPacketListener(PacketListener listener, Plugin pl)
     {
@@ -411,7 +413,7 @@ public class MineAPI extends JavaPlugin
             if (injector.createInjector(this))
             {
                 injector.addServerConnectionChannel();
-                Bukkit.getOnlinePlayers().forEach(injector::addChannel);
+                Bukkit.getOnlinePlayers().parallelStream().forEach(injector::addChannel);
                 protocolManager = new ProtocolManager(injector);
                 this.getServer().getPluginManager().registerEvents(protocolManager, this);
             }

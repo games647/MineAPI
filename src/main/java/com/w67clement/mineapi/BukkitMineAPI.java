@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  */
 public class BukkitMineAPI extends JavaPlugin implements MinePlugin
 {
+    private MineAPI mineapi;
     private ServerType serverType;
     private NmsManager nms;
 
@@ -39,7 +40,18 @@ public class BukkitMineAPI extends JavaPlugin implements MinePlugin
     }
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
+        this.mineapi = new MineAPI();
+        this.mineapi.onLoad();
+    }
 
+    @Override
+    public void onEnable() {
+        this.mineapi.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        this.mineapi.onDisable();
     }
 }
