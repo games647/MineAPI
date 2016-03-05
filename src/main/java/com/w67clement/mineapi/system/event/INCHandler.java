@@ -227,7 +227,9 @@ public class INCHandler implements IHandler
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
+                PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
+                assert packet != null : "Error: [{\"class\":\"INCHandler$ChannelHandler\",\"method\":\"write(ChannelHandlerContext, Object, ChannelPromise)\",\"line\":230,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                mineapi_packet = reader.readPacket(msg, packet.getMineAPIPacket());
             }
             catch (NullPointerException ignored)
             {
@@ -266,7 +268,9 @@ public class INCHandler implements IHandler
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
+                PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
+                assert packet != null : "Error: [{\"class\":\"INCHandler$ChannelHandler\",\"method\":\"channelRead(ChannelHandlerContext, Object)\",\"line\":271,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                mineapi_packet = reader.readPacket(msg, packet.getMineAPIPacket());
             }
             catch (NullPointerException ignored)
             {
@@ -320,7 +324,9 @@ public class INCHandler implements IHandler
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
+                PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
+                assert packet != null : "Error: [{\"class\":\"INCHandler$INCChannelHandler\",\"method\":\"write(ChannelHandlerContext, Object, ChannelPromise)\",\"line\":327,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                mineapi_packet = reader.readPacket(msg, packet.getMineAPIPacket());
             }
             catch (NullPointerException ignored)
             {
@@ -368,7 +374,9 @@ public class INCHandler implements IHandler
             NmsPacket mineapi_packet = null;
             try
             {
-                mineapi_packet = reader.readPacket(msg, PacketList.getPacketByName(msg.getClass().getSimpleName()).getMineAPIPacket());
+                PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
+                assert packet != null : "Error: [{\"class\":\"INCHandler$INCChannelHandler\",\"method\":\"channelRead(ChannelHandlerContext, Object)\",\"line\":377,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                mineapi_packet = reader.readPacket(msg, packet.getMineAPIPacket());
             }
             catch (NullPointerException ignored)
             {

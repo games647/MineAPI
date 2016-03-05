@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.inventory.packets;
 
+import com.google.gson.JsonObject;
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
 import org.bukkit.inventory.Inventory;
@@ -34,7 +35,9 @@ public abstract class WindowOpen extends PacketSender
         {
             throw new IllegalArgumentException("Type of the inventory was not recognized!");
         }
-        this.title = inventory.getTitle();
+        JsonObject jsonTitle = new JsonObject();
+        jsonTitle.addProperty("text", inventory.getTitle());
+        this.title = jsonTitle.toString();
         this.size = inventory.getSize();
     }
 
@@ -62,6 +65,7 @@ public abstract class WindowOpen extends PacketSender
 
     /**
      * Gets the title of the opened Window.
+     *
      * @return Title in Json Format.
      */
     public String getTitle()
@@ -71,12 +75,29 @@ public abstract class WindowOpen extends PacketSender
 
     /**
      * Sets the title of the opened Window.
+     *
      * @param title Title in Json Format
+     *
      * @return Instance of WindowOpen.
      */
     public WindowOpen setTitle(String title)
     {
         this.title = title;
+        return this;
+    }
+
+    /**
+     * Sets the title of the opened Window.
+     *
+     * @param title Title in Text format.
+     *
+     * @return Instance of WindowOpen.
+     */
+    public WindowOpen setTitleText(String title)
+    {
+        JsonObject json = new JsonObject();
+        json.addProperty("text", title);
+        this.title = json.toString();
         return this;
     }
 

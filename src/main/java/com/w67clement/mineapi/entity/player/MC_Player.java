@@ -19,12 +19,12 @@ import org.bukkit.inventory.ItemStack;
 public interface MC_Player extends MC_EntityLiving
 {
 
-	public void reset();
+	void reset();
 
 	/**
 	 * Respawn the player with packet if he are dead
 	 */
-	public void respawn();
+	void respawn();
 
 	/**
 	 * An optimized version of sendChunkChange method
@@ -33,7 +33,7 @@ public interface MC_Player extends MC_EntityLiving
 	 *            Chunk location
 	 * @author Upd4ting
 	 */
-	public void sendChunkChange(Chunk chunk);
+	void sendChunkChange(Chunk chunk);
 
 	/**
 	 * If player isn't in Spectator mode is set, and he spectate a Entity.
@@ -41,7 +41,7 @@ public interface MC_Player extends MC_EntityLiving
 	 * @param entity
 	 *            Observed entity.
 	 */
-	public void spectateEntity(Entity entity);
+	void spectateEntity(Entity entity);
 
 	/**
 	 * If player isn't in Spectator mode is set, and he spectate a Entity.
@@ -50,52 +50,52 @@ public interface MC_Player extends MC_EntityLiving
 	 *            Observed entity.
 	 * @see #spectateEntity(Entity)
 	 */
-	public void spectateEntity(MC_Entity entity);
+	void spectateEntity(MC_Entity entity);
 
-	public void openBook(ItemStack item);
+	void openBook(ItemStack item, EnumHand hand);
 
-	public void openFurnace(Furnace furnace);
+	void openFurnace(Furnace furnace);
 
-	public void openBrewingStand(BrewingStand bStand);
+	void openBrewingStand(BrewingStand bStand);
 
-	public void openBeacon(Beacon beacon);
+	void openBeacon(Beacon beacon);
 
-	public void openDispenser(Dispenser dispenser);
+	void openDispenser(Dispenser dispenser);
 
-	public void openHopper(Hopper hopper);
+	void openHopper(Hopper hopper);
 
-	public void openSign(Sign sign);
+	void openSign(Sign sign);
 
-	public void openSign(Sign sign, boolean isEditable);
+	void openSign(Sign sign, boolean isEditable);
 
 	/**
 	 * Gets the ping of this player.
 	 * 
 	 * @return Ping value
 	 */
-	public int getPing();
+	int getPing();
 
 	/**
 	 * Gets the windowId of the active container.
 	 * 
 	 * @return WindowId.
 	 */
-	public int getActiveContainerId();
+	int getActiveContainerId();
 
-	public String getLangUsed();
+	String getLangUsed();
 
-	public boolean useDefaultLanguage();
+	boolean useDefaultLanguage();
 
-	public MC_ChatVisibility getChatVisibility();
+	MC_ChatVisibility getChatVisibility();
 
-	public FancyMessage sendMessage(String message);
+	FancyMessage sendMessage(String message);
 
-	public void sendActionBarMessage(String message);
+	void sendActionBarMessage(String message);
 
-	public void sendTitle(int fadeIn, int stay, int fadeOut, String title,
+	void sendTitle(int fadeIn, int stay, int fadeOut, String title,
 			String subtitle);
 
-	public void sendTabTitle(String header, String footer);
+	void sendTabTitle(String header, String footer);
 
 	/**
 	 * This method is not recommended.
@@ -104,16 +104,16 @@ public interface MC_Player extends MC_EntityLiving
 	 *            The packet Object (Nms)
 	 */
 	@Deprecated
-	public void sendPacket(Object packet) throws IllegalArgumentException;
+	void sendPacket(Object packet) throws IllegalArgumentException;
 
-	public Player getHandle();
+	Player getHandle();
 
-	public Object getMC_Handle();
+	Object getMC_Handle();
 
 	/**
 	 * Gets the GameProfile.
 	 * 
 	 * @return Player's GameProfile.
 	 */
-	public MC_GameProfile getMC_GameProfile();
+	MC_GameProfile getMC_GameProfile();
 }

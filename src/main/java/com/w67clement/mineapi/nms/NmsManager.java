@@ -19,12 +19,12 @@ import com.w67clement.mineapi.message.ActionBarMessage;
 import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
-import com.w67clement.mineapi.nms.none.packets.handshake.CraftPacketHandshake;
-import com.w67clement.mineapi.nms.none.packets.play.in.CraftPacketPlayInChat;
-import com.w67clement.mineapi.nms.none.packets.play.out.CraftPacketUpdateSign;
-import com.w67clement.mineapi.nms.none.packets.status.CraftPacketStatusOutPong;
-import com.w67clement.mineapi.nms.none.packets.status.CraftPacketStatusOutServerInfo;
-import com.w67clement.mineapi.nms.none.play_out.inventory.CraftWindowOpen;
+import com.w67clement.mineapi.nms.reflection.packets.handshake.CraftPacketHandshake;
+import com.w67clement.mineapi.nms.reflection.packets.play.in.CraftPacketPlayInChat;
+import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutPong;
+import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutServerInfo;
+import com.w67clement.mineapi.nms.reflection.play_out.inventory.CraftWindowOpen;
+import com.w67clement.mineapi.nms.reflection.play_out.message.CraftPacketChat;
 import com.w67clement.mineapi.packets.ProtocolState;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
@@ -108,7 +108,9 @@ public abstract class NmsManager
      * @version MineAPI 2.2.0 (Event system v2)
      * @see PacketChat
      */
-    public abstract PacketChat getPacketChat(String content);
+    public PacketChat getPacketChat(String content) {
+        return new CraftPacketChat(content);
+    }
 
     /**
      * @param content Message in Json.
@@ -119,7 +121,9 @@ public abstract class NmsManager
      * @version MineAPI 2.2.0 (Event system v2)
      * @see PacketChat
      */
-    public abstract PacketChat getPacketChat(String content, byte data);
+    public PacketChat getPacketChat(String content, byte data) {
+        return new CraftPacketChat(content, data);
+    }
 
     public abstract TabTitle getTabTitle(String header, String footer);
 
@@ -128,6 +132,8 @@ public abstract class NmsManager
     public abstract PacketPlayerInfo getPacketPlayerInfo(PacketPlayerInfo.MC_EnumPlayerInfoAction action, PacketPlayerInfoData... data);
 
     public abstract WindowItems getWindowItemsPacket(int windowId, List<ItemStack> items);
+
+    public abstract WindowItems getWindowItemsPacket(int windowId, Inventory inventory);
 
     public WindowOpen getWindowOpenPacket(int windowId, WindowType type, String title, int size)
     {
@@ -178,20 +184,11 @@ public abstract class NmsManager
 
     public abstract PacketBlockAction getPacketBlockAction(int x, int y, int z, BlockAction action, int data);
 
-    public PacketUpdateSign getPacketUpdateSign(Sign sign)
-    {
-        return new CraftPacketUpdateSign(sign);
-    }
+    public abstract PacketUpdateSign getPacketUpdateSign(Sign sign);
 
-    public PacketUpdateSign getPacketUpdateSign(Location location, String[] contents)
-    {
-        return new CraftPacketUpdateSign(location, contents);
-    }
+    public abstract PacketUpdateSign getPacketUpdateSign(Location location, String[] contents);
 
-    public PacketUpdateSign getPacketUpdateSign(int x, int y, int z, String[] contents)
-    {
-        return new CraftPacketUpdateSign(x, y, z, contents);
-    }
+    public abstract PacketUpdateSign getPacketUpdateSign(int x, int y, int z, String[] contents);
 
 	/* PACKET PLAY IN */
 

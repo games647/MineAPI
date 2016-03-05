@@ -11,6 +11,9 @@ import com.w67clement.mineapi.packets.play.out.PacketUpdateSign;
 import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.PacketExplosion;
 
+
+import static com.w67clement.mineapi.enums.MinecraftVersion.*;
+
 public enum PacketList
 {
 
@@ -23,12 +26,14 @@ public enum PacketList
     PacketPlayOutBlockAction("PacketPlayOutBlockAction", "BlockActionMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutBlockBreakAnimation("PacketPlayOutBlockBreakAnimation", "", PacketType.PACKETPLAYOUT),
     PacketPlayOutBlockChange("PacketPlayOutBlockChange", "BlockChangeMessage", PacketType.PACKETPLAYOUT),
-    PacketPlayOutCamera("PacketPlayOutCamera", "CameraMessage", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1, PacketCamera.class),
+    PacketPlayOutBoss("PacketPlayOutBoss", "", PacketType.PACKETPLAYOUT, v1_9_R1),
+    PacketPlayOutCamera("PacketPlayOutCamera", "CameraMessage", PacketType.PACKETPLAYOUT, v1_8_R1, PacketCamera.class),
     PacketPlayOutChat("PacketPlayOutChat", "ChatMessage", PacketType.PACKETPLAYOUT, PacketChat.class),
     PacketPlayOutCloseWindow("PacketPlayOutCloseWindow", "CloseWindowMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutCollect("PacketPlayOutCollect", "CollectItemMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutCombatEvent("PacketPlayOutCombatEvent", "CombatEventMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutCustomPayload("PacketPlayOutCustomPayload", "PluginMessage", PacketType.PACKETPLAYOUT),
+    PacketPlayOutCustomSoundEffect("PacketPlayOutCustomSoundEffect", "", PacketType.PACKETPLAYOUT, v1_9_R1),
     PacketPlayOutEntity("PacketPlayOutEntity", "", PacketType.PACKETPLAYOUT),
     PacketPlayOutEntityDestroy("PacketPlayOutEntityDestroy", "DestroyEntitiesMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutEntityEffect("PacketPlayOutEntityEffect", "EntityEffectMessage", PacketType.PACKETPLAYOUT),
@@ -48,7 +53,8 @@ public enum PacketList
     PacketPlayOutLogin("PacketPlayOutLogin", "JoinGameMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutMap("PacketPlayOutMap", "MapDataMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutMapChunk("PacketPlayOutMapChunk", "ChunkDataMessage", PacketType.PACKETPLAYOUT),
-    PacketPlayOutMapChunkBulk("PacketPlayOutMapChunkBulk", "ChunkBulkMessage", PacketType.PACKETPLAYOUT),
+    @Deprecated PacketPlayOutMapChunkBulk("PacketPlayOutMapChunkBulk", "ChunkBulkMessage", PacketType.PACKETPLAYOUT),
+    PacketPlayOutMount("PacketPlayOutMount", "", PacketType.PACKETPLAYOUT, v1_9_R1),
     PacketPlayOutMultiBlockChange("PacketPlayOutMultiBlockChange", "MultiBlockChangeMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutNamedEntitySpawn("PacketPlayOutNamedEntitySpawn", "SpawnPlayerMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutNamedSoundEffect("PacketPlayOutNamedSoundEffect", "PlaySoundMessage", PacketType.PACKETPLAYOUT),
@@ -68,6 +74,7 @@ public enum PacketList
     PacketPlayOutScoreboardTeam("PacketPlayOutScoreboardTeam", "", PacketType.PACKETPLAYOUT),
     PacketPlayOutServerDifficulty("PacketPlayOutServerDifficulty", "ServerDifficultyMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutSetCompression("PacketPlayOutSetCompression", "SetCompressionMessage", PacketType.PACKETPLAYOUT),
+    PacketPlayOutSetCooldown("PacketPlayOutSetCooldown", "", PacketType.PACKETPLAYOUT, v1_9_R1),
     PacketPlayOutSetSlot("PacketPlayOutSetSlot", "SetWindowSlotMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutSpawnEntity("PacketPlayOutSpawnEntity", "SpawnObjectMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutSpawnEntityExperienceOrb("PacketPlayOutSpawnEntityExperienceOrb", "SpawnXpOrbMessage", PacketType.PACKETPLAYOUT),
@@ -80,14 +87,16 @@ public enum PacketList
     PacketPlayOutTileEntityData("PacketPlayOutTileEntityData", "UpdateBlockEntityMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutTitle("PacketPlayoutTitle", "TitleMessage", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1),
     PacketPlayOutTransaction("PacketPlayOutTransaction", "TransactionMessage", PacketType.PACKETPLAYOUT),
+    PacketPlayOutUnloadChunk("PacketPlayOutUnloadChunk", "", PacketType.PACKETPLAYOUT, v1_9_R1),
     PacketPlayOutUpdateAttributes("PacketPlayOutUpdateAttributes", "", PacketType.PACKETPLAYOUT),
     PacketPlayOutUpdateEntityNBT("PacketPlayOutUpdateEntityNBT", "UpdateEntityNBTMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutUpdateHealth("PacketPlayOutUpdateHealth", "HealthMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutUpdateSign("PacketPlayOutUpdateSign", "UpdateSignMessage", PacketType.PACKETPLAYOUT, PacketUpdateSign.class),
     PacketPlayOutUpdateTime("PacketPlayOutUpdateTime", "TimeMessage", PacketType.PACKETPLAYOUT),
+    PacketPlayOutVehicleMove("PacketPlayOutVehicleMove", "", PacketType.PACKETPLAYOUT, v1_9_R1),
     PacketPlayOutWindowData("PacketPlayOutWindowData", "WindowPropertyMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutWindowItems("PacketPlayOutWindowItems", "SetWindowContentsMessage", PacketType.PACKETPLAYOUT, WindowItems.class),
-    PacketPlayOutWorldBorder("PacketPlayOutWorldBorder", "WorldBorderMessage", PacketType.PACKETPLAYOUT, MinecraftVersion.v1_8_R1),
+    PacketPlayOutWorldBorder("PacketPlayOutWorldBorder", "WorldBorderMessage", PacketType.PACKETPLAYOUT, v1_8_R1),
     PacketPlayOutWorldEvent("PacketPlayOutWorldEvent", "PlayEffectMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutWorldParticles("PacketPlayOutWorldParticles", "PlayParticleMessage", PacketType.PACKETPLAYOUT),
     // Packet play in
@@ -95,6 +104,7 @@ public enum PacketList
     PacketPlayInArmAnimation("PacketPlayInArmAnimation", "PlayerSwingArmMessage", PacketType.PACKETPLAYIN),
     PacketPlayInBlockDig("PacketPlayInBlockDig", "DiggingMessage", PacketType.PACKETPLAYIN),
     PacketPlayInBlockPlace("PacketPlayInBlockPlace", "BlockPlacementMessage", PacketType.PACKETPLAYIN),
+    PacketPlayInBoatMove("PacketPlayInBoatMove", "", PacketType.PACKETPLAYIN, v1_9_R1),
     PacketPlayInChat("PacketPlayInChat", "IncomingChatMessage", PacketType.PACKETPLAYIN, com.w67clement.mineapi.packets.play.in.PacketPlayInChat.class),
     PacketPlayInClientCommand("PacketPlayInClientCommand", "ClientStatusMessage", PacketType.PACKETPLAYIN, ClientCommand.class),
     PacketPlayInCloseWindow("PacketPlayInCloseWindow", "CloseWindowMessage", PacketType.PACKETPLAYIN),
@@ -113,9 +123,12 @@ public enum PacketList
     PacketPlayInSpectate("PacketPlayInSpectate", "SpectateMessage", PacketType.PACKETPLAYIN),
     PacketPlayInSteerVehicle("PacketPlayInSteerVehicle", "SteerVehicleMessage", PacketType.PACKETPLAYIN),
     PacketPlayInTabComplete("PacketPlayInTabComplete", "TabCompleteMessage", PacketType.PACKETPLAYIN),
+    PacketPlayInTeleportAccept("PacketPlayInTeleportAccept", "", PacketType.PACKETPLAYIN, v1_9_R1),
     PacketPlayInTransaction("PacketPlayInTransaction", "TransactionMessage", PacketType.PACKETPLAYIN),
     PacketPlayInUpdateSign("PacketPlayInUpdateSign", "UpdateSignMessage", PacketType.PACKETPLAYIN),
     PacketPlayInUseEntity("PacketPlayInUseEntity", "InteractEntityMessage", PacketType.PACKETPLAYIN),
+    PacketPlayInUseItem("PacketPlayInUseItem", "", PacketType.PACKETPLAYIN, v1_9_R1),
+    PacketPlayInVehicleMove("PacketPlayInVehicleMove", "", PacketType.PACKETPLAYIN, v1_9_R1),
     PacketPlayInWindowClick("PacketPlayInWindowClick", "WindowClickMessage", PacketType.PACKETPLAYIN),
 
     // Status

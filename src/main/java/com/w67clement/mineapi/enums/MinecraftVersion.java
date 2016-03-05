@@ -23,7 +23,8 @@ public enum MinecraftVersion
     v1_8_1("1.8.1", 47),
     v1_8_2("1.8.2", 47),
     v1_8_R2("1.8.3", 47),
-    v1_8_R3("1.8.8", 47);
+    v1_8_R3("1.8.8", 47),
+    v1_9_R1("1.9", 107);
 
     private final static Map<String, MinecraftVersion> BY_Version = Maps.newHashMap();
 
@@ -46,23 +47,20 @@ public enum MinecraftVersion
 
     public static MinecraftVersion getServerVersion()
     {
-        if (MineAPI.getServerVersion().equals("v1_8_R1"))
+        switch (MineAPI.getServerVersion())
         {
-            return v1_8_R1;
+            case "v1_7_R4":
+                return v1_7_R4;
+            case "v1_8_R1":
+                return v1_8_R1;
+            case "v1_8_R2":
+                return v1_8_R2;
+            case "v1_8_R3":
+                return v1_8_R3;
+            case "v1_9_R1":
+                return v1_9_R1;
         }
-        else if (MineAPI.getServerVersion().equals("v1_8_R2"))
-        {
-            return v1_8_R2;
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R3"))
-        {
-            return v1_8_R3;
-        }
-        else if (MineAPI.getServerVersion().equals("v1_7_R4"))
-        {
-            return v1_7_R4;
-        }
-        else if (MineAPI.getServerVersion().contains("Glowstone"))
+        if (MineAPI.getServerVersion().contains("Glowstone"))
         {
             Class<?> glowServer = ReflectionAPI.getClass("net.glowstone.GlowServer");
             String game_version = (String) ReflectionAPI.getValue(null, ReflectionAPI.getField(glowServer, "GAME_VERSION", true));
@@ -74,10 +72,7 @@ public enum MinecraftVersion
             String game_version = (String) ReflectionAPI.getValue(null, ReflectionAPI.getField(joeUtils, "MC_VERSION_STRING", true));
             return getByVersion(game_version);
         }
-        else
-        {
-            return UNKNOW;
-        }
+        return UNKNOW;
     }
 
     public static MinecraftVersion getByVersion(String version)

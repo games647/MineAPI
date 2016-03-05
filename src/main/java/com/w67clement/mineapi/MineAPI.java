@@ -13,11 +13,8 @@ import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.ProtocolManager;
-import com.w67clement.mineapi.nms.glowstone.GlowNmsManager;
-import com.w67clement.mineapi.nms.none.NmsManager_vNone;
-import com.w67clement.mineapi.nms.v1_8_R1.NmsManager_v1_8_R1;
-import com.w67clement.mineapi.nms.v1_8_R2.NmsManager_v1_8_R2;
-import com.w67clement.mineapi.nms.v1_8_R3.NmsManager_v1_8_R3;
+import com.w67clement.mineapi.nms.reflection.CraftNmsManager;
+import com.w67clement.mineapi.nms.v1_9_R1.NmsManager_v1_9_R1;
 import com.w67clement.mineapi.system.ConfigManager;
 import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
@@ -73,7 +70,7 @@ public class MineAPI extends JavaPlugin
     private static boolean useColor = true;
     private static boolean debugConnection = false;
     public boolean useModuleNmsManager;
-    private HashMap<Player, MC_Player> playerCache = new HashMap<>();
+    private ArrayList<MC_Player> playerCache = new ArrayList<>();
 
     public static void registerPacketListener(PacketListener listener, Plugin pl)
     {
@@ -332,6 +329,7 @@ public class MineAPI extends JavaPlugin
         File folder = new File(this.getDataFolder(), "modules/");
         if (folder.exists())
         {
+            assert folder.listFiles() != null;
             for (File file : folder.listFiles())
             {
                 if (file.getName().endsWith(".jar") && file.isFile())
@@ -356,25 +354,15 @@ public class MineAPI extends JavaPlugin
 
         if (!this.useModuleNmsManager)
         {
-            // Version 1.8.R3
-            if (getServerVersion().equals("v1_8_R3"))
+            // YAY 1.9
+            if (getServerVersion().equals("v1_9_R1"))
             {
-                nms = new NmsManager_v1_8_R3();
-                // Version 1.8.R2
-            }
-            else if (getServerVersion().equals("v1_8_R2"))
-            {
-                nms = new NmsManager_v1_8_R2();
-                // Version 1.8.R1
-            }
-            else if (getServerVersion().equals("v1_8_R1"))
-            {
-                nms = new NmsManager_v1_8_R1();
-                // No valid version detected
+                nms = new NmsManager_v1_9_R1();
             }
             else if (isGlowstone())
             {
-                nms = new GlowNmsManager();
+                sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED + "You use Glowstone, isn't support by MineAPI!");
+                sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED + "Please install the MineAPI's module: 'GlowMineAPI'!");
             }
             else if (isRainbow())
             {
@@ -395,13 +383,21 @@ public class MineAPI extends JavaPlugin
                 else if (getServerVersion().contains("v1_7"))
                 {
                     sendMessageToConsole(PREFIX + ChatColor.RED + "1.7 version don't support many functions, disabling MineAPI...");
+                    sendMessageToConsole(PREFIX + ChatColor.RED + "Please install the module OldMCSupport...");
+                    Bukkit.getPluginManager().disablePlugin(this);
+                    return;
+                }
+                else if (getServerVersion().contains("v1_8"))
+                {
+                    sendMessageToConsole(PREFIX + ChatColor.RED + "1.8 version don't support many functions, disabling MineAPI...");
+                    sendMessageToConsole(PREFIX + ChatColor.RED + "Please install the module OldMCSupport...");
                     Bukkit.getPluginManager().disablePlugin(this);
                     return;
                 }
                 else
                 {
                     sendMessageToConsole(PREFIX + ChatColor.RED + "Using None NmsManager...");
-                    nms = new NmsManager_vNone();
+                    nms = new CraftNmsManager();
                 }
             }
             sendMessageToConsole(DEBUG_PREFIX + "Using " + nms.getClass().getSimpleName(), true);
@@ -489,7 +485,8 @@ public class MineAPI extends JavaPlugin
         }
 
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Plugin Messaging system...");
-        messagingManager = new MessagingManager();
+        messagingManager = new MessagingManager(this);
+        messagingManager.init();
         messagingManager.getPacketRegistry().registerPlugin("Default");
 
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");

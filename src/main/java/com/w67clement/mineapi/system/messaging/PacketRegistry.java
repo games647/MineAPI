@@ -16,6 +16,16 @@ public class PacketRegistry
     {
     }
 
+    /**
+     * Gets the unique instance of the PacketRegistry.
+     *
+     * @return The unique instance.
+     */
+    public static PacketRegistry getInstance()
+    {
+        return instance;
+    }
+
     public void registerPlugin(Plugin plugin)
     {
         this.registerPlugin(plugin.getName());
@@ -62,6 +72,26 @@ public class PacketRegistry
             throw new IllegalArgumentException("Packet id '" + packetId + "' is already assigned to packet '" + packetsOfPlugin.get(packetId).getSimpleName() + "'.");
         packetsOfPlugin.put(packetId, packet);
         this.packets.put(plugin, packetsOfPlugin);
+    }
+
+    /**
+     * Checks whether the packet with the Id was registered.
+     *
+     * @param plugin   Name of the plugin who registered the packet.
+     * @param packetId Id of the messaging packet.
+     *
+     * @return Whether the packet was registered.
+     */
+    public boolean hasPacket(String plugin, int packetId)
+    {
+        if (this.hasPlugin(plugin))
+        {
+            if (this.packets.get(plugin).containsKey(packetId))
+                return true;
+            return false;
+        }
+        else
+            return false;
     }
 
     /**
@@ -138,15 +168,5 @@ public class PacketRegistry
     public boolean hasPlugin(String plugin)
     {
         return this.packets.containsKey(plugin);
-    }
-
-    /**
-     * Gets the unique instance of the PacketRegistry.
-     *
-     * @return The unique instance.
-     */
-    public static PacketRegistry getInstance()
-    {
-        return instance;
     }
 }

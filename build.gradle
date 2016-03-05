@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
-version = '2.2.0-dev7'
+version = '2.2.1'
 archivesBaseName = 'MineAPI'
 def authors = '[w67clement]'
 
@@ -32,9 +32,6 @@ compileJava.options.encoding = 'UTF-8'
 repositories {
     maven {
         url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/"
-    }
-    maven {
-        url "http://repo.glowstone.net/content/repositories/snapshots/"
     }
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
@@ -91,11 +88,7 @@ configurations {
 }
 
 dependencies {
-    provided 'org.spigotmc.1.8.8:spigot:1.8.8-R0.1-SNAPSHOT-latest:1.8.8'
-    provided 'org.spigotmc.1.8.3:spigot:1.8.3-R0.1-SNAPSHOT-latest:1.8.3'
-    provided 'org.spigotmc.1.8:spigot:1.8-R0.1-SNAPSHOT-latest:1.8'
-    provided 'net.glowstone:glowstone:0.0.1-SNAPSHOT'
-    provided 'net.md-5:bungeecord-api:1.8-SNAPSHOT'
+    provided 'org.spigotmc.1.9:spigot:1.9-R0.1-SNAPSHOT-latest:1.9'
     compile 'com.google.code.gson:gson:2.5'
     compile 'org.ow2.asm:asm:5.0.4'
     provided 'io.netty:netty-all:4.0.33.Final'

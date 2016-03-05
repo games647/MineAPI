@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.api.wrappers;
 
+import com.google.gson.JsonObject;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.message.FancyMessage;
@@ -10,7 +11,9 @@ public class ChatComponentWrapper
 
     public static Object makeChatComponentByText(String text)
     {
-        return makeChatComponentByJson("[{text:\"" + text + "\"}]");
+        JsonObject json = new JsonObject();
+        json.addProperty("text", text);
+        return makeChatComponentByJson(json.toString());
     }
 
     public static Object makeChatComponentByJson(String json)

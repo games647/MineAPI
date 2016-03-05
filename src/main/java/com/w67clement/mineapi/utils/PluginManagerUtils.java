@@ -68,6 +68,7 @@ public class PluginManagerUtils
                         try
                         {
                             FileConfiguration config = getPluginDescription(pluginFile);
+                            assert config != null;
                             if (config.getString("name").equals(pluginName))
                             {
                                 file = pluginFile;

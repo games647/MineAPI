@@ -4,7 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.ReflectionAPI.*;
 import java.lang.reflect.Constructor;
@@ -18,8 +17,6 @@ import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import net.glowstone.entity.meta.profile.PlayerProfile;
-import net.glowstone.entity.meta.profile.PlayerProperty;
 import org.apache.commons.codec.binary.Base64;
 
 
@@ -137,40 +134,22 @@ public class MC_GameProfile
      */
     public static MC_GameProfile getByMojangObject(Object gameprofile)
     {
-        if (MineAPI.getServerType() == ServerType.GLOWSTONE)
+        if (gameprofile.getClass().getSimpleName().equals("GameProfile") && (gameprofile.getClass().getPackage().getName().equals("com.mojang.authlib") || gameprofile.getClass().getPackage().getName().equals("net.minecraft.util.com.mojang.authlib")))
         {
-            if (gameprofile.getClass().getSimpleName().equals("PlayerProfile") && gameprofile.getClass().getPackage().getName().equals("net.glowstone.entity.meta.profile"))
-            {
-                PlayerProfile glowProfile = (PlayerProfile) gameprofile;
-                MC_GameProfile profile = new MC_GameProfile(glowProfile.getUniqueId(), glowProfile.getName());
-                List<Property> properties = new ArrayList<>();
-                List<PlayerProperty> glowProperties = glowProfile.getProperties();
-                glowProperties.forEach(property -> properties.add(new Property(property.getName(), property.getValue(), property.getSignature())));
-                profile.properties = properties;
-                return profile;
-            }
+            Method methodId = getMethod(gameprofile, "getId");
+            Method methodName = getMethod(gameprofile, "getName");
+            MC_GameProfile profile = new MC_GameProfile((UUID) invokeMethod(gameprofile, methodId), (String) invokeMethod(gameprofile, methodName));
+            Object serializer = newInstance(getConstructor(NmsClass.getPlayerPropertyMapSerializerClass()));
+            JsonElement json;
+            if (ReflectionAPI.useNMU())
+                json = GsonClass.convertNMUToJsonElement(invokeMethod(serializer, getMethod(serializer, "serialize", NmsClass.getPlayerPropertyMapClass(), Type.class, GsonClass.getJsonSerializationContextClass()), getValue(gameprofile, getField(gameprofile.getClass(), "properties", true)), null, null));
             else
-                return null;
+                json = (JsonElement) invokeMethod(serializer, getMethod(serializer, "serialize", NmsClass.getPlayerPropertyMapClass(), Type.class, GsonClass.getJsonSerializationContextClass()), getValue(gameprofile, getField(gameprofile.getClass(), "properties", true)), null, null);
+            profile.properties = deserializeProperties(json);
+            return profile;
         }
         else
-        {
-            if (gameprofile.getClass().getSimpleName().equals("GameProfile") && (gameprofile.getClass().getPackage().getName().equals("com.mojang.authlib") || gameprofile.getClass().getPackage().getName().equals("net.minecraft.util.com.mojang.authlib")))
-            {
-                Method methodId = getMethod(gameprofile, "getId");
-                Method methodName = getMethod(gameprofile, "getName");
-                MC_GameProfile profile = new MC_GameProfile((UUID) invokeMethod(gameprofile, methodId), (String) invokeMethod(gameprofile, methodName));
-                Object serializer = newInstance(getConstructor(NmsClass.getPlayerPropertyMapSerializerClass()));
-                JsonElement json;
-                if (ReflectionAPI.useNMU())
-                    json = GsonClass.convertNMUToJsonElement(invokeMethod(serializer, getMethod(serializer, "serialize", NmsClass.getPlayerPropertyMapClass(), Type.class, GsonClass.getJsonSerializationContextClass()), getValue(gameprofile, getField(gameprofile.getClass(), "properties", true)), null, null));
-                else
-                    json = (JsonElement) invokeMethod(serializer, getMethod(serializer, "serialize", NmsClass.getPlayerPropertyMapClass(), Type.class, GsonClass.getJsonSerializationContextClass()), getValue(gameprofile, getField(gameprofile.getClass(), "properties", true)), null, null);
-                profile.properties = deserializeProperties(json);
-                return profile;
-            }
-            else
-                return null;
-        }
+            return null;
     }
 
     /**
@@ -248,25 +227,16 @@ public class MC_GameProfile
      */
     public Object toNms()
     {
-        if (MineAPI.getServerType() == ServerType.GLOWSTONE)
-        {
-            List<PlayerProperty> properties = new ArrayList<>();
-            this.properties.forEach(property -> properties.add(new PlayerProperty(property.name, property.value, property.signature)));
-            return new PlayerProfile(this.name, this.uuid, properties);
-        }
+        Constructor<?> constructor = getConstructor(NmsClass.getGameProfileClass(), UUID.class, String.class);
+        Object profile = newInstance(constructor, this.uuid, this.name);
+        Object serializer = newInstance(getConstructor(NmsClass.getPlayerPropertyMapSerializerClass()));
+        Object properties;
+        if (ReflectionAPI.useNMU())
+            properties = invokeMethod(serializer, getMethod(serializer, "deserialize", GsonClass.getJsonElementClass(), Type.class, GsonClass.getJsonDeserializationContextClass()), GsonClass.convertJsonElementToNMU(serializeProperties(this.properties)), null, null);
         else
-        {
-            Constructor<?> constructor = getConstructor(NmsClass.getGameProfileClass(), UUID.class, String.class);
-            Object profile = newInstance(constructor, this.uuid, this.name);
-            Object serializer = newInstance(getConstructor(NmsClass.getPlayerPropertyMapSerializerClass()));
-            Object properties;
-            if (ReflectionAPI.useNMU())
-                properties = invokeMethod(serializer, getMethod(serializer, "deserialize", GsonClass.getJsonElementClass(), Type.class, GsonClass.getJsonDeserializationContextClass()), GsonClass.convertJsonElementToNMU(serializeProperties(this.properties)), null, null);
-            else
-                properties = invokeMethod(serializer, getMethod(serializer, "deserialize", GsonClass.getJsonElementClass(), Type.class, GsonClass.getJsonDeserializationContextClass()), serializeProperties(this.properties), null, null);
-            setValue(profile, getField(profile != null ? profile.getClass() : null, "properties", true), properties);
-            return profile;
-        }
+            properties = invokeMethod(serializer, getMethod(serializer, "deserialize", GsonClass.getJsonElementClass(), Type.class, GsonClass.getJsonDeserializationContextClass()), serializeProperties(this.properties), null, null);
+        setValue(profile, getField(profile != null ? profile.getClass() : null, "properties", true), properties);
+        return profile;
     }
 
     /**

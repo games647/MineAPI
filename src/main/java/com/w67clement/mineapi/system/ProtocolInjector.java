@@ -1,7 +1,6 @@
 package com.w67clement.mineapi.system;
 
 import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.system.event.GlowHandler;
 import com.w67clement.mineapi.system.event.IHandler;
 import com.w67clement.mineapi.system.event.INCHandler;
 import org.bukkit.ChatColor;
@@ -16,20 +15,9 @@ public class ProtocolInjector
     {
         if (MineAPI.isGlowstone())
         {
-            try
-            {
-                MineAPI.sendMessageToConsole(MineAPI.PREFIX + ChatColor.GREEN + "Using GlowHandler...");
-                this.handler = new GlowHandler(mineapi);
-                return true;
-            }
-            catch (Throwable ignored)
-            {
-
-            }
         }
         else if (MineAPI.isRainbow())
         {
-
         }
         else
         {

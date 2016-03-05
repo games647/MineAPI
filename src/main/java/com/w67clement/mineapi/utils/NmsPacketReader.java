@@ -283,6 +283,7 @@ public class NmsPacketReader
             {
                 int windowId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "id", true));
                 ItemStack[] contents = ReflectionAPI.getValueWithType(packet, ReflectionAPI.getField(packet.getClass(), "items", true), ItemStack[].class);
+                assert contents != null : "Error: [{\"class\":\"NmsPacketReader\",\"method\":\"readPacket_WindowItems(Object)\",\"line\":285,\"error\":\"Error when reading contents.\"}], please contact author and report the bug.";
                 minePacket = MineAPI.getNmsManager().getWindowItemsPacket(windowId, Arrays.asList(contents));
             }
             else
@@ -290,7 +291,7 @@ public class NmsPacketReader
                 int windowId = ReflectionAPI.getIntValue(packet, ReflectionAPI.getField(packet.getClass(), "a", true));
                 Object items = ReflectionAPI.getValue(packet, ReflectionAPI.getField(packet.getClass(), "b", true));
                 int itemsLength = Array.getLength(items);
-                List<ItemStack> contents = new ArrayList<ItemStack>();
+                List<ItemStack> contents = new ArrayList<>();
                 for (int i = 0; i < itemsLength; i++)
                 {
                     Object nms_Item = Array.get(items, i);

@@ -1,6 +1,6 @@
 package com.w67clement.mineapi.api.wrappers;
 
-import com.w67clement.mineapi.MineAPI;
+import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 
 public class ChatVisibilityWrapper
@@ -8,41 +8,11 @@ public class ChatVisibilityWrapper
 
     public static Object chatVisibilityToEnumChatVisibility(MC_ChatVisibility chatVisibility)
     {
-        if (MineAPI.getServerVersion().equals("v1_8_R3"))
-        {
-            return net.minecraft.server.v1_8_R3.EntityHuman.EnumChatVisibility.valueOf(chatVisibility.toString());
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R2"))
-        {
-            return net.minecraft.server.v1_8_R2.EntityHuman.EnumChatVisibility.valueOf(chatVisibility.toString());
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R1"))
-        {
-            return net.minecraft.server.v1_8_R1.EnumChatVisibility.valueOf(chatVisibility.toString());
-        }
-        else
-        {
-            return null;
-        }
+        return ReflectionAPI.invokeMethod(null, ReflectionAPI.getMethod(ReflectionAPI.NmsClass.getEnumChatVisibilityClass(), "valueOf", false, String.class), chatVisibility.toString());
     }
 
     public static MC_ChatVisibility makeMCChatVisibilityByEnumChatVisibility(Object chatVisibility)
     {
-        if (MineAPI.getServerVersion().equals("v1_8_R3"))
-        {
-            return MC_ChatVisibility.valueOf(chatVisibility.toString());
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R2"))
-        {
-            return MC_ChatVisibility.valueOf(chatVisibility.toString());
-        }
-        else if (MineAPI.getServerVersion().equals("v1_8_R1"))
-        {
-            return MC_ChatVisibility.valueOf(chatVisibility.toString());
-        }
-        else
-        {
-            return null;
-        }
+        return MC_ChatVisibility.valueOf(chatVisibility.toString());
     }
 }
