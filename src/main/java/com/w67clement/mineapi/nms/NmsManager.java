@@ -37,17 +37,13 @@ import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.MC_World;
 import com.w67clement.mineapi.world.PacketExplosion;
 import com.w67clement.mineapi.world.PacketWorldBorder;
+import java.util.HashMap;
 import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -58,9 +54,13 @@ import org.bukkit.inventory.ItemStack;
  */
 public abstract class NmsManager
 {
+    protected boolean isInit = false;
+    protected HashMap<Class<? extends NmsPacket>, IndividualPacketDecoder<? extends NmsPacket>> decoders = new HashMap<>();
+
+    public abstract void init();
 
     /**
-     * Get the MineAPI's title object.
+     * Gets the MineAPI's title object.
      *
      * @param title    The title will be displayed.
      * @param subtitle The subtitle.
@@ -108,7 +108,8 @@ public abstract class NmsManager
      * @version MineAPI 2.2.0 (Event system v2)
      * @see PacketChat
      */
-    public PacketChat getPacketChat(String content) {
+    public PacketChat getPacketChat(String content)
+    {
         return new CraftPacketChat(content);
     }
 
@@ -121,7 +122,8 @@ public abstract class NmsManager
      * @version MineAPI 2.2.0 (Event system v2)
      * @see PacketChat
      */
-    public PacketChat getPacketChat(String content, byte data) {
+    public PacketChat getPacketChat(String content, byte data)
+    {
         return new CraftPacketChat(content, data);
     }
 
@@ -248,4 +250,15 @@ public abstract class NmsManager
     public abstract ServerPingWrapper getServerPingWrapper();
 
     public abstract ServerPingWrapper getServerPingWrapper(Object serverPing);
+
+    /* DECODERS */
+
+    public IndividualPacketDecoder<? extends NmsPacket> getPacketDecoder(Class<? extends NmsPacket> packet)
+    {
+        return this.decoders.get(packet);
+    }
+
+    public boolean hasPacketDecoder(Class<? extends NmsPacket> packet) {
+        return this.decoders.containsKey(packet);
+    }
 }

@@ -147,7 +147,7 @@ public enum PacketList
     private String packetAliases;
     private PacketType packetType;
     private MinecraftVersion packetVersion;
-    private Class<? extends NmsPacket> mineapi_packet;
+    private Class<? extends NmsPacket> mineapiPacket;
 
     PacketList(String packetName, String packetAliases, PacketType packetType)
     {
@@ -163,7 +163,7 @@ public enum PacketList
         this.packetAliases = packetAliases;
         this.packetType = packetType;
         this.packetVersion = MinecraftVersion.UNKNOW;
-        this.mineapi_packet = mineapi_packet;
+        this.mineapiPacket = mineapi_packet;
     }
 
     PacketList(String packetName, String packetAliases, PacketType packetType, MinecraftVersion packetVersion)
@@ -180,7 +180,7 @@ public enum PacketList
         this.packetAliases = packetAliases;
         this.packetType = packetType;
         this.packetVersion = packetVersion;
-        this.mineapi_packet = mineapi_packet;
+        this.mineapiPacket = mineapi_packet;
     }
 
     public static PacketList getPacketByName(String name)
@@ -229,11 +229,11 @@ public enum PacketList
 
     public Class<? extends NmsPacket> getMineAPIPacket()
     {
-        return this.mineapi_packet;
+        return this.mineapiPacket;
     }
 
     public boolean hasMineAPIPacket()
     {
-        return this.mineapi_packet != null;
+        return this.mineapiPacket != null;
     }
 }

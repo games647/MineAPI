@@ -3,11 +3,7 @@ package com.w67clement.mineapi.api;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.w67clement.mineapi.MineAPI;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -238,9 +234,17 @@ public class ReflectionAPI
         for (Field fields : clazz.getDeclaredFields())
         {
             if (fields.getType().equals(type))
-            {
                 return ReflectionAPI.getField(clazz, fields.getName(), true);
-            }
+        }
+        return null;
+    }
+
+    public static Field getFirstFieldOfType(Class<?> clazz, Class<?> type, boolean declared)
+    {
+        for (Field fields : clazz.getDeclaredFields())
+        {
+            if (fields.getType().equals(type))
+                return ReflectionAPI.getField(clazz, fields.getName(), declared);
         }
         return null;
     }
@@ -250,9 +254,7 @@ public class ReflectionAPI
         for (Method methods : clazz.getDeclaredMethods())
         {
             if (methods.getReturnType().equals(type) && (methods.getParameterTypes().length == 0))
-            {
                 return ReflectionAPI.getMethod(clazz, methods.getName());
-            }
         }
         return null;
     }
@@ -263,9 +265,18 @@ public class ReflectionAPI
         for (Field fields : clazz.getDeclaredFields())
         {
             if (fields.getType().equals(type))
-            {
                 field = ReflectionAPI.getField(clazz, fields.getName(), true);
-            }
+        }
+        return field;
+    }
+
+    public static Field getLastFieldOfType(Class<?> clazz, Class<?> type, boolean declared)
+    {
+        Field field = null;
+        for (Field fields : clazz.getDeclaredFields())
+        {
+            if (fields.getType().equals(type))
+                field = ReflectionAPI.getField(clazz, fields.getName(), declared);
         }
         return field;
     }

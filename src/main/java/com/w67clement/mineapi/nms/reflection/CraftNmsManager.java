@@ -14,10 +14,17 @@ import com.w67clement.mineapi.entity.player.ClientCommand.ClientCommandType;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.entity.villager.MC_Villager;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
+import com.w67clement.mineapi.inventory.packets.WindowOpen;
 import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
 import com.w67clement.mineapi.nms.NmsManager;
+import com.w67clement.mineapi.nms.reflection.packets.handshake.CraftPacketHandshakeDecoder;
+import com.w67clement.mineapi.nms.reflection.packets.play.in.decoders.CraftClientCommandDecoder;
+import com.w67clement.mineapi.nms.reflection.packets.play.in.decoders.CraftPacketPlayInChatDecoder;
 import com.w67clement.mineapi.nms.reflection.packets.play.out.CraftPacketUpdateSign;
+import com.w67clement.mineapi.nms.reflection.packets.play.out.decoders.*;
+import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutPongDecoder;
+import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutServerInfoDecoder;
 import com.w67clement.mineapi.nms.reflection.play_in.CraftClientCommand;
 import com.w67clement.mineapi.nms.reflection.play_out.block.CraftPacketBlockAction;
 import com.w67clement.mineapi.nms.reflection.play_out.block.CraftPacketBlockBreakAnimation;
@@ -29,7 +36,11 @@ import com.w67clement.mineapi.nms.reflection.play_out.tab.CraftTabTitle;
 import com.w67clement.mineapi.nms.reflection.play_out.world.CraftPacketExplosion;
 import com.w67clement.mineapi.nms.reflection.play_out.world.CraftPacketWorldBorder;
 import com.w67clement.mineapi.nms.reflection.wrappers.CraftServerPingWrapper;
+import com.w67clement.mineapi.packets.handshake.PacketHandshake;
+import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
 import com.w67clement.mineapi.packets.play.out.PacketUpdateSign;
+import com.w67clement.mineapi.packets.status.PacketStatusOutPong;
+import com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo;
 import com.w67clement.mineapi.tab.PacketPlayerInfo;
 import com.w67clement.mineapi.tab.PacketPlayerInfo.PacketPlayerInfoData;
 import com.w67clement.mineapi.tab.TabTitle;
@@ -42,17 +53,38 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.ArmorStand;
-import org.bukkit.entity.Enderman;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Pig;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Villager;
+import org.bukkit.entity.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftNmsManager extends NmsManager
 {
+
+    public void init()
+    {
+        if (!this.isInit)
+        {
+            /* DECODERS */
+            // Handshake
+            this.decoders.put(PacketHandshake.class, new CraftPacketHandshakeDecoder());
+            // Status
+            this.decoders.put(PacketStatusOutServerInfo.class, new CraftPacketStatusOutServerInfoDecoder());
+            this.decoders.put(PacketStatusOutPong.class, new CraftPacketStatusOutPongDecoder());
+            // Play (IN)
+            this.decoders.put(PacketPlayInChat.class, new CraftPacketPlayInChatDecoder());
+            this.decoders.put(ClientCommand.class, new CraftClientCommandDecoder());
+            // Play (OUT)
+            this.decoders.put(PacketChat.class, new CraftPacketChatDecoder());
+            this.decoders.put(PacketExplosion.class, new CraftPacketExplosionDecoder());
+            this.decoders.put(WindowOpen.class, new CraftWindowOpenDecoder());
+            this.decoders.put(TabTitle.class, new CraftTabTitleDecoder());
+            this.decoders.put(PacketUpdateSign.class, new CraftPacketUpdateSignDecoder());
+            this.decoders.put(WindowItems.class, new CraftWindowItemsDecoder());
+            this.isInit = true;
+        }
+        else
+            throw new RuntimeException("NmsManager is already initialized");
+    }
 
     @Override
     public Title getTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut)
@@ -97,7 +129,8 @@ public class CraftNmsManager extends NmsManager
     }
 
     @Override
-    public WindowItems getWindowItemsPacket(int windowId, Inventory inventory) {
+    public WindowItems getWindowItemsPacket(int windowId, Inventory inventory)
+    {
         return null;
     }
 

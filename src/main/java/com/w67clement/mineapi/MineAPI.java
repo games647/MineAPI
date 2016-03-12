@@ -401,6 +401,7 @@ public class MineAPI extends JavaPlugin
                 }
             }
             sendMessageToConsole(DEBUG_PREFIX + "Using " + nms.getClass().getSimpleName(), true);
+            nms.init();
 
             // Simple injector
             final ProtocolInjector injector = new ProtocolInjector();
