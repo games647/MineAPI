@@ -3,6 +3,7 @@ package com.w67clement.mineapi;
 import com.w67clement.mineapi.system.modules.Module;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -36,11 +37,7 @@ public class MineAPICommand implements TabExecutor
 			{
 				if (args[0].equalsIgnoreCase("module"))
 				{
-					for (Module module : MineAPI.getModuleManager()
-							.getModules())
-					{
-						suggests.add(module.getName());
-					}
+					suggests.addAll(MineAPI.getModuleManager().getModules().stream().map(Module::getName).collect(Collectors.toList()));
 				}
 			}
 		}
@@ -223,7 +220,7 @@ public class MineAPICommand implements TabExecutor
 	private void onExecuteModulesCommand(CommandSender sender)
 	{
 		String modules = "";
-		Module module = null;
+		Module module;
 		List<Module> moduleList = MineAPI.getModuleManager().getModules();
 		for (int i = 0; i < moduleList.size(); i++)
 		{

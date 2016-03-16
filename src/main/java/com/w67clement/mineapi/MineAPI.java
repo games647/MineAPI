@@ -155,6 +155,7 @@ public class MineAPI extends JavaPlugin
      */
     public static void sendMessageToConsole(String msg, boolean debug)
     {
+        msg = ChatColor.translateAlternateColorCodes('&', msg);
         if (debug)
         {
             if (!MineAPI.debug)

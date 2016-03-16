@@ -11,7 +11,7 @@ import com.w67clement.mineapi.packets.ProtocolState;
  *
  * @author w67clement
  */
-public abstract class PacketHandshake implements NmsPacket
+public abstract class PacketHandshake<T> extends NmsPacket<T>
 {
     protected final int protocol;
     protected final String hostNameOrIP;
@@ -20,6 +20,7 @@ public abstract class PacketHandshake implements NmsPacket
 
     public PacketHandshake(final int protocol, final String hostNameOrIP, final int port, final ProtocolState nextProtocolType)
     {
+        super(null);
         this.protocol = protocol;
         this.hostNameOrIP = hostNameOrIP;
         this.port = port;
@@ -31,7 +32,7 @@ public abstract class PacketHandshake implements NmsPacket
      *
      * @return Protocol's version.
      */
-    public final int getProtocol()
+    public int getProtocol()
     {
         return this.protocol;
     }
@@ -41,7 +42,7 @@ public abstract class PacketHandshake implements NmsPacket
      *
      * @return Host name or IP address.
      */
-    public final String getHostNameOrIP()
+    public String getHostNameOrIP()
     {
         return this.hostNameOrIP;
     }
@@ -51,7 +52,7 @@ public abstract class PacketHandshake implements NmsPacket
      *
      * @return Port.
      */
-    public final int getPort()
+    public int getPort()
     {
         return this.port;
     }
@@ -62,7 +63,7 @@ public abstract class PacketHandshake implements NmsPacket
      *
      * @return Next protocol type.
      */
-    public final ProtocolState getNextProtocolType()
+    public ProtocolState getNextProtocolType()
     {
         return this.nextProtocolType;
     }

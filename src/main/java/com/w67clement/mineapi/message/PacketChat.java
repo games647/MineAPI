@@ -10,21 +10,15 @@ import com.w67clement.mineapi.nms.PacketSender;
  * @author w67clement
  * @version MineAPI v2.2.0 (Event system v2)
  */
-public abstract class PacketChat extends PacketSender
+public abstract class PacketChat<T> extends PacketSender<T>
 {
     protected static final JsonParser parser = new JsonParser();
     protected String json;
     protected byte data;
 
-    public PacketChat(String json)
+    public PacketChat(T packet)
     {
-        this(json, (byte) 1);
-    }
-
-    public PacketChat(String json, byte data)
-    {
-        this.setContent(json);
-        this.setData(data);
+        super(packet);
     }
 
     /**
@@ -32,10 +26,7 @@ public abstract class PacketChat extends PacketSender
      *
      * @return Text in Json.
      */
-    public String getContent()
-    {
-        return this.json;
-    }
+    public abstract String getContent();
 
     /**
      * Gets the data of the message, default is 1. <br>
@@ -47,33 +38,7 @@ public abstract class PacketChat extends PacketSender
      *
      * @return Data
      */
-    public byte getData()
-    {
-        return this.data;
-    }
-
-    /**
-     * Sets the content of the message.
-     *
-     * @param json Content as Json.
-     *
-     * @return Json is valid or not.
-     */
-    public boolean setContent(String json)
-    {
-        try
-        {
-            parser.parse(json);
-        }
-        catch (Exception e)
-        {
-            if (this.json == null || this.json.isEmpty())
-                this.json = "{\"text\":\"\"}";
-            return false;
-        }
-        this.json = json;
-        return true;
-    }
+    public abstract byte getData();
 
     /**
      * Sets the data of the message, default is 1. <br>
@@ -90,16 +55,16 @@ public abstract class PacketChat extends PacketSender
      *
      * @return Instance of working object.
      */
-    public PacketChat setData(byte data)
-    {
-        if (data < 1)
-            this.data = 1;
-        else if (data > 2)
-            this.data = 2;
-        else
-            this.data = data;
-        return this;
-    }
+    public abstract PacketChat setData(byte data);
+
+    /**
+     * Sets the content of the message.
+     *
+     * @param json Content as Json.
+     *
+     * @return Json is valid or not.
+     */
+    public abstract boolean setContent(String json);
 
     @Override
     public PacketType getPacketType()

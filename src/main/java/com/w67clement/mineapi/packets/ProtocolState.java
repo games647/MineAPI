@@ -17,9 +17,17 @@ public enum ProtocolState
 
     private final int protocolId;
 
-    private ProtocolState(int protocolId)
+    ProtocolState(int protocolId)
     {
         this.protocolId = protocolId;
+    }
+
+    public static ProtocolState getById(int protocolId)
+    {
+        for (ProtocolState state : values())
+            if (state.protocolId == protocolId)
+                return state;
+        return null;
     }
 
     /**
@@ -32,12 +40,11 @@ public enum ProtocolState
         return this.protocolId;
     }
 
-    public static ProtocolState getById(int protocolId)
-    {
-        for (ProtocolState state : values())
-            if (state.protocolId == protocolId)
-                return state;
-        return null;
+    public enum PacketDirection {
+
+        SERVER,
+        CLIENT
+
     }
 
 }

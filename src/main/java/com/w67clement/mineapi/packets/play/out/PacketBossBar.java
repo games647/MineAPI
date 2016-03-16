@@ -14,15 +14,20 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 
 /**
- * Created by w67clement on 17/02/2016. <br><br/>
+ * Created by w67clement on 17/02/2016.
  * <p>
  * Class of project: MineAPI
  */
-public abstract class PacketBossBar extends PacketSender
+public abstract class PacketBossBar<T> extends PacketSender<T>
 {
     protected UUID uuid;
     protected BossBarAction action;
     protected BossBarData data;
+
+    public PacketBossBar(T packet)
+    {
+        super(packet);
+    }
 
     /**
      * Gets the Unique ID for this bar.

@@ -46,6 +46,14 @@ public enum BlockAction
         this.type = type;
     }
 
+    public static BlockAction getByActionId(int action) {
+        for (BlockAction blockAction : values()) {
+            if (blockAction.action == action)
+                return blockAction;
+        }
+        return null;
+    }
+
     public int getAction()
     {
         return this.action;

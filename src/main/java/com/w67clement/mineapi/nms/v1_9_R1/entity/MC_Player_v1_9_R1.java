@@ -9,25 +9,12 @@ import com.w67clement.mineapi.entity.player.EnumHand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.w67clement.mineapi.message.FancyMessage;
-import com.w67clement.mineapi.nms.reflection.play_in.CraftClientCommand;
+import com.w67clement.mineapi.nms.reflection.packets.play.in.CraftClientCommand;
 import com.w67clement.mineapi.system.MC_GameProfile;
-import net.minecraft.server.v1_9_R1.EntityPlayer;
-import net.minecraft.server.v1_9_R1.Packet;
-import net.minecraft.server.v1_9_R1.PacketPlayOutCamera;
-import net.minecraft.server.v1_9_R1.TileEntityBeacon;
-import net.minecraft.server.v1_9_R1.TileEntityBrewingStand;
-import net.minecraft.server.v1_9_R1.TileEntityDispenser;
-import net.minecraft.server.v1_9_R1.TileEntityFurnace;
-import net.minecraft.server.v1_9_R1.TileEntityHopper;
-import net.minecraft.server.v1_9_R1.TileEntitySign;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
-import org.bukkit.block.Beacon;
-import org.bukkit.block.BrewingStand;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
-import org.bukkit.block.Hopper;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftEntity;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
@@ -37,7 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Created by w67clement on 01/03/2016. <br><br/>
+ * Created by w67clement on 01/03/2016.
  * <p>
  * Class of project: MineAPI
  */

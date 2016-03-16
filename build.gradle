@@ -90,7 +90,7 @@ configurations {
 dependencies {
     provided 'org.spigotmc.1.9:spigot:1.9-R0.1-SNAPSHOT-latest:1.9'
     compile 'com.google.code.gson:gson:2.5'
-    compile 'org.ow2.asm:asm:5.0.4'
+    compile 'org.ow2.asm:asm:5.+'
     provided 'io.netty:netty-all:4.0.33.Final'
 }
 

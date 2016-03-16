@@ -18,6 +18,7 @@ public abstract class PacketWorldBorder extends WorldPacket
 	protected boolean radiusTimeChanged;
 
 	public PacketWorldBorder(World world) {
+		super(null);
 		this.world = world;
 		if (MineAPI.isGlowstone())
 		{
@@ -41,20 +42,14 @@ public abstract class PacketWorldBorder extends WorldPacket
 		return PacketType.PACKETPLAYOUT;
 	}
 
-	public PacketWorldBorder setCenterX(double x)
-	{
-		this.center.setX(x);
-		return this;
-	}
-
 	public double getCenterX()
 	{
 		return this.center.getX();
 	}
 
-	public PacketWorldBorder setCenterZ(double z)
+	public PacketWorldBorder setCenterX(double x)
 	{
-		this.center.setZ(z);
+		this.center.setX(x);
 		return this;
 	}
 
@@ -63,9 +58,9 @@ public abstract class PacketWorldBorder extends WorldPacket
 		return this.center.getZ();
 	}
 
-	public PacketWorldBorder setCenter(Location loc)
+	public PacketWorldBorder setCenterZ(double z)
 	{
-		this.center = loc;
+		this.center.setZ(z);
 		return this;
 	}
 
@@ -74,9 +69,20 @@ public abstract class PacketWorldBorder extends WorldPacket
 		return this.center;
 	}
 
+	public PacketWorldBorder setCenter(Location loc)
+	{
+		this.center = loc;
+		return this;
+	}
+
 	public WorldBorder getWorldBorder()
 	{
 		return this.getWorld().getWorldBorder();
+	}
+
+	public int getWarningDistance()
+	{
+		return this.warningDistance;
 	}
 
 	public PacketWorldBorder setWarningDistance(int blocks)
@@ -85,9 +91,9 @@ public abstract class PacketWorldBorder extends WorldPacket
 		return this;
 	}
 
-	public int getWarningDistance()
+	public int getWarningTime()
 	{
-		return this.warningDistance;
+		return this.warningTime;
 	}
 
 	public PacketWorldBorder setWarningTime(int time)
@@ -96,20 +102,15 @@ public abstract class PacketWorldBorder extends WorldPacket
 		return this;
 	}
 
-	public int getWarningTime()
+	public double getNewRadius()
 	{
-		return this.warningTime;
+		return this.radius;
 	}
 
 	public PacketWorldBorder setNewRadius(double radius)
 	{
 		this.radius = radius;
 		return this;
-	}
-
-	public double getNewRadius()
-	{
-		return this.radius;
 	}
 
 	public PacketWorldBorder setNewRadius(double radius, long time)

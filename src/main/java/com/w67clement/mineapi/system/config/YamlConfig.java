@@ -3,7 +3,6 @@ package com.w67clement.mineapi.system.config;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.w67clement.mineapi.api.ReflectionAPI;
 import java.io.File;
 import java.io.IOException;
 import org.bukkit.Bukkit;
@@ -12,6 +11,9 @@ import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
+
+
+import static com.w67clement.mineapi.api.ReflectionAPI.*;
 
 public abstract class YamlConfig extends Config
 {
@@ -46,7 +48,7 @@ public abstract class YamlConfig extends Config
     }
 
     /**
-     * Gets the requested Location by path. <br></br>
+     * Gets the requested Location by path. <br>
      * If the Location does not exist but a default value has been specified, this will return the default value.
      * If the Location does not exist and no default value was specified, this will return null.
      *
@@ -56,7 +58,7 @@ public abstract class YamlConfig extends Config
      */
     public Location getLocation(String path)
     {
-        Object def = ReflectionAPI.invokeMethod(this.configuration, ReflectionAPI.getMethod(this.configuration, "getDefault", true, String.class), path);
+        Object def = invokeMethod(this.configuration, getMethod(this.configuration, "getDefault", true, String.class), path);
         return getLocation(path, (def instanceof Location) ? (Location) def : null);
     }
 

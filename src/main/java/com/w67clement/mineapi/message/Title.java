@@ -33,6 +33,7 @@ public abstract class Title extends PacketSender
 
     public Title(int fadeIn, int stay, int fadeOut, String title, String subtitle)
     {
+        super(null);
         this.fadeIn = fadeIn;
         this.stay = stay;
         this.fadeOut = fadeOut;
@@ -64,6 +65,19 @@ public abstract class Title extends PacketSender
     }
 
     /**
+     * Redefine the FadeIn time of the title.
+     *
+     * @param fadeIn FadeIn time in ticks.
+     *
+     * @return Instance.
+     */
+    public Title setFadeIn(int fadeIn)
+    {
+        this.fadeIn = fadeIn;
+        return this;
+    }
+
+    /**
      * That method is equivalent to the method getFadeOut, but this one gives
      * you a value in seconds.
      *
@@ -84,6 +98,19 @@ public abstract class Title extends PacketSender
     public int getFadeOut()
     {
         return this.fadeOut;
+    }
+
+    /**
+     * Redefine the FadeOut time of the title.
+     *
+     * @param fadeOut FadeOut time in ticks.
+     *
+     * @return Instance.
+     */
+    public Title setFadeOut(int fadeOut)
+    {
+        this.fadeOut = fadeOut;
+        return this;
     }
 
     /**
@@ -110,19 +137,6 @@ public abstract class Title extends PacketSender
     }
 
     /**
-     * Redefine the FadeIn time of the title.
-     *
-     * @param fadeIn FadeIn time in ticks.
-     *
-     * @return Instance.
-     */
-    public Title setFadeIn(int fadeIn)
-    {
-        this.fadeIn = fadeIn;
-        return this;
-    }
-
-    /**
      * Redefine the stay time of the title.
      *
      * @param stay Stay time in ticks.
@@ -132,19 +146,6 @@ public abstract class Title extends PacketSender
     public Title setStay(int stay)
     {
         this.stay = stay;
-        return this;
-    }
-
-    /**
-     * Redefine the FadeOut time of the title.
-     *
-     * @param fadeOut FadeOut time in ticks.
-     *
-     * @return Instance.
-     */
-    public Title setFadeOut(int fadeOut)
-    {
-        this.fadeOut = fadeOut;
         return this;
     }
 
@@ -159,16 +160,6 @@ public abstract class Title extends PacketSender
     }
 
     /**
-     * Gets the subtitle text in the title.
-     *
-     * @return Subtitle text in a String value.
-     */
-    public String getSubTitle()
-    {
-        return this.subtitle;
-    }
-
-    /**
      * Redefine the title text of the Title.
      *
      * @param title An sample title.
@@ -179,6 +170,16 @@ public abstract class Title extends PacketSender
     {
         this.title = title;
         return this;
+    }
+
+    /**
+     * Gets the subtitle text in the title.
+     *
+     * @return Subtitle text in a String value.
+     */
+    public String getSubTitle()
+    {
+        return this.subtitle;
     }
 
     /**

@@ -12,16 +12,15 @@ import org.bukkit.GameMode;
  * @author w67clement
  * @version 0.1
  */
-public abstract class PacketPlayerInfo extends PacketSender
+public abstract class PacketPlayerInfo<T> extends PacketSender<T>
 {
 
     protected MC_EnumPlayerInfoAction action;
     protected List<PacketPlayerInfoData> data;
 
-    public PacketPlayerInfo(MC_EnumPlayerInfoAction action, List<PacketPlayerInfoData> data)
+    public PacketPlayerInfo(T packet)
     {
-        this.action = action;
-        this.data = data;
+        super(packet);
     }
 
     /**
@@ -29,40 +28,28 @@ public abstract class PacketPlayerInfo extends PacketSender
      *
      * @return The action
      */
-    public MC_EnumPlayerInfoAction getAction()
-    {
-        return this.action;
-    }
+    public abstract MC_EnumPlayerInfoAction getAction();
 
     /**
      * Sets the action of the packet.
      *
      * @param action The action to set.
      */
-    public void setAction(MC_EnumPlayerInfoAction action)
-    {
-        this.action = action;
-    }
+    public abstract void setAction(MC_EnumPlayerInfoAction action);
 
     /**
      * Gets the player's data of the packet.
      *
      * @return The data in a list.
      */
-    public List<PacketPlayerInfoData> getData()
-    {
-        return this.data;
-    }
+    public abstract List<PacketPlayerInfoData> getData();
 
     /**
      * Sets the player's data list of the packet.
      *
      * @param data The data to set.
      */
-    public void setData(List<PacketPlayerInfoData> data)
-    {
-        this.data = data;
-    }
+    public abstract void setData(List<PacketPlayerInfoData> data);
 
     @Override
     public PacketType getPacketType()

@@ -1,17 +1,24 @@
 package com.w67clement.mineapi.packets;
 
+import com.w67clement.mineapi.packets.ProtocolState.PacketDirection;
 import com.w67clement.mineapi.system.messaging.PacketBuffer;
 
 /**
  * Created by w67clement on 24/01/2016.
+ * <p>
+ * Class of project: MineAPI
  */
-public abstract class MinePacket
+public interface MinePacket
 {
 
-    public abstract void write(PacketBuffer buffer);
+    void write(PacketBuffer buffer);
 
-    public abstract void read(PacketBuffer buffer);
+    void read(PacketBuffer buffer);
 
-    public abstract void handle();
+    void handle();
+
+    ProtocolState getProtocolStateUsed();
+
+    PacketDirection getPacketDirectionUsed();
 
 }

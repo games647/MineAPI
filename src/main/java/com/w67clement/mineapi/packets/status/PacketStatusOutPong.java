@@ -11,13 +11,14 @@ import com.w67clement.mineapi.nms.NmsPacket;
  *
  * @author w67clement
  */
-public abstract class PacketStatusOutPong implements NmsPacket
+public abstract class PacketStatusOutPong<T> extends NmsPacket<T>
 {
 
     protected final long pong;
 
     public PacketStatusOutPong(final long pong)
     {
+        super(null);
         this.pong = pong;
     }
 

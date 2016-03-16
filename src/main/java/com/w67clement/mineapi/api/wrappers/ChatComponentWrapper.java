@@ -2,12 +2,19 @@ package com.w67clement.mineapi.api.wrappers;
 
 import com.google.gson.JsonObject;
 import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
+import com.w67clement.mineapi.api.ReflectionAPI.*;
 import com.w67clement.mineapi.message.FancyMessage;
 import java.lang.reflect.Method;
 
+
+import static com.w67clement.mineapi.api.ReflectionAPI.*;
+
 public class ChatComponentWrapper
 {
+    private static final Class<?> chatSerializerClass = NmsClass.getChatSerializerClass();
+    private static final Method toChatComponentMethod = getMethod(chatSerializerClass, "a", String.class);
+    private static final Method toJsonMethod = getMethod(chatSerializerClass, "a", NmsClass.getIChatBaseComponentClass());
+    ;
 
     public static Object makeChatComponentByText(String text)
     {
@@ -22,8 +29,7 @@ public class ChatComponentWrapper
         {
             return json;
         }
-        Method a = ReflectionAPI.getMethod(ReflectionAPI.NmsClass.getChatSerializerClass(), "a", String.class);
-        return ReflectionAPI.invokeMethod(null, a, json);
+        return invokeMethod(null, toChatComponentMethod, json);
     }
 
     public static Object makeChatComponentByFancyMessage(FancyMessage msg)
@@ -37,13 +43,12 @@ public class ChatComponentWrapper
         {
             if (chatComponent.getClass().getSimpleName().equals("TextMessage"))
             {
-                Method encode = ReflectionAPI.getMethod(chatComponent, "encode");
-                return ReflectionAPI.invokeMethodWithType(chatComponent, encode, String.class);
+                Method encode = getMethod(chatComponent, "encode");
+                return invokeMethodWithType(chatComponent, encode, String.class);
             }
             else
                 return (String) chatComponent;
         }
-        Method a = ReflectionAPI.getMethod(ReflectionAPI.NmsClass.getChatSerializerClass(), "a", ReflectionAPI.NmsClass.getIChatBaseComponentClass());
-        return ReflectionAPI.invokeMethodWithType(null, a, String.class, chatComponent);
+        return invokeMethodWithType(null, toJsonMethod, String.class, chatComponent);
     }
 }

@@ -1,41 +1,16 @@
 package com.w67clement.mineapi.block;
 
-import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.entity.player.MC_Player;
+import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
-public abstract class PacketBlockBreakAnimation extends PacketSender
+public abstract class PacketBlockBreakAnimation<T> extends PacketSender<T>
 {
-
-    protected int entityId;
-    protected Location blockLocation;
-    protected byte destroyStage;
-
-    public PacketBlockBreakAnimation(MC_Player player, Location blockLocation, byte destroyStage)
+    public PacketBlockBreakAnimation(T packet)
     {
-        this.entityId = player.getEntityId();
-        this.blockLocation = blockLocation;
-        this.destroyStage = destroyStage;
-    }
-
-    public PacketBlockBreakAnimation(MC_Player player, int x, int y, int z, byte destroyStage)
-    {
-        this(player, new Location(Bukkit.getWorlds().get(0), x, y, z), destroyStage);
-    }
-
-    public PacketBlockBreakAnimation(Player player, Location blockLocation, byte destroyStage)
-    {
-        this.entityId = player.getEntityId();
-        this.blockLocation = blockLocation;
-        this.destroyStage = destroyStage;
-    }
-
-    public PacketBlockBreakAnimation(Player player, int x, int y, int z, byte destroyStage)
-    {
-        this(player, new Location(Bukkit.getWorlds().get(0), x, y, z), destroyStage);
+        super(packet);
     }
 
     /**
@@ -43,10 +18,7 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
      *
      * @return An bukkit's location object
      */
-    public Location getBlockLocation()
-    {
-        return this.blockLocation;
-    }
+    public abstract Location getBlockLocation();
 
     /**
      * Set the block location
@@ -55,21 +27,13 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
      *
      * @return Instance.
      */
-    public PacketBlockBreakAnimation setBlockLocation(Location loc)
-    {
-        this.blockLocation = loc;
-        return this;
-    }
+    public abstract PacketBlockBreakAnimation setBlockLocation(Location loc);
 
-    public int getEntityId()
-    {
-        return this.entityId;
-    }
+    public abstract int getEntityId();
 
     public PacketBlockBreakAnimation setEntityId(Player player)
     {
-        Object nmsPlayer = ReflectionAPI.invokeMethod(player, ReflectionAPI.getMethod(player, "getHandle"));
-        return this.setEntityId((int) ReflectionAPI.invokeMethod(nmsPlayer, ReflectionAPI.getMethod(nmsPlayer, "getId")));
+        return this.setEntityId(player.getEntityId());
     }
 
     public PacketBlockBreakAnimation setEntityId(MC_Player player)
@@ -77,12 +41,7 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
         return this.setEntityId(player.getEntityId());
     }
 
-    @Deprecated
-    public PacketBlockBreakAnimation setEntityId(int id)
-    {
-        this.entityId = id;
-        return this;
-    }
+    public abstract PacketBlockBreakAnimation setEntityId(int id);
 
     /**
      * Set the block location
@@ -95,8 +54,7 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
      */
     public PacketBlockBreakAnimation setBlockLocation(int x, int y, int z)
     {
-        this.blockLocation = new Location(null, x, y, z);
-        return this;
+        return this.setBlockLocation(new Location(null, x, y, z));
     }
 
     /**
@@ -104,10 +62,7 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
      *
      * @return Destroy stage.
      */
-    public byte getDestroyStage()
-    {
-        return this.destroyStage;
-    }
+    public abstract byte getDestroyStage();
 
     /**
      * Set the destroy stage byte
@@ -116,9 +71,12 @@ public abstract class PacketBlockBreakAnimation extends PacketSender
      *
      * @return Instance.
      */
-    public PacketBlockBreakAnimation setDestroyStage(byte destroyStage)
+    public abstract PacketBlockBreakAnimation setDestroyStage(byte destroyStage);
+
+    @Override
+    public PacketType getPacketType()
     {
-        this.destroyStage = destroyStage;
-        return this;
+        return PacketType.PACKETPLAYOUT;
     }
+
 }

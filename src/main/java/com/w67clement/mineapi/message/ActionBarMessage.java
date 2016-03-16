@@ -1,8 +1,7 @@
 package com.w67clement.mineapi.message;
 
 import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.enums.PacketType;
-import com.w67clement.mineapi.nms.PacketSender;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
@@ -10,7 +9,7 @@ import org.bukkit.entity.Player;
  *
  * @author w67clement
  */
-public class ActionBarMessage extends PacketSender
+public class ActionBarMessage
 {
 
     protected String message;
@@ -46,22 +45,19 @@ public class ActionBarMessage extends PacketSender
         return this;
     }
 
-    @Override
-    public PacketType getPacketType()
-    {
-        return PacketType.PACKETPLAYOUT;
-    }
-
-    @Override
     public void send(Player player)
     {
-        MineAPI.getNmsManager().getPacketChat("{text:\"" + this.message + "\"}", (byte) 2).send(player);
+        MineAPI.getNmsManager().getPacketChat("[{\"text\":\"" + this.message + "\"}]", (byte) 2).send(player);
     }
 
-    @Override
+    public void sendAll()
+    {
+        Bukkit.getOnlinePlayers().forEach(this::send);
+    }
+
     public Object constructPacket()
     {
-        return MineAPI.getNmsManager().getPacketChat("{text:\"" + this.message + "\"}", (byte) 2).constructPacket();
+        return MineAPI.getNmsManager().getPacketChat("[{\"text\":\"" + this.message + "\"}]", (byte) 2).constructPacket();
     }
 
 }

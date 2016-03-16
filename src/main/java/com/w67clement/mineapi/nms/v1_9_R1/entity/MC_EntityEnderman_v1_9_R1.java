@@ -9,7 +9,7 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.inventory.ItemStack;
 
 /**
- * Created by w67clement on 01/03/2016. <br><br/>
+ * Created by w67clement on 01/03/2016.
  * <p>
  * Class of project: MineAPI
  */

@@ -7,31 +7,16 @@ import org.bukkit.Location;
 import org.bukkit.block.Sign;
 
 /**
- * Created by w67clement on 13/02/2016. <br><br/>
+ * Created by w67clement on 13/02/2016.
  * <p>
  * Class of project: MineAPI
  */
-public abstract class PacketUpdateSign extends PacketSender
+public abstract class PacketUpdateSign<T> extends PacketSender<T>
 {
-    protected Location location;
-    protected String[] contents = new String[4];
 
-    public PacketUpdateSign(Sign sign)
+    public PacketUpdateSign(T packet)
     {
-        this.location = sign.getLocation();
-        // this.contents = sign.getLines();
-    }
-
-    public PacketUpdateSign(Location location, String[] contents)
-    {
-        this.location = location;
-        this.contents = contents;
-    }
-
-    public PacketUpdateSign(int x, int y, int z, String[] contents)
-    {
-        this.location = new Location(null, x, y, z);
-        this.contents = contents;
+        super(packet);
     }
 
     /**
@@ -39,21 +24,15 @@ public abstract class PacketUpdateSign extends PacketSender
      *
      * @return Location of the sign.
      */
-    public Location getLocation()
-    {
-        return location;
-    }
+    public abstract Location getLocation();
 
     /**
-     * Sets the location of the sign will be updated. <br></br>
+     * Sets the location of the sign will be updated. <br>
      * <b>Note:</b> The method can't change the place of a sign.
      *
      * @param location Location of the sign.
      */
-    public void setLocation(Location location)
-    {
-        this.location = location;
-    }
+    public abstract void setLocation(Location location);
 
     /**
      * Check if the sign is in the location.
@@ -62,7 +41,7 @@ public abstract class PacketUpdateSign extends PacketSender
      */
     public boolean isValidLocation()
     {
-        return this.isValidLocation(this.location);
+        return this.isValidLocation(this.getLocation());
     }
 
     /**
@@ -74,8 +53,8 @@ public abstract class PacketUpdateSign extends PacketSender
      */
     public boolean isValidLocation(Location location)
     {
-        if (location.getBlock().getState() != null)
-            if (location.getBlock().getState() instanceof Sign)
+        if (getLocation().getBlock().getState() != null)
+            if (getLocation().getBlock().getState() instanceof Sign)
                 return true;
         return false;
     }
@@ -85,24 +64,18 @@ public abstract class PacketUpdateSign extends PacketSender
      *
      * @return Array of 4 String formatted in Json.
      */
-    public String[] getContents()
-    {
-        return contents;
-    }
+    public abstract String[] getContents();
 
     /**
-     * Sets the contents of the sign. <br></br>
+     * Sets the contents of the sign. <br>
      * <b>Note:</b> The method don't change the real contents of the sign.
      *
      * @param contents New contents of the sign formatted in Json.
      */
-    public void setContents(String[] contents)
-    {
-        this.contents = contents;
-    }
+    public abstract void setContents(String[] contents);
 
     /**
-     * Gets content at a line. <br></br>
+     * Gets content at a line. <br>
      * <b>Note:</b> The method don't change the real content of the sign.
      *
      * @param line Line of the content.
@@ -115,11 +88,11 @@ public abstract class PacketUpdateSign extends PacketSender
             line = 0;
         if (line > 3)
             line = 3;
-        return contents[line];
+        return getContents()[line];
     }
 
     /**
-     * Sets content at a line. <br></br>
+     * Sets content at a line. <br>
      * <b>Note:</b> The method don't change the real content of the sign.
      *
      * @param line    Line of the content.
@@ -127,11 +100,13 @@ public abstract class PacketUpdateSign extends PacketSender
      */
     public void setLine(int line, String content)
     {
-        this.contents[line] = content;
+        String[] contents = this.getContents();
+        contents[line] = content;
+        this.setContents(contents);
     }
 
     /**
-     * Sets content at a line. <br></br>
+     * Sets content at a line. <br>
      * <b>Note:</b> The method don't change the real content of the sign.
      *
      * @param line    Line of the content.

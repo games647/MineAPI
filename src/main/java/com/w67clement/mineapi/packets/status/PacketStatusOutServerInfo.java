@@ -12,13 +12,11 @@ import com.w67clement.mineapi.nms.NmsPacket;
  * @author w67clement
  * @version MineAPI v2.2.0
  */
-public abstract class PacketStatusOutServerInfo implements NmsPacket
+public abstract class PacketStatusOutServerInfo<T> extends NmsPacket<T>
 {
-    protected ServerPingWrapper ping;
-
-    public PacketStatusOutServerInfo(ServerPingWrapper ping)
+    public PacketStatusOutServerInfo(T packet)
     {
-        this.ping = ping;
+        super(packet);
     }
 
     /**
@@ -27,10 +25,7 @@ public abstract class PacketStatusOutServerInfo implements NmsPacket
      *
      * @return ServerPingWrapper.
      */
-    public ServerPingWrapper getServerPing()
-    {
-        return this.ping;
-    }
+    public abstract ServerPingWrapper getServerPing();
 
     /**
      * Sets the ServerPing of the packet. <br>
@@ -38,10 +33,7 @@ public abstract class PacketStatusOutServerInfo implements NmsPacket
      *
      * @param ping ServerPingWrapper.
      */
-    public void setServerPing(ServerPingWrapper ping)
-    {
-        this.ping = ping;
-    }
+    public abstract void setServerPing(ServerPingWrapper ping);
 
     @Override
     public PacketType getPacketType()

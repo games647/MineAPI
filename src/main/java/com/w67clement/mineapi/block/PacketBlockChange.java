@@ -5,7 +5,7 @@ import com.w67clement.mineapi.nms.PacketSender;
 import org.bukkit.Location;
 import org.bukkit.Material;
 
-public abstract class PacketBlockChange extends PacketSender
+public abstract class PacketBlockChange<T> extends PacketSender<T>
 {
 
     protected Location location;
@@ -14,6 +14,7 @@ public abstract class PacketBlockChange extends PacketSender
 
     public PacketBlockChange(Material material, int data, Location loc)
     {
+        super(null);
         this.material = material;
         this.data = data;
         this.location = loc;

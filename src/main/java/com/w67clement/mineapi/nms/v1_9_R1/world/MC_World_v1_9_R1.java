@@ -1,17 +1,13 @@
 package com.w67clement.mineapi.nms.v1_9_R1.world;
 
 import com.w67clement.mineapi.world.MC_World;
-import net.minecraft.server.v1_9_R1.Block;
-import net.minecraft.server.v1_9_R1.BlockPosition;
-import net.minecraft.server.v1_9_R1.Chunk;
-import net.minecraft.server.v1_9_R1.IBlockData;
-import net.minecraft.server.v1_9_R1.WorldServer;
+import net.minecraft.server.v1_9_R1.*;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 
 /**
- * Created by w67clement on 02/03/2016. <br><br/>
+ * Created by w67clement on 02/03/2016.
  * <p>
  * Class of project: MineAPI
  */

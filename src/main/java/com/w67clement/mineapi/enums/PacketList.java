@@ -1,6 +1,6 @@
 package com.w67clement.mineapi.enums;
 
-import com.w67clement.mineapi.entity.packets.PacketCamera;
+import com.w67clement.mineapi.block.PacketBlockBreakAnimation;
 import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.inventory.packets.WindowItems;
 import com.w67clement.mineapi.inventory.packets.WindowOpen;
@@ -24,10 +24,10 @@ public enum PacketList
     PacketPlayOutAttachEntity("PacketPlayOutAttachEntity", "AttachEntityMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutBed("PacketPlayOutBed", "", PacketType.PACKETPLAYOUT),
     PacketPlayOutBlockAction("PacketPlayOutBlockAction", "BlockActionMessage", PacketType.PACKETPLAYOUT),
-    PacketPlayOutBlockBreakAnimation("PacketPlayOutBlockBreakAnimation", "", PacketType.PACKETPLAYOUT),
+    PacketPlayOutBlockBreakAnimation("PacketPlayOutBlockBreakAnimation", "", PacketType.PACKETPLAYOUT, PacketBlockBreakAnimation.class),
     PacketPlayOutBlockChange("PacketPlayOutBlockChange", "BlockChangeMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutBoss("PacketPlayOutBoss", "", PacketType.PACKETPLAYOUT, v1_9_R1),
-    PacketPlayOutCamera("PacketPlayOutCamera", "CameraMessage", PacketType.PACKETPLAYOUT, v1_8_R1, PacketCamera.class),
+    PacketPlayOutCamera("PacketPlayOutCamera", "CameraMessage", PacketType.PACKETPLAYOUT, v1_8_R1),
     PacketPlayOutChat("PacketPlayOutChat", "ChatMessage", PacketType.PACKETPLAYOUT, PacketChat.class),
     PacketPlayOutCloseWindow("PacketPlayOutCloseWindow", "CloseWindowMessage", PacketType.PACKETPLAYOUT),
     PacketPlayOutCollect("PacketPlayOutCollect", "CollectItemMessage", PacketType.PACKETPLAYOUT),

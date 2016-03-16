@@ -12,12 +12,17 @@ import org.bukkit.Location;
  *
  * @author w67clement
  */
-public abstract class PacketBlockAction extends PacketSender
+public abstract class PacketBlockAction<T> extends PacketSender<T>
 {
 
     protected Location location;
     protected BlockAction action;
     protected int data;
+
+    public PacketBlockAction(T packet)
+    {
+        super(packet);
+    }
 
     public PacketBlockAction(Location location, BlockAction action)
     {
@@ -26,6 +31,7 @@ public abstract class PacketBlockAction extends PacketSender
 
     public PacketBlockAction(Location location, BlockAction action, int data)
     {
+        this(null);
         this.location = location;
         this.action = action;
         this.data = data;

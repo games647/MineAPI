@@ -7,7 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 /**
- * Created by w67clement on 21/02/2016. <br><br/>
+ * Created by w67clement on 21/02/2016.
  * <p>
  * Class of project: MineAPI
  */

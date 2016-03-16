@@ -75,17 +75,14 @@ public class WindowType
 
     public static WindowType getByMCValue(String mcValue)
     {
-        if (windowTypes.containsValue(mcValue))
+        for (Entry<String, WindowType> entry : windowTypes.entrySet())
         {
-            for (Entry<String, WindowType> entry : windowTypes.entrySet()) {
-                if (entry.getValue().getMCValue().equals(mcValue)) {
-                    return entry.getValue();
-                }
+            if (entry.getValue().getMCValue().equals(mcValue))
+            {
+                return entry.getValue();
             }
-            return null;
         }
-        else
-            return null;
+        return null;
     }
 
     public static WindowType getByName(String name)

@@ -6,39 +6,34 @@ import com.w67clement.mineapi.nms.NmsPacket;
 /**
  * Packet sent by the client with a text for the chat or process commands. <br>
  * <a href="http://wiki.vg/Protocol#Chat_Message_2">Wiki.vg PacketPlayInChat</a>
- * @author w67clement
  *
+ * @author w67clement
  */
-public abstract class PacketPlayInChat implements NmsPacket
+public abstract class PacketPlayInChat<T> extends NmsPacket<T>
 {
-	protected String msg;
+    public PacketPlayInChat(T packet)
+    {
+        super(packet);
+    }
 
-	public PacketPlayInChat(String msg) {
-		this.msg = msg;
-	}
-
-	/**
-	 * Client sent raw input.
-	 * @return The client sends the raw input, not ChatComponent.
+    /**
+     * Client sent raw input.
+     *
+     * @return The client sends the raw input, not ChatComponent.
      */
-	public final String getMessage()
-	{
-		return this.msg;
-	}
+    public abstract String getMessage();
 
-	/**
-	 * Sets the client sent raw input.
-	 * @param msg The new raw input.
+    /**
+     * Sets the client sent raw input.
+     *
+     * @param msg The new raw input.
      */
-	public final void setMessage(String msg)
-	{
-		this.msg = msg;
-	}
+    public abstract void setMessage(String msg);
 
-	@Override
-	public PacketType getPacketType()
-	{
-		return PacketType.PACKETPLAYIN;
-	}
+    @Override
+    public PacketType getPacketType()
+    {
+        return PacketType.PACKETPLAYIN;
+    }
 
 }

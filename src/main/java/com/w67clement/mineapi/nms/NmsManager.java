@@ -21,10 +21,10 @@ import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
 import com.w67clement.mineapi.nms.reflection.packets.handshake.CraftPacketHandshake;
 import com.w67clement.mineapi.nms.reflection.packets.play.in.CraftPacketPlayInChat;
+import com.w67clement.mineapi.nms.reflection.packets.play.out.CraftPacketChat;
 import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutPong;
 import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutServerInfo;
 import com.w67clement.mineapi.nms.reflection.play_out.inventory.CraftWindowOpen;
-import com.w67clement.mineapi.nms.reflection.play_out.message.CraftPacketChat;
 import com.w67clement.mineapi.packets.ProtocolState;
 import com.w67clement.mineapi.packets.handshake.PacketHandshake;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
@@ -55,7 +55,7 @@ import org.bukkit.inventory.ItemStack;
 public abstract class NmsManager
 {
     protected boolean isInit = false;
-    protected HashMap<Class<? extends NmsPacket>, IndividualPacketDecoder<? extends NmsPacket>> decoders = new HashMap<>();
+    protected HashMap<Class<?>, IndividualPacketDecoder<?>> decoders = new HashMap<>();
 
     public abstract void init();
 
@@ -108,7 +108,7 @@ public abstract class NmsManager
      * @version MineAPI 2.2.0 (Event system v2)
      * @see PacketChat
      */
-    public PacketChat getPacketChat(String content)
+    public PacketChat<Object> getPacketChat(String content)
     {
         return new CraftPacketChat(content);
     }
@@ -122,7 +122,7 @@ public abstract class NmsManager
      * @version MineAPI 2.2.0 (Event system v2)
      * @see PacketChat
      */
-    public PacketChat getPacketChat(String content, byte data)
+    public PacketChat<Object> getPacketChat(String content, byte data)
     {
         return new CraftPacketChat(content, data);
     }
@@ -133,9 +133,9 @@ public abstract class NmsManager
 
     public abstract PacketPlayerInfo getPacketPlayerInfo(PacketPlayerInfo.MC_EnumPlayerInfoAction action, PacketPlayerInfoData... data);
 
-    public abstract WindowItems getWindowItemsPacket(int windowId, List<ItemStack> items);
+    public abstract WindowItems<?> getWindowItemsPacket(int windowId, List<ItemStack> items);
 
-    public abstract WindowItems getWindowItemsPacket(int windowId, Inventory inventory);
+    public abstract WindowItems<?> getWindowItemsPacket(int windowId, Inventory inventory);
 
     public WindowOpen getWindowOpenPacket(int windowId, WindowType type, String title, int size)
     {
@@ -258,7 +258,8 @@ public abstract class NmsManager
         return this.decoders.get(packet);
     }
 
-    public boolean hasPacketDecoder(Class<? extends NmsPacket> packet) {
+    public boolean hasPacketDecoder(Class<? extends NmsPacket> packet)
+    {
         return this.decoders.containsKey(packet);
     }
 }

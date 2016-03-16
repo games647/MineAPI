@@ -1,11 +1,11 @@
 package com.w67clement.mineapi.nms.reflection.play_out.tab;
 
 import com.google.gson.JsonObject;
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
+import com.google.gson.JsonParser;
+import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.tab.TabTitle;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -18,23 +18,74 @@ import static com.w67clement.mineapi.api.ReflectionAPI.*;
  * @author w67clement
  * @version 3.0 - For none NMS version.
  */
-public class CraftTabTitle extends TabTitle
+public class CraftTabTitle extends TabTitle<Object>
 {
-    private static Class<?> tabtitlePacketClass;
+    private static final JsonParser jsonParser = new JsonParser();
+    private static final Class<?> packetClass;
+    private static final Field headerField;
+    private static final Field footerField;
 
     static
     {
-        if (MineAPI.isGlowstone())
-        {
-            tabtitlePacketClass = ReflectionAPI.getClass("net.glowstone.net.message.play.game.UserListHeaderFooterMessage");
-        }
-        else
-            tabtitlePacketClass = getNmsClass("PacketPlayOutPlayerListHeaderFooter");
+        packetClass = getNmsClass("PacketPlayOutPlayerListHeaderFooter");
+        headerField = getField(packetClass, "a", true);
+        footerField = getField(packetClass, "b", true);
+    }
+
+    public CraftTabTitle(Object packet)
+    {
+        super(packet);
     }
 
     public CraftTabTitle(String header, String footer)
     {
-        super(header, footer);
+        super(SunUnsafe.newInstance(packetClass));
+        this.setHeader(header);
+        this.setFooter(footer);
+    }
+
+    @Override
+    public String getHeader()
+    {
+        Object header = getValue(packet, headerField);
+        if (header == null)
+            return null;
+        JsonObject jsonHeader = (JsonObject) jsonParser.parse(ChatComponentWrapper.makeJsonByChatComponent(header));
+        return jsonHeader.get("text").getAsString();
+    }
+
+    @Override
+    public TabTitle setHeader(String header)
+    {
+        if (header == null || header.isEmpty())
+        {
+            setValue(packet, headerField, null);
+            return this;
+        }
+        setValue(packet, headerField, ChatComponentWrapper.makeChatComponentByText(ChatColor.translateAlternateColorCodes('&', header) + ChatColor.RESET));
+        return this;
+    }
+
+    @Override
+    public String getFooter()
+    {
+        Object header = getValue(packet, footerField);
+        if (header == null)
+            return null;
+        JsonObject jsonHeader = (JsonObject) jsonParser.parse(ChatComponentWrapper.makeJsonByChatComponent(header));
+        return jsonHeader.get("text").getAsString();
+    }
+
+    @Override
+    public TabTitle setFooter(String footer)
+    {
+        if (footer == null || footer.isEmpty())
+        {
+            setValue(packet, footerField, null);
+            return this;
+        }
+        setValue(packet, footerField, ChatComponentWrapper.makeChatComponentByText(ChatColor.translateAlternateColorCodes('&', footer) + ChatColor.RESET));
+        return this;
     }
 
     @Override
@@ -46,67 +97,6 @@ public class CraftTabTitle extends TabTitle
     @Override
     public void send(Player player)
     {
-        NmsClass.sendPacket(player, this.constructPacket());
+        NmsClass.sendPacket(player, this.getHandle());
     }
-
-    @Override
-    public Object constructPacket()
-    {
-        if (MineAPI.isSpigot())
-        {
-            return this.constructPacket_Bukkit();
-        }
-        else if (MineAPI.isGlowstone())
-        {
-            return this.constructPacket_Glowstone();
-        }
-        return this.constructPacket_Bukkit();
-    }
-
-    private Object constructPacket_Bukkit()
-    {
-        this.header = ChatColor.translateAlternateColorCodes('&', this.header);
-        this.footer = ChatColor.translateAlternateColorCodes('&', this.footer);
-
-        JsonObject jsonHeader = new JsonObject(), jsonFooter = new JsonObject();
-        jsonHeader.addProperty("text", this.header + ChatColor.RESET);
-        jsonFooter.addProperty("text", this.footer + ChatColor.RESET);
-
-        // Create packet
-        Object tabTitlePacket = newInstance(getConstructor(tabtitlePacketClass));
-
-        // Convert JSON strings to IChatBaseComponent objects
-        Object headerComponent = invokeMethod(null, getMethod(NmsClass.getChatSerializerClass(), "a", String.class), jsonHeader.toString());
-        Object footerComponent = invokeMethod(null, getMethod(NmsClass.getChatSerializerClass(), "a", String.class), jsonFooter.toString());
-        // Set fields
-        if ((this.header != null) && (!this.header.isEmpty()))
-            setValue(tabTitlePacket, getField(tabtitlePacketClass, "a", true), headerComponent);
-        if ((this.footer != null) && (!this.footer.isEmpty()))
-            setValue(tabTitlePacket, getField(tabtitlePacketClass, "b", true), footerComponent);
-        return tabTitlePacket;
-    }
-
-    private Object constructPacket_Glowstone()
-    {
-        this.header = ChatColor.translateAlternateColorCodes('&', this.header);
-        this.footer = ChatColor.translateAlternateColorCodes('&', this.footer);
-
-        Class<?> textMsgClass = ReflectionAPI.getClass("net.glowstone.util.TextMessage");
-        Class<?> jsonObject = ReflectionAPI.getClass("org.json.simple.JSONObject");
-        Class<?> jsonParserClass = ReflectionAPI.getClass("org.json.simple.parser.JSONParser");
-        Object jsonParser = newInstance(getConstructor(jsonParserClass));
-        Constructor<?> textMsgConstructor = getConstructor(textMsgClass, jsonObject);
-
-        JsonObject jsonHeader = new JsonObject(), jsonFooter = new JsonObject();
-        jsonHeader.addProperty("text", this.header + ChatColor.RESET);
-        jsonFooter.addProperty("text", this.footer + ChatColor.RESET);
-
-        Object header = newInstance(textMsgConstructor, invokeMethod(jsonParser, getMethod(jsonParserClass, "parse", String.class), jsonHeader.toString()));
-        Object footer = newInstance(textMsgConstructor, invokeMethod(jsonParser, getMethod(jsonParserClass, "parse", String.class), jsonFooter.toString()));
-
-        // Create packet
-        Object tabTitlePacket = newInstance(getConstructor(tabtitlePacketClass, textMsgClass, textMsgClass), header, footer);
-        return tabTitlePacket;
-    }
-
 }

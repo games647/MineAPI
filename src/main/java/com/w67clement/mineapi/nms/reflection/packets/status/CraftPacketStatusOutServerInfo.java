@@ -1,69 +1,46 @@
 package com.w67clement.mineapi.nms.reflection.packets.status;
 
 import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
+import com.w67clement.mineapi.api.ReflectionAPI.*;
 import com.w67clement.mineapi.api.wrappers.ServerPingWrapper;
 import com.w67clement.mineapi.packets.status.PacketStatusOutServerInfo;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
-public class CraftPacketStatusOutServerInfo extends PacketStatusOutServerInfo
+
+import static com.w67clement.mineapi.api.ReflectionAPI.*;
+
+public class CraftPacketStatusOutServerInfo extends PacketStatusOutServerInfo<Object>
 {
-	private static Class<?> packetClass;
-	private static Constructor<?> packetConstructor;
-	// Bukkit
-	private static Class<?> serverpingClass;
-	// Glowstone
-	private static Object jsonParser;
+    private static final Class<?> packetClass;
+    private static final Field serverPingField;
 
-	static
-	{
-		if (MineAPI.isGlowstone())
-		{
-			packetClass = ReflectionAPI.getClass(
-					"net.glowstone.net.message.status.StatusResponseMessage");
-			packetConstructor = ReflectionAPI.getConstructor(packetClass,
-					ReflectionAPI.getClass("org.json.simple.JSONObject"));
-			jsonParser = ReflectionAPI
-					.newInstance(ReflectionAPI.getConstructor(ReflectionAPI
-							.getClass("org.json.simple.parser.JSONParser")));
-		}
-		else
-		{
-			packetClass = ReflectionAPI
-					.getNmsClass("PacketStatusOutServerInfo");
-			serverpingClass = ReflectionAPI.getNmsClass("ServerPing");
-			packetConstructor = ReflectionAPI.getConstructor(packetClass,
-					serverpingClass);
-		}
-	}
+    static
+    {
+        packetClass = getNmsClass("PacketStatusOutServerInfo");
+        serverPingField = getFirstFieldOfType(packetClass, getNmsClass("ServerPing"), true);
+    }
 
-	public CraftPacketStatusOutServerInfo(ServerPingWrapper ping) {
-		super(ping);
-	}
+    public CraftPacketStatusOutServerInfo(Object packet)
+    {
+        super(packet);
+    }
 
-	@Override
-	public Object constructPacket()
-	{
-		if (MineAPI.isSpigot())
-		{
-			return this.constructPacket_Bukkit();
-		}
-		else if (MineAPI
-				.isGlowstone()) { return this.constructPacket_Glowstone(); }
-		return this.constructPacket_Bukkit();
-	}
+    public CraftPacketStatusOutServerInfo(ServerPingWrapper ping)
+    {
+        super(null);
+        this.packet = SunUnsafe.newInstance(packetClass);
+        setServerPing(ping);
+    }
 
-	private Object constructPacket_Bukkit()
-	{
-		Object serverping = this.ping.toServerPing();
-		return ReflectionAPI.newInstance(packetConstructor, serverping);
-	}
+    @Override
+    public ServerPingWrapper getServerPing()
+    {
+        return MineAPI.getNmsManager().getServerPingWrapper(getValue(packet, serverPingField));
+    }
 
-	private Object constructPacket_Glowstone()
-	{
-		Object json = ReflectionAPI.invokeMethod(jsonParser,
-				ReflectionAPI.getMethod(jsonParser, "parse", String.class),
-				this.ping.toJson());
-		return ReflectionAPI.newInstance(packetConstructor, json);
-	}
+    @Override
+    public void setServerPing(ServerPingWrapper ping)
+    {
+        setValue(packetClass, serverPingField, ping.toServerPing());
+    }
 }

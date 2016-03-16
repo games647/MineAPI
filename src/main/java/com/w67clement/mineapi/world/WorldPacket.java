@@ -9,10 +9,15 @@ import org.bukkit.World;
  * @author w67clement
  * @version 1.0
  */
-public abstract class WorldPacket extends PacketSender
+public abstract class WorldPacket<T> extends PacketSender<T>
 {
 
 	protected World world;
+
+	public WorldPacket(T packet)
+	{
+		super(packet);
+	}
 
 	public World getWorld()
 	{

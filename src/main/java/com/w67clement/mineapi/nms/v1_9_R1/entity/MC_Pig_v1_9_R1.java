@@ -6,7 +6,7 @@ import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPig;
 import org.bukkit.entity.Pig;
 
 /**
- * Created by w67clement on 01/03/2016. <br><br/>
+ * Created by w67clement on 01/03/2016.
  * <p>
  * Class of project: MineAPI
  */

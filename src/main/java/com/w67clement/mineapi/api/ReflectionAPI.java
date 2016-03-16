@@ -7,6 +7,7 @@ import java.lang.reflect.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import sun.misc.Unsafe;
 
 /**
  * A Reflection API class make by w67clement
@@ -121,7 +122,10 @@ public class ReflectionAPI
                 return (U) new Byte((byte) 0);
             return null;
         }
-        return (U) getValue(obj, field);
+        Object value = getValue(obj, field);
+        if (value == null)
+            return null;
+        return (U) value;
     }
 
 	/*
@@ -234,7 +238,7 @@ public class ReflectionAPI
         for (Field fields : clazz.getDeclaredFields())
         {
             if (fields.getType().equals(type))
-                return ReflectionAPI.getField(clazz, fields.getName(), true);
+                return getField(clazz, fields.getName(), true);
         }
         return null;
     }
@@ -244,7 +248,7 @@ public class ReflectionAPI
         for (Field fields : clazz.getDeclaredFields())
         {
             if (fields.getType().equals(type))
-                return ReflectionAPI.getField(clazz, fields.getName(), declared);
+                return getField(clazz, fields.getName(), declared);
         }
         return null;
     }
@@ -469,6 +473,7 @@ public class ReflectionAPI
 
     public static class NmsClass
     {
+        private static final Class<?> iChatBaseComponent = getNmsClass("IChatBaseComponent");;
 
         public static Class<?> getChatSerializerClass()
         {
@@ -500,7 +505,7 @@ public class ReflectionAPI
 
         public static Class<?> getIChatBaseComponentClass()
         {
-            return getNmsClass("IChatBaseComponent");
+            return iChatBaseComponent;
         }
 
         public static Class<?> getMinecraftServerClass()
@@ -743,6 +748,34 @@ public class ReflectionAPI
         {
             Method asNmsCopy = getMethod(CraftClass.getCraftItemStackClass(), "asBukkitCopy", getNmsClass("ItemStack"));
             return invokeMethodWithType(null, asNmsCopy, ItemStack.class, item);
+        }
+
+    }
+
+    public static class SunUnsafe
+    {
+
+        public static final Unsafe unsafe = Unsafe.getUnsafe();
+
+        /**
+         * Use the Unsafe instance creator. <br>
+         * <b>WARNING:</b> This method don't call any constructors!
+         *
+         * @param clazz A simple Class.
+         *
+         * @return A new instance of the Class.
+         */
+        public static Object newInstance(Class<?> clazz)
+        {
+            try
+            {
+                return unsafe.allocateInstance(clazz);
+            }
+            catch (InstantiationException e)
+            {
+                e.printStackTrace();
+            }
+            return null;
         }
 
     }

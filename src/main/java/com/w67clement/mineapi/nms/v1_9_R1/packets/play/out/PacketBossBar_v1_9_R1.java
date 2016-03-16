@@ -13,12 +13,17 @@ import org.bukkit.boss.BarStyle;
 import org.bukkit.entity.Player;
 
 /**
- * Created by w67clement on 05/03/2016. <br><br/>
+ * Created by w67clement on 05/03/2016.
  * <p>
  * Class of project: MineAPI
  */
-public class PacketBossBar_v1_9_R1 extends PacketBossBar
+public class PacketBossBar_v1_9_R1 extends PacketBossBar<PacketPlayOutBoss>
 {
+    public PacketBossBar_v1_9_R1(PacketPlayOutBoss packet)
+    {
+        super(packet);
+    }
+
     @Override
     public void send(Player player)
     {
@@ -26,7 +31,7 @@ public class PacketBossBar_v1_9_R1 extends PacketBossBar
     }
 
     @Override
-    public Object constructPacket()
+    public PacketPlayOutBoss constructPacket()
     {
         BossBattle bar = new BossBattleServer((IChatBaseComponent) ChatComponentWrapper.makeChatComponentByJson(this.data.getTitle()), BossBattle.BarColor.valueOf(this.data.getColor().name()), this.convertStyle(this.data.getStyle()));
         bar.a(this.data.hasFlag(BarFlag.DARKEN_SKY));

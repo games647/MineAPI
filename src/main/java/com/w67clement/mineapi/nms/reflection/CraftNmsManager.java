@@ -19,19 +19,18 @@ import com.w67clement.mineapi.message.PacketChat;
 import com.w67clement.mineapi.message.Title;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.reflection.packets.handshake.CraftPacketHandshakeDecoder;
+import com.w67clement.mineapi.nms.reflection.packets.play.in.CraftClientCommand;
 import com.w67clement.mineapi.nms.reflection.packets.play.in.decoders.CraftClientCommandDecoder;
 import com.w67clement.mineapi.nms.reflection.packets.play.in.decoders.CraftPacketPlayInChatDecoder;
+import com.w67clement.mineapi.nms.reflection.packets.play.out.CraftPacketBlockBreakAnimation;
+import com.w67clement.mineapi.nms.reflection.packets.play.out.CraftPacketPlayerInfo;
 import com.w67clement.mineapi.nms.reflection.packets.play.out.CraftPacketUpdateSign;
 import com.w67clement.mineapi.nms.reflection.packets.play.out.decoders.*;
 import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutPongDecoder;
 import com.w67clement.mineapi.nms.reflection.packets.status.CraftPacketStatusOutServerInfoDecoder;
-import com.w67clement.mineapi.nms.reflection.play_in.CraftClientCommand;
 import com.w67clement.mineapi.nms.reflection.play_out.block.CraftPacketBlockAction;
-import com.w67clement.mineapi.nms.reflection.play_out.block.CraftPacketBlockBreakAnimation;
 import com.w67clement.mineapi.nms.reflection.play_out.block.CraftPacketBlockChange;
-import com.w67clement.mineapi.nms.reflection.play_out.message.CraftPacketChat;
 import com.w67clement.mineapi.nms.reflection.play_out.message.CraftTitle;
-import com.w67clement.mineapi.nms.reflection.play_out.tab.CraftPacketPlayerInfo;
 import com.w67clement.mineapi.nms.reflection.play_out.tab.CraftTabTitle;
 import com.w67clement.mineapi.nms.reflection.play_out.world.CraftPacketExplosion;
 import com.w67clement.mineapi.nms.reflection.play_out.world.CraftPacketWorldBorder;
@@ -74,6 +73,7 @@ public class CraftNmsManager extends NmsManager
             this.decoders.put(PacketPlayInChat.class, new CraftPacketPlayInChatDecoder());
             this.decoders.put(ClientCommand.class, new CraftClientCommandDecoder());
             // Play (OUT)
+            this.decoders.put(PacketBlockBreakAnimation.class, new CraftPacketBlockBreakAnimationDecoder());
             this.decoders.put(PacketChat.class, new CraftPacketChatDecoder());
             this.decoders.put(PacketExplosion.class, new CraftPacketExplosionDecoder());
             this.decoders.put(WindowOpen.class, new CraftWindowOpenDecoder());
@@ -90,18 +90,6 @@ public class CraftNmsManager extends NmsManager
     public Title getTitle(String title, String subtitle, int fadeIn, int stay, int fadeOut)
     {
         return new CraftTitle(fadeIn, stay, fadeOut, title, subtitle);
-    }
-
-    @Override
-    public PacketChat getPacketChat(String content)
-    {
-        return new CraftPacketChat(content);
-    }
-
-    @Override
-    public PacketChat getPacketChat(String content, byte data)
-    {
-        return new CraftPacketChat(content, data);
     }
 
     @Override

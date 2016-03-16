@@ -7,7 +7,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.util.EulerAngle;
 
 /**
- * Created by w67clement on 01/03/2016. <br><br/>
+ * Created by w67clement on 01/03/2016.
  * <p>
  * Class of project: MineAPI
  */

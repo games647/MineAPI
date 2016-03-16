@@ -2,48 +2,24 @@ package com.w67clement.mineapi.inventory.packets;
 
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
-import java.util.Arrays;
 import java.util.List;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-public abstract class WindowItems extends PacketSender
+public abstract class WindowItems<T> extends PacketSender<T>
 {
-    protected int windowId;
-    protected List<ItemStack> items;
 
-    public WindowItems(int windowId, List<ItemStack> items)
+    public WindowItems(T packet)
     {
-        this.windowId = windowId;
-        this.items = items;
+        super(packet);
     }
 
-    public WindowItems(int windowId, Inventory inventory)
-    {
-        this(windowId, Arrays.asList(inventory.getContents()));
-    }
+    public abstract int getWindowId();
 
-    public int getWindowId()
-    {
-        return this.windowId;
-    }
+    public abstract WindowItems setWindowId(int windowId);
 
-    public WindowItems setWindowId(int windowId)
-    {
-        this.windowId = windowId;
-        return this;
-    }
+    public abstract List<ItemStack> getItems();
 
-    public List<ItemStack> getItems()
-    {
-        return this.items;
-    }
-
-    public WindowItems setItems(List<ItemStack> items)
-    {
-        this.items = items;
-        return this;
-    }
+    public abstract WindowItems setItems(List<ItemStack> items);
 
     @Override
     public PacketType getPacketType()

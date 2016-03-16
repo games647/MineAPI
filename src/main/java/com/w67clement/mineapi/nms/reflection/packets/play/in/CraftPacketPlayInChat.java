@@ -1,37 +1,42 @@
 package com.w67clement.mineapi.nms.reflection.packets.play.in;
 
-import com.w67clement.mineapi.MineAPI;
-import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.packets.play.in.PacketPlayInChat;
-import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
 
-public class CraftPacketPlayInChat extends PacketPlayInChat
+
+import static com.w67clement.mineapi.api.ReflectionAPI.*;
+
+public class CraftPacketPlayInChat extends PacketPlayInChat<Object>
 {
-    private static Class<?> packetClass;
-    private static Constructor<?> packetConstructor;
+    private static final Class<?> packetClass;
+    private static final Field messageField;
 
     static
     {
-        if (MineAPI.isGlowstone())
-        {
-            packetClass = ReflectionAPI.getClass("net.glowstone.net.message.play.game.IncomingChatMessage");
-        }
-        else
-        {
-            packetClass = ReflectionAPI.getNmsClass("PacketPlayInChat");
-        }
-        packetConstructor = ReflectionAPI.getConstructor(packetClass, String.class);
+        packetClass = getNmsClass("PacketPlayInChat");
+        messageField = getFirstFieldOfType(packetClass, String.class, true);
+    }
+
+    public CraftPacketPlayInChat(Object packet)
+    {
+        super(packet);
     }
 
     public CraftPacketPlayInChat(String msg)
     {
-        super(msg);
+        super(SunUnsafe.newInstance(packetClass));
+        setMessage(msg);
     }
 
     @Override
-    public Object constructPacket()
+    public String getMessage()
     {
-        return ReflectionAPI.newInstance(packetConstructor, this.msg);
+        return getStringValue(packet, messageField);
     }
 
+    @Override
+    public void setMessage(String msg)
+    {
+        setValue(packet, messageField, msg);
+    }
 }

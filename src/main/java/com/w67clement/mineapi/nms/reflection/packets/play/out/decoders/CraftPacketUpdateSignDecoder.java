@@ -14,7 +14,7 @@ import org.bukkit.Location;
 import static com.w67clement.mineapi.api.ReflectionAPI.*;
 
 /**
- * Created by w67clement on 06/03/2016. <br><br/>
+ * Created by w67clement on 06/03/2016.
  * <p>
  * Class of project: MineAPI
  */
