@@ -1,4 +1,4 @@
-package com.w67clement.mineapi.nms.reflection.play_out.inventory;
+package com.w67clement.mineapi.nms.reflection.packets.play.out;
 
 import com.w67clement.mineapi.api.ReflectionAPI.*;
 import com.w67clement.mineapi.api.wrappers.ChatComponentWrapper;

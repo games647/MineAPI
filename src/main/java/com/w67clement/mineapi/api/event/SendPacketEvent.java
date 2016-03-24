@@ -6,7 +6,7 @@ import com.w67clement.mineapi.nms.NmsPacket;
 import java.util.UUID;
 import org.bukkit.entity.Player;
 
-public class SendPacketEvent<T extends NmsPacket>
+public class SendPacketEvent<T extends NmsPacket<?>>
 {
 
 	private MC_PacketWrapper<T> packet;

@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
-version = '2.3.0-dev1'
+version = '2.3.0-dev2'
 archivesBaseName = 'MineAPI'
 def authors = '[w67clement]'
 
@@ -35,9 +35,6 @@ repositories {
     }
     maven {
         url "https://oss.sonatype.org/content/repositories/snapshots"
-    }
-    maven {
-        url "bukkit/"
     }
     ivy {
         url "http://www.tcpr.ca/files/"
@@ -90,8 +87,6 @@ configurations {
 dependencies {
     provided 'org.spigotmc.1.9:spigot:1.9-R0.1-SNAPSHOT-latest:1.9'
     compile 'com.google.code.gson:gson:2.5'
-    compile 'org.ow2.asm:asm:5.+'
-    provided 'io.netty:netty-all:4.0.33.Final'
 }
 
 processResources {

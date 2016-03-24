@@ -228,7 +228,7 @@ public class INCHandler implements IHandler
             try
             {
                 PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
-                assert packet != null : "Error: [{\"class\":\"INCHandler$ChannelHandler\",\"method\":\"write(ChannelHandlerContext, Object, ChannelPromise)\",\"line\":233,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                assert packet != null : "Error: [{\"class\":\"INCHandler$ChannelHandler\",\"method\":\"write(ChannelHandlerContext, Object, ChannelPromise)\",\"line\":230,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
                 if (packet.hasMineAPIPacket())
                     if (getNmsManager().hasPacketDecoder(packet.getMineAPIPacket()))
                     {
@@ -277,7 +277,7 @@ public class INCHandler implements IHandler
             try
             {
                 PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
-                assert packet != null : "Error: [{\"class\":\"INCHandler$ChannelHandler\",\"method\":\"channelRead(ChannelHandlerContext, Object)\",\"line\":282,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                assert packet != null : "Error: [{\"class\":\"INCHandler$ChannelHandler\",\"method\":\"channelRead(ChannelHandlerContext, Object)\",\"line\":279,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
                 if (packet.hasMineAPIPacket())
                     if (getNmsManager().hasPacketDecoder(packet.getMineAPIPacket()))
                     {
@@ -337,11 +337,11 @@ public class INCHandler implements IHandler
                 return;
             }
             PacketCancellable cancel = new PacketCancellable();
-            NmsPacket mineapiPacket = null;
+            NmsPacket<?> mineapiPacket = null;
             try
             {
                 PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
-                assert packet != null : "Error: [{\"class\":\"INCHandler$INCChannelHandler\",\"method\":\"write(ChannelHandlerContext, Object, ChannelPromise)\",\"line\":346,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                assert packet != null : "Error: [{\"class\":\"INCHandler$INCChannelHandler\",\"method\":\"write(ChannelHandlerContext, Object, ChannelPromise)\",\"line\":343,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
                 if (packet.hasMineAPIPacket())
                     if (getNmsManager().hasPacketDecoder(packet.getMineAPIPacket()))
                     {
@@ -365,7 +365,7 @@ public class INCHandler implements IHandler
             catch (Exception ignored)
             {
             }
-            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper<>(mineapiPacket, msg);
+            MC_PacketWrapper<?> packetWrapper = new MC_PacketWrapper(mineapiPacket, msg);
             mineapi.pingPacketSend(packetWrapper, cancel, ctx.channel().remoteAddress().toString());
             if (cancel.isCancelled())
             {
@@ -399,7 +399,7 @@ public class INCHandler implements IHandler
             try
             {
                 PacketList packet = PacketList.getPacketByName(msg.getClass().getSimpleName());
-                assert packet != null : "Error: [{\"class\":\"INCHandler$INCChannelHandler\",\"method\":\"channelRead(ChannelHandlerContext, Object)\",\"line\":404,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
+                assert packet != null : "Error: [{\"class\":\"INCHandler$INCChannelHandler\",\"method\":\"channelRead(ChannelHandlerContext, Object)\",\"line\":401,\"error\":\"Unknow packet '" + msg.getClass().getSimpleName() + "' in PacketList\"}], please contact author and report the bug.";
                 if (packet.hasMineAPIPacket())
                     if (getNmsManager().hasPacketDecoder(packet.getMineAPIPacket()))
                     {

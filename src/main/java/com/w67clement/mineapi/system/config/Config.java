@@ -20,7 +20,7 @@ public abstract class Config
         this.file = file;
     }
 
-    public static File getPluginsFolder()
+    static File getPluginsFolder()
     {
         return new File("plugins/");
     }

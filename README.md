@@ -1,5 +1,5 @@
 # MineAPI
-A API for Spigot/Glowstone and more!
+An API for Spigot/Glowstone and more!
 
 [![Build Status](https://drone.io/github.com/w67clement/MineAPI/status.png)](https://drone.io/github.com/w67clement/MineAPI/latest)
 

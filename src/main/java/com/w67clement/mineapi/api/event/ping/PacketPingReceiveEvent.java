@@ -5,7 +5,7 @@ import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
 import com.w67clement.mineapi.api.wrappers.PacketWrapper;
 import com.w67clement.mineapi.nms.NmsPacket;
 
-public class PacketPingReceiveEvent<T extends NmsPacket>
+public class PacketPingReceiveEvent<T extends NmsPacket<?>>
 {
 
 	private MC_PacketWrapper<T> packet;

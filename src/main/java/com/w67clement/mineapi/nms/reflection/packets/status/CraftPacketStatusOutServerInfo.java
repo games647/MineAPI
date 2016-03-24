@@ -27,8 +27,7 @@ public class CraftPacketStatusOutServerInfo extends PacketStatusOutServerInfo<Ob
 
     public CraftPacketStatusOutServerInfo(ServerPingWrapper ping)
     {
-        super(null);
-        this.packet = SunUnsafe.newInstance(packetClass);
+        super(SunUnsafe.newInstance(packetClass));
         setServerPing(ping);
     }
 
@@ -41,6 +40,6 @@ public class CraftPacketStatusOutServerInfo extends PacketStatusOutServerInfo<Ob
     @Override
     public void setServerPing(ServerPingWrapper ping)
     {
-        setValue(packetClass, serverPingField, ping.toServerPing());
+        setValue(packet, serverPingField, ping.toServerPing());
     }
 }

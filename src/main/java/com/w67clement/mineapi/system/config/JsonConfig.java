@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -33,10 +32,6 @@ public abstract class JsonConfig extends Config
             FileReader reader = new FileReader(this.getFile());
             json = parser.parse(reader);
             reader.close();
-        }
-        catch (FileNotFoundException e)
-        {
-            e.printStackTrace();
         }
         catch (IOException e)
         {

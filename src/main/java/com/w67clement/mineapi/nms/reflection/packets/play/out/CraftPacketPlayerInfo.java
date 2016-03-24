@@ -19,6 +19,7 @@ public class CraftPacketPlayerInfo extends PacketPlayerInfo<Object>
 
     private static final Class<?> packetClass;
     private static final Field actionField;
+    private static final Field dataField;
     private static final Class<?> enumPlayerInfoActionClass;
     private static final Method valueOfMethod;
     private static final Method nameMethod;
@@ -34,6 +35,7 @@ public class CraftPacketPlayerInfo extends PacketPlayerInfo<Object>
     {
         packetClass = getNmsClass("PacketPlayOutPlayerInfo");
         actionField = getField(packetClass, "a", true);
+        dataField = getField(packetClass, "b", true);
         if (MineAPI.getServerVersion().equals("v1_8_R1"))
             playerDataClass = getNmsClass("PlayerInfoData");
         else
@@ -103,7 +105,29 @@ public class CraftPacketPlayerInfo extends PacketPlayerInfo<Object>
     @Override
     public void setData(List<PacketPlayerInfoData> data)
     {
-
+        List<Object> nmsData = new ArrayList<>();
+        data.forEach(playerinfodata -> {
+            Object gamemode = null;
+            switch (playerinfodata.getGamemode())
+            {
+                case ADVENTURE:
+                    gamemode = enum_adventure;
+                    break;
+                case CREATIVE:
+                    gamemode = enum_creative;
+                    break;
+                case SPECTATOR:
+                    gamemode = enum_spectator;
+                    break;
+                case SURVIVAL:
+                    gamemode = enum_survival;
+                    break;
+                default:
+                    break;
+            }
+            nmsData.add(newInstance(playerDataConstructor, packet, playerinfodata.getProfile().toNms(), playerinfodata.getPing(), gamemode, ChatComponentWrapper.makeChatComponentByText(playerinfodata.getPlayerListName())));
+        });
+        setValue(packet, dataField, data);
     }
 
     @Override

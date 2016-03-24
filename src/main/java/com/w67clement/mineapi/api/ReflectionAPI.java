@@ -755,7 +755,7 @@ public class ReflectionAPI
     public static class SunUnsafe
     {
 
-        public static final Unsafe unsafe = Unsafe.getUnsafe();
+        public static final Unsafe unsafe = getUnsafe();
 
         /**
          * Use the Unsafe instance creator. <br>
@@ -776,6 +776,18 @@ public class ReflectionAPI
                 e.printStackTrace();
             }
             return null;
+        }
+
+        /**
+         * Gets the Unsafe instance and bypass the security exception. <br>
+         * <b>ONLY USE IF YOU ARE A INTERMEDIATE DEVELOPER.</b>
+         * @return Unsafe instance bypassing the security exception.
+         */
+        public static Unsafe getUnsafe() {
+            if (unsafe != null)
+                return unsafe;
+            Field theUnsafe = getField(Unsafe.class, "theUnsafe", true);
+            return getValueWithType(null, theUnsafe, Unsafe.class);
         }
 
     }

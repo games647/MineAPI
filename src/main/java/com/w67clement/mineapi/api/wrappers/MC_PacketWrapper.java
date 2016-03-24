@@ -11,7 +11,7 @@ import com.w67clement.mineapi.nms.NmsPacket;
  * @author w67clement
  * @version MineAPI v2.2.0 (Event system v2)
  */
-public class MC_PacketWrapper<T extends NmsPacket>
+public class MC_PacketWrapper<T extends NmsPacket<?>>
 {
     @Deprecated
     private PacketWrapper oldWrapper;
@@ -70,9 +70,10 @@ public class MC_PacketWrapper<T extends NmsPacket>
     /**
      * Build the Nms' Packet with MineAPI's Packet.
      */
+    @Deprecated
     public void buildNmsPacket()
     {
-        this.nms_packet = this.packet.constructPacket();
+        this.nms_packet = this.packet.getHandle();
     }
 
     /**
