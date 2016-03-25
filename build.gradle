@@ -19,12 +19,11 @@ buildscript {
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
-version = '2.3.0-dev2'
+version = '2.3.0-dev3'
 archivesBaseName = 'MineAPI'
 def authors = '[w67clement]'
 
 sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 compileJava.options.encoding = 'UTF-8'
 
@@ -94,7 +93,6 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include "plugin.yml"
-        include "bungee.yml"
 
         expand 'version': project.version.toString().replace("#", ""), 'authors': authors.toString()
     }

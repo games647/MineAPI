@@ -1,5 +1,6 @@
 package com.w67clement.mineapi.system.messaging;
 
+import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import io.netty.buffer.Unpooled;
 import org.bukkit.entity.Player;
@@ -14,7 +15,7 @@ public class MessagingListener implements PluginMessageListener
 {
     private MessagingManager messagingManager;
 
-    public MessagingListener(MessagingManager messagingManager)
+    MessagingListener(MessagingManager messagingManager)
     {
         this.messagingManager = messagingManager;
     }
@@ -33,8 +34,9 @@ public class MessagingListener implements PluginMessageListener
             if (this.messagingManager.getPacketRegistry().hasPacket(plugin, packetId))
             {
                 MessagingPacket packet = (MessagingPacket) ReflectionAPI.newInstance(ReflectionAPI.getConstructor(this.messagingManager.getPacketRegistry().getPacketById(plugin, packetId)));
-                assert packet != null : "Error: [{\"class\":\"MessagingListener\",\"method\":\"onPluginMessageReceived(String, Player, byte[])\",\"line\":35,\"error\":\"Anti-NullPointerException failed.\"}], please contact author and report the bug.";
+                assert packet != null : "Error: [{\"class\":\"MessagingListener\",\"method\":\"onPluginMessageReceived(String, Player, byte[])\",\"line\":36,\"error\":\"Anti-NullPointerException failed.\"}], please contact author and report the bug.";
                 packet.decode(buffer);
+                MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + "MineMessaging Packet received: " + packet.getClass().getSimpleName() + ", id: " + packetId + ", plugin:" + plugin, true);
                 packet.handle();
             }
         }

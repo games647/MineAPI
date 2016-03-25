@@ -4,6 +4,7 @@ import com.w67clement.mineapi.MineAPI;
 import io.netty.buffer.Unpooled;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.messaging.Messenger;
 
 /**
  * Created by w67clement on 20/01/2016.
@@ -57,6 +58,8 @@ public class MessagingManager
             bytes = new byte[length];
             buffer.getBytes(buffer.readerIndex(), bytes);
         }
+        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + "Attempt to send packet: " + packet.toString(), true);
+        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + "Packet's bytes size: " + bytes.length + ", is too big: " + (Messenger.MAX_MESSAGE_SIZE < bytes.length ? "true" : "false"), true);
         Bukkit.getServer().sendPluginMessage(this.plugin, "MineMessaging", bytes);
     }
 

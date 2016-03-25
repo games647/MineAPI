@@ -20,6 +20,7 @@ import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
 import com.w67clement.mineapi.system.ServerType;
 import com.w67clement.mineapi.system.messaging.MessagingManager;
+import com.w67clement.mineapi.system.messaging.defaults.DispatchCommandPacket;
 import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
 import com.w67clement.mineapi.utils.MineAPIUtils;
@@ -214,6 +215,11 @@ public class MineAPI extends JavaPlugin
     public void setNmsManager(NmsManager nms)
     {
         MineAPI.nms = nms;
+    }
+
+    public static MessagingManager getMessagingManager()
+    {
+        return messagingManager;
     }
 
     /**
@@ -490,7 +496,7 @@ public class MineAPI extends JavaPlugin
         messagingManager = new MessagingManager(this);
         messagingManager.init();
         messagingManager.getPacketRegistry().registerPlugin("Default");
-
+        messagingManager.getPacketRegistry().registerPacket("Default", 2, DispatchCommandPacket.class);
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");
         autoUpdater = new MineAPIAutoUpdater(true, this);
         if (autoUpdater.haveNewUpdate())

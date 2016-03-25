@@ -18,6 +18,58 @@ public class DispatchCommandPacket extends MessagingPacket
     private boolean bungeeCmd;
     private String sender;
 
+    public DispatchCommandPacket()
+    {
+    }
+
+    public DispatchCommandPacket(String server, String command, boolean bungeeCmd, String sender)
+    {
+        this.server = server;
+        this.command = command;
+        this.bungeeCmd = bungeeCmd;
+        this.sender = sender;
+    }
+
+    public String getServer()
+    {
+        return server;
+    }
+
+    public void setServer(String server)
+    {
+        this.server = server;
+    }
+
+    public String getCommand()
+    {
+        return command;
+    }
+
+    public void setCommand(String command)
+    {
+        this.command = command;
+    }
+
+    public boolean isBungeeCmd()
+    {
+        return bungeeCmd;
+    }
+
+    public void setBungeeCmd(boolean bungeeCmd)
+    {
+        this.bungeeCmd = bungeeCmd;
+    }
+
+    public String getSender()
+    {
+        return sender;
+    }
+
+    public void setSender(String sender)
+    {
+        this.sender = sender;
+    }
+
     @Override
     public void encode(PacketBuffer buffer)
     {
@@ -58,5 +110,11 @@ public class DispatchCommandPacket extends MessagingPacket
             }
             Bukkit.dispatchCommand(player, this.command);
         }
+    }
+
+    @Override
+    public String toString()
+    {
+        return "DispatchCommandPacket[Server:'" + server + "',Command:'" + command + "',BungeeCMD:" + bungeeCmd + ",Sender:'" + sender + "',toString:'" + super.toString() + "']";
     }
 }
