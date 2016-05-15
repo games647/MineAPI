@@ -1,6 +1,8 @@
 package com.w67clement.mineapi.system.messaging;
 
 import com.google.common.base.Charsets;
+import com.w67clement.mineapi.chat.ChatComponent;
+import com.w67clement.mineapi.chat.ChatComponent.ChatSerializer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.ByteBufProcessor;
@@ -45,6 +47,16 @@ public class PacketBuffer
     public Enum<?> readEnumValue(Class<?> enumClass)
     {
         return ((Enum[]) enumClass.getEnumConstants())[this.readVarIntFromBuffer()];
+    }
+
+    public void writeChatComponent(ChatComponent component)
+    {
+        this.writeString(ChatSerializer.serialize(component));
+    }
+
+    public ChatComponent readChatComponent()
+    {
+        return ChatSerializer.deserialize(this.readStringFromBuffer(32767));
     }
 
     public void writeVarIntToBuffer(int input)

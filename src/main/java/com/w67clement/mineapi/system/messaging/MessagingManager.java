@@ -52,14 +52,17 @@ public class MessagingManager
         // To bytes method from http://stackoverflow.com/questions/19296386/netty-java-getting-data-from-bytebuf
         byte[] bytes;
         int length = buffer.readableBytes();
-        if (buffer.hasArray()) {
+        if (buffer.hasArray())
+        {
             bytes = buffer.array();
-        } else {
+        }
+        else
+        {
             bytes = new byte[length];
             buffer.getBytes(buffer.readerIndex(), bytes);
         }
         MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + "Attempt to send packet: " + packet.toString(), true);
-        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + "Packet's bytes size: " + bytes.length + ", is too big: " + (Messenger.MAX_MESSAGE_SIZE < bytes.length ? "true" : "false"), true);
+        MineAPI.sendMessageToConsole(MineAPI.DEBUG_PREFIX + "Packet's bytes size: " + bytes.length + " (" + (bytes.length / Messenger.MAX_MESSAGE_SIZE * 100) + "%), is too big: " + (Messenger.MAX_MESSAGE_SIZE < bytes.length ? "true" : "false"), true);
         Bukkit.getServer().sendPluginMessage(this.plugin, "MineMessaging", bytes);
     }
 

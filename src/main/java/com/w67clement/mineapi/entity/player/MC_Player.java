@@ -1,17 +1,13 @@
 package com.w67clement.mineapi.entity.player;
 
+import com.w67clement.mineapi.chat.ChatComponent;
 import com.w67clement.mineapi.entity.MC_Entity;
 import com.w67clement.mineapi.entity.MC_EntityLiving;
 import com.w67clement.mineapi.enums.mc.MC_ChatVisibility;
 import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.system.MC_GameProfile;
 import org.bukkit.Chunk;
-import org.bukkit.block.Beacon;
-import org.bukkit.block.BrewingStand;
-import org.bukkit.block.Dispenser;
-import org.bukkit.block.Furnace;
-import org.bukkit.block.Hopper;
-import org.bukkit.block.Sign;
+import org.bukkit.block.*;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -88,7 +84,10 @@ public interface MC_Player extends MC_EntityLiving
 
 	MC_ChatVisibility getChatVisibility();
 
+	@Deprecated
 	FancyMessage sendMessage(String message);
+
+	void sendMessage(ChatComponent component);
 
 	void sendActionBarMessage(String message);
 

@@ -12,7 +12,8 @@ import com.w67clement.mineapi.tab.TabTitle;
 import com.w67clement.mineapi.world.PacketExplosion;
 
 
-import static com.w67clement.mineapi.enums.MinecraftVersion.*;
+import static com.w67clement.mineapi.enums.MinecraftVersion.v1_8_R1;
+import static com.w67clement.mineapi.enums.MinecraftVersion.v1_9_R1;
 
 public enum PacketList
 {
@@ -154,7 +155,7 @@ public enum PacketList
         this.packetName = packetName;
         this.packetAliases = packetAliases;
         this.packetType = packetType;
-        this.packetVersion = MinecraftVersion.UNKNOW;
+        this.packetVersion = MinecraftVersion.UNKNOWN;
     }
 
     PacketList(String packetName, String packetAliases, PacketType packetType, Class<? extends NmsPacket> mineapi_packet)
@@ -162,7 +163,7 @@ public enum PacketList
         this.packetName = packetName;
         this.packetAliases = packetAliases;
         this.packetType = packetType;
-        this.packetVersion = MinecraftVersion.UNKNOW;
+        this.packetVersion = MinecraftVersion.UNKNOWN;
         this.mineapiPacket = mineapi_packet;
     }
 

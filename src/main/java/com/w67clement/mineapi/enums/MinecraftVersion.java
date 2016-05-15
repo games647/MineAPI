@@ -9,7 +9,7 @@ import org.apache.commons.lang.Validate;
 public enum MinecraftVersion
 {
 
-    UNKNOW("Unknow", -1),
+    UNKNOWN("Unknown", -1),
     OLD("1.6.x and old", -1),
     v1_7_R1("1.7.2", 4),
     v1_7_4("1.7.4", 4),
@@ -24,7 +24,7 @@ public enum MinecraftVersion
     v1_8_2("1.8.2", 47),
     v1_8_R2("1.8.3", 47),
     v1_8_R3("1.8.8", 47),
-    v1_9_R1("1.9", 107);
+    v1_9_R1("1.9.2", 107);
 
     private final static Map<String, MinecraftVersion> BY_Version = Maps.newHashMap();
 
@@ -72,7 +72,7 @@ public enum MinecraftVersion
             String game_version = (String) ReflectionAPI.getValue(null, ReflectionAPI.getField(joeUtils, "MC_VERSION_STRING", true));
             return getByVersion(game_version);
         }
-        return UNKNOW;
+        return UNKNOWN;
     }
 
     public static MinecraftVersion getByVersion(String version)

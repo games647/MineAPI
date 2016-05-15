@@ -1,15 +1,17 @@
 package com.w67clement.mineapi.tileentity;
 
+import com.w67clement.mineapi.chat.ChatComponent;
+
 public interface TileEntitySign extends TileEntity {
 	
-	public String[] getLines();
+	ChatComponent[] getLines();
 	
-	public String getLine(int index);
+	ChatComponent getLine(int index);
 	
-	public boolean isEditable();
+	boolean isEditable();
 	
-	public void setEditable(boolean editable);
+	void setEditable(boolean editable);
 	
-	public void setLine(int index, String text);
+	void setLine(int index, ChatComponent text);
 
 }

@@ -52,7 +52,7 @@ public enum ParticleType
 
     ParticleType(String nmsName, String name)
     {
-        this(nmsName, name, MinecraftVersion.UNKNOW);
+        this(nmsName, name, MinecraftVersion.UNKNOWN);
     }
 
     ParticleType(String nmsName, String name, MinecraftVersion version)

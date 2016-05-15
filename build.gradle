@@ -84,7 +84,7 @@ configurations {
 }
 
 dependencies {
-    provided 'org.spigotmc.1.9:spigot:1.9-R0.1-SNAPSHOT-latest:1.9'
+    provided 'org.spigotmc.1.9.2:spigot:1.9.2-R0.1-SNAPSHOT-latest:1.9.2'
     compile 'com.google.code.gson:gson:2.5'
 }
 

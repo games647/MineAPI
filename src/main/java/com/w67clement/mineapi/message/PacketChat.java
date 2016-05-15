@@ -1,6 +1,7 @@
 package com.w67clement.mineapi.message;
 
 import com.google.gson.JsonParser;
+import com.w67clement.mineapi.chat.ChatComponent;
 import com.w67clement.mineapi.enums.PacketType;
 import com.w67clement.mineapi.nms.PacketSender;
 
@@ -27,6 +28,30 @@ public abstract class PacketChat<T> extends PacketSender<T>
      * @return Text in Json.
      */
     public abstract String getContent();
+
+    /**
+     * Sets the content of the message.
+     *
+     * @param content Content of the message.
+     */
+    public void setContent(ChatComponent content)
+    {
+        this.setContent(content.toJson());
+    }
+
+    /**
+     * Gets the content text as an ChatComponent.
+     *
+     * @return Text as ChatComponent.
+     */
+    public ChatComponent getContentAsChatComponent()
+    {
+        if (getContent() == null)
+        {
+            return null;
+        }
+        return ChatComponent.ChatSerializer.deserialize(getContent());
+    }
 
     /**
      * Gets the data of the message, default is 1. <br>

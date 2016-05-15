@@ -21,6 +21,7 @@ import com.w67clement.mineapi.system.ProtocolInjector;
 import com.w67clement.mineapi.system.ServerType;
 import com.w67clement.mineapi.system.messaging.MessagingManager;
 import com.w67clement.mineapi.system.messaging.defaults.DispatchCommandPacket;
+import com.w67clement.mineapi.system.messaging.defaults.SendMessagePacket;
 import com.w67clement.mineapi.system.modules.Module;
 import com.w67clement.mineapi.system.modules.ModuleLoader;
 import com.w67clement.mineapi.utils.MineAPIUtils;
@@ -179,7 +180,6 @@ public class MineAPI extends JavaPlugin
         if (isGlowstone() || isRainbow())
         {
             return serverVersion;
-
         }
         else
         {
@@ -469,7 +469,6 @@ public class MineAPI extends JavaPlugin
                 {
                     return 1;
                 }
-
             });
 
             Graph graph_nms_used = metrics.createGraph("NmsManager Used");
@@ -482,7 +481,6 @@ public class MineAPI extends JavaPlugin
                 {
                     return 1;
                 }
-
             });
 
             metrics.start();
@@ -496,6 +494,7 @@ public class MineAPI extends JavaPlugin
         messagingManager = new MessagingManager(this);
         messagingManager.init();
         messagingManager.getPacketRegistry().registerPlugin("Default");
+        messagingManager.getPacketRegistry().registerPacket("Default", 1, SendMessagePacket.class);
         messagingManager.getPacketRegistry().registerPacket("Default", 2, DispatchCommandPacket.class);
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");
         autoUpdater = new MineAPIAutoUpdater(true, this);
@@ -535,7 +534,6 @@ public class MineAPI extends JavaPlugin
                                             System.out.println("Error during updating MineAPI, please redownload it!");
                                         }
                                     }
-
                                 }.start();
                             else
                             {
@@ -567,7 +565,6 @@ public class MineAPI extends JavaPlugin
                             getNmsManager().getFancyMessage(PREFIX + ChatColor.DARK_AQUA + "Download: ").then("On Spigot").addHoverMessage(ChatColor.GREEN + "Click to open url to download the latest MineAPI! \n" + ChatColor.RED + "Recommended!").addLink("https://www.spigotmc.org/resources/mineapi.8614/").then(" / ").then("On Bukkit").addHoverMessage(ChatColor.GREEN + "Click to open url to download the latest MineAPI!").addLink("http://dev.bukkit.org/bukkit-plugins/mineapi/").send(player);
                         }
                     }
-
                 }, this);
         }
     }

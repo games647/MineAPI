@@ -3,6 +3,7 @@ package com.w67clement.mineapi.nms.v1_9_R1.entity;
 import com.w67clement.mineapi.MineAPI;
 import com.w67clement.mineapi.api.ReflectionAPI;
 import com.w67clement.mineapi.api.wrappers.ChatVisibilityWrapper;
+import com.w67clement.mineapi.chat.ChatComponent;
 import com.w67clement.mineapi.entity.MC_Entity;
 import com.w67clement.mineapi.entity.player.ClientCommand;
 import com.w67clement.mineapi.entity.player.EnumHand;
@@ -12,6 +13,7 @@ import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.nms.reflection.packets.play.in.CraftClientCommand;
 import com.w67clement.mineapi.system.MC_GameProfile;
 import net.minecraft.server.v1_9_R1.*;
+import org.apache.commons.lang3.Validate;
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.block.*;
@@ -200,6 +202,13 @@ public class MC_Player_v1_9_R1 extends MC_EntityLiving_v1_9_R1 implements MC_Pla
     public FancyMessage sendMessage(String message)
     {
         return MineAPI.getNmsManager().getFancyMessage(message);
+    }
+
+    @Override
+    public void sendMessage(ChatComponent component)
+    {
+        Validate.notNull(component, "ChatComponent cannot be null.");
+        MineAPI.getNmsManager().getPacketChat(component.toJson()).send(getHandle());
     }
 
     @Override

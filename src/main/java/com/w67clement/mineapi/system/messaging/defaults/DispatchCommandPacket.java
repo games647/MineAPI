@@ -13,10 +13,10 @@ import org.bukkit.entity.Player;
  */
 public class DispatchCommandPacket extends MessagingPacket
 {
-    private String server;
-    private String command;
-    private boolean bungeeCmd;
-    private String sender;
+    private String server = "";
+    private String command = "";
+    private boolean bungeeCmd = false;
+    private String sender = "";
 
     public DispatchCommandPacket()
     {
