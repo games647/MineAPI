@@ -28,7 +28,7 @@ public class ChatComponentClickEvent
         return value;
     }
 
-    public static enum ClickEventAction
+    public enum ClickEventAction
     {
 
         EXECUTE_COMMAND("run_command"),

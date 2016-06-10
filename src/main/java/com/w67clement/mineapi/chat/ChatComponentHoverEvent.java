@@ -28,7 +28,7 @@ public class ChatComponentHoverEvent
         return value;
     }
 
-    public static enum HoverEventAction
+    public enum HoverEventAction
     {
 
         SHOW_TEXT("show_text");
