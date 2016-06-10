@@ -9,17 +9,22 @@ import com.w67clement.mineapi.api.event.SendPacketEvent;
 import com.w67clement.mineapi.api.event.ping.PacketPingReceiveEvent;
 import com.w67clement.mineapi.api.event.ping.PacketPingSendEvent;
 import com.w67clement.mineapi.api.wrappers.MC_PacketWrapper;
+import com.w67clement.mineapi.bungee.BungeeProxy;
+import com.w67clement.mineapi.commands.defaults.BungeeCordCommand;
 import com.w67clement.mineapi.entity.player.MC_Player;
 import com.w67clement.mineapi.enums.PacketList;
 import com.w67clement.mineapi.nms.NmsManager;
 import com.w67clement.mineapi.nms.ProtocolManager;
 import com.w67clement.mineapi.nms.reflection.CraftNmsManager;
 import com.w67clement.mineapi.nms.v1_9_R1.NmsManager_v1_9_R1;
+import com.w67clement.mineapi.nms.v1_9_R2.NmsManager_v1_9_R2;
 import com.w67clement.mineapi.system.ConfigManager;
 import com.w67clement.mineapi.system.ModuleManager;
 import com.w67clement.mineapi.system.ProtocolInjector;
 import com.w67clement.mineapi.system.ServerType;
 import com.w67clement.mineapi.system.messaging.MessagingManager;
+import com.w67clement.mineapi.system.messaging.defaults.BungeeServerDataPacket;
+import com.w67clement.mineapi.system.messaging.defaults.BungeeServerRequestPacket;
 import com.w67clement.mineapi.system.messaging.defaults.DispatchCommandPacket;
 import com.w67clement.mineapi.system.messaging.defaults.SendMessagePacket;
 import com.w67clement.mineapi.system.modules.Module;
@@ -51,6 +56,7 @@ import org.bukkit.plugin.UnknownDependencyException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
+import org.spigotmc.SpigotConfig;
 
 public class MineAPI extends JavaPlugin
 {
@@ -217,9 +223,22 @@ public class MineAPI extends JavaPlugin
         MineAPI.nms = nms;
     }
 
+    /**
+     * Gets the Plugin Messaging Channel Manager of MineAPI.
+     *
+     * @return The Plugin Messaging Channel Manager.
+     */
     public static MessagingManager getMessagingManager()
     {
         return messagingManager;
+    }
+
+    /**
+     * Gets the Bungeecord Proxy data.
+     * @return Bungeecord Proxy data.
+     */
+    public static BungeeProxy getBungeeProxy() {
+        return BungeeProxy.getInstance();
     }
 
     /**
@@ -366,6 +385,10 @@ public class MineAPI extends JavaPlugin
             {
                 nms = new NmsManager_v1_9_R1();
             }
+            else if (getServerVersion().equals("v1_9_R2"))
+            {
+                nms = new NmsManager_v1_9_R2();
+            }
             else if (isGlowstone())
             {
                 sendMessageToConsole(PREFIX + ChatColor.DARK_RED + "[Error] " + ChatColor.RED + "You use Glowstone, isn't support by MineAPI!");
@@ -435,6 +458,7 @@ public class MineAPI extends JavaPlugin
         try
         {
             this.getCommand("AdvancedVersion").setExecutor(new VersionCommand(this));
+            this.getCommand("BungeeCord").setExecutor(new BungeeCordCommand());
             sendMessageToConsole(PREFIX + ChatColor.GREEN + "The commands was load successful!");
             MineAPICommand mineAPICmd = new MineAPICommand(this);
             this.getCommand("MineAPI").setExecutor(mineAPICmd);
@@ -491,11 +515,14 @@ public class MineAPI extends JavaPlugin
         }
 
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Plugin Messaging system...");
+        BungeeProxy.init(SpigotConfig.bungee);
         messagingManager = new MessagingManager(this);
         messagingManager.init();
         messagingManager.getPacketRegistry().registerPlugin("Default");
         messagingManager.getPacketRegistry().registerPacket("Default", 1, SendMessagePacket.class);
         messagingManager.getPacketRegistry().registerPacket("Default", 2, DispatchCommandPacket.class);
+        messagingManager.getPacketRegistry().registerPacket("Default", 3, BungeeServerRequestPacket.class);
+        messagingManager.getPacketRegistry().registerPacket("Default", 4, BungeeServerDataPacket.class);
         sendMessageToConsole(PREFIX + ChatColor.GREEN + "Starting Auto-Updater (v1.0.3)...");
         autoUpdater = new MineAPIAutoUpdater(true, this);
         if (autoUpdater.haveNewUpdate())

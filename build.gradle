@@ -19,7 +19,7 @@ buildscript {
 apply plugin: 'com.jfrog.bintray'
 
 group = 'com.w67clement.mineapi'
-version = '2.3.0-dev3'
+version = '2.3.0-dev4_1'
 archivesBaseName = 'MineAPI'
 def authors = '[w67clement]'
 
@@ -85,6 +85,8 @@ configurations {
 
 dependencies {
     provided 'org.spigotmc.1.9.2:spigot:1.9.2-R0.1-SNAPSHOT-latest:1.9.2'
+    provided 'org.spigotmc.1.9.4:spigot:1.9.4-R0.1-SNAPSHOT-latest:1.9.4'
+    //provided 'org.spigotmc.1.10:spigot:1.10-R0.1-SNAPSHOT-latest:1.10'
     compile 'com.google.code.gson:gson:2.5'
 }
 

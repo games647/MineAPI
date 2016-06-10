@@ -13,6 +13,9 @@ commands:
   AdvancedVersion:
     description: Gets the version of the server.
     usage: /AdvancedVersion
+  BungeeCord:
+    description: Debug informations of BungeeCord proxy.
+    usage: /BungeeCord
 
 permissions:
   mineapi.*:
@@ -27,3 +30,4 @@ permissions:
     children:
       mineapi.cmd.mineapi: true
       mineapi.cmd.advancedversion: true
+      mineapi.cmd.bungeecord: true

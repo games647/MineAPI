@@ -24,7 +24,8 @@ public enum MinecraftVersion
     v1_8_2("1.8.2", 47),
     v1_8_R2("1.8.3", 47),
     v1_8_R3("1.8.8", 47),
-    v1_9_R1("1.9.2", 107);
+    v1_9_R1("1.9.2", 109),
+    v1_9_R2("1.9.4", 110);
 
     private final static Map<String, MinecraftVersion> BY_Version = Maps.newHashMap();
 
@@ -59,6 +60,8 @@ public enum MinecraftVersion
                 return v1_8_R3;
             case "v1_9_R1":
                 return v1_9_R1;
+            case "v1_9_R2":
+                return v1_9_R2;
         }
         if (MineAPI.getServerVersion().contains("Glowstone"))
         {

@@ -1,7 +1,7 @@
 package com.w67clement.mineapi.packets.play.out;
 
+import com.w67clement.mineapi.chat.ChatComponent;
 import com.w67clement.mineapi.enums.PacketType;
-import com.w67clement.mineapi.message.FancyMessage;
 import com.w67clement.mineapi.nms.PacketSender;
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
@@ -112,9 +112,9 @@ public abstract class PacketUpdateSign<T> extends PacketSender<T>
      * @param line    Line of the content.
      * @param content New content using FancyMessage.
      */
-    public void setLine(int line, FancyMessage content)
+    public void setLine(int line, ChatComponent content)
     {
-        this.setLine(line, content.toJSONString());
+        this.setLine(line, content.toJson());
     }
 
     @Override
