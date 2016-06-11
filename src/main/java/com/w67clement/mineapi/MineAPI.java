@@ -235,9 +235,11 @@ public class MineAPI extends JavaPlugin
 
     /**
      * Gets the Bungeecord Proxy data.
+     *
      * @return Bungeecord Proxy data.
      */
-    public static BungeeProxy getBungeeProxy() {
+    public static BungeeProxy getBungeeProxy()
+    {
         return BungeeProxy.getInstance();
     }
 
@@ -330,6 +332,8 @@ public class MineAPI extends JavaPlugin
             case SPIGOT:
                 break;
         }
+
+        patch();
     }
 
     @Override
@@ -755,6 +759,11 @@ public class MineAPI extends JavaPlugin
                 }
             }
         }
+    }
+
+    public void patch()
+    {
+        MinePatcher patcher = new MinePatcher();
     }
 
     private static class MineAPIConfig
