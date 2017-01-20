@@ -5,7 +5,24 @@ An API for Spigot/Glowstone and more!
 
 ## Add MineAPI to your Maven/Gradle repository
 ### Maven
-Hello, I'm sorry but Maven isn't supported :/
+```xml
+    <repositories>
+        <!--...-->
+        <repository>
+            <id>w67clement-repo</id>
+            <url>https://dl.bintray.com/w67clement/maven</url>
+        </repository>
+    </repositories>
+    
+    <dependencies>
+        <!--...-->
+        <dependency>
+            <groupId>com.w67clement.mineapi</groupId>
+            <artifactId>mineapi</artifactId>
+            <version>2.3.0-dev6</version>
+        </dependency>
+    </dependencies>
+```
 ### Gradle
 Put in repositories section: <br />
 <pre class="language-java"><code class="language-java">maven {
